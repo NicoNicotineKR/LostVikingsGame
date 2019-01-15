@@ -44,9 +44,9 @@ void playGround::render()
 	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, BLACKNESS);
 	//===========================================================
 
+	//사람살려
 
-
-
+	
 	
 
 	TIMEMANAGER->render(getMemDC());
