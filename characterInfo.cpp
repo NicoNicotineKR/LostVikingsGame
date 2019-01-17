@@ -13,7 +13,8 @@ characterInfo::~characterInfo()
 
 HRESULT characterInfo::init()
 {
-	
+	_status = P_R_IDLE;
+
 	return S_OK;
 }
 
@@ -21,7 +22,7 @@ void characterInfo::release()
 {
 }
 
-void characterInfo::update()
+void characterInfo::update(int characterSelect, float cameraX, float cameraY)
 {
 	if (_isPlaying && !_isFlying) 
 	{

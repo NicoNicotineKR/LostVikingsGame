@@ -6,16 +6,17 @@ class eric :
 private:
 	float _accel;
 
-
 public:
 	eric();
 	~eric();
 
 	HRESULT init();
 	void release();
-	void update();
+	void update(int characterSelect, float cameraX, float cameraY);
 	void render();
 
 	void move();
+
+
 };
 

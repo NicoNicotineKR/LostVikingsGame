@@ -144,6 +144,12 @@
     <ClInclude Include="olaf.h">
       <Filter>PlayGround\player</Filter>
     </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>PlayGround</Filter>
+    </ClInclude>
+    <ClInclude Include="scene2_1.h">
+      <Filter>PlayGround</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -220,6 +226,12 @@
     </ClCompile>
     <ClCompile Include="olaf.cpp">
       <Filter>PlayGround\player</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>PlayGround</Filter>
+    </ClCompile>
+    <ClCompile Include="scene2_1.cpp">
+      <Filter>PlayGround</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

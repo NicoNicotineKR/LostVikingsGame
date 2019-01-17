@@ -16,8 +16,11 @@ protected:
 	bool _isAlive;				// 캐릭터 살아있는지 여부
 	E_PLAYER_STATUS _status;	// 캐릭터 상태
 	int _motion_Count;			// 캐릭터 가만있으면 모션띄우는거
-	bool _isFlying				// 캐릭터 공중에 떠있는지
+	bool _isFlying;				// 캐릭터 공중에 떠있는지
+	animation* _motion;			// 캐릭터 모션
 
+	float _cameraX;				// 맵 카메라 담을 공간 x
+	float _cameraY;				// 맵 카메라 담을 공간 y
 
 public:
 	characterInfo();
@@ -25,9 +28,12 @@ public:
 	
 	virtual HRESULT init();
 	virtual void release();
-	virtual void update();
+	virtual void update(int characterSelect, float cameraX, float cameraY);
 	virtual void render();
 
 	virtual void move();
+
+
+	POINTFLOAT getPos() { return _pos; }
 };
 
