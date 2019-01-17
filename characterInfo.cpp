@@ -29,20 +29,24 @@ void characterInfo::update(int characterSelect, float cameraX, float cameraY)
 		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 		{
 			_status = P_R_MOVE;
+			_isMotionPlay = true;
 		}
 		if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
 		{
 			_status = P_L_MOVE;
+			_isMotionPlay = true;
 		}
 		if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
 		{
 			_motion_Count = 0;
 			_status = P_R_IDLE;
+			_isMotionPlay = true;
 		}
 		if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
 		{
 			_motion_Count = 0;
 			_status = P_L_IDLE;
+			_isMotionPlay = true;
 		}
 	}
 	
@@ -50,11 +54,13 @@ void characterInfo::update(int characterSelect, float cameraX, float cameraY)
 	if (!_isPlaying && _status == P_R_MOVE)
 	{
 		_motion_Count = 0;
+		_isMotionPlay = true;
 		_status = P_R_IDLE;
 	}
 	else if (!_isPlaying && _status == P_L_MOVE)
 	{
 		_motion_Count = 0;
+		_isMotionPlay = true;
 		_status = P_L_IDLE;
 	}
 
@@ -78,6 +84,7 @@ void characterInfo::update(int characterSelect, float cameraX, float cameraY)
 			_motion_Count = 0;
 			switch (rand)
 			{
+				_isMotionPlay = true;
 			case 0:
 				_status = P_R_MOTION_ONE;
 			break;
@@ -97,6 +104,7 @@ void characterInfo::update(int characterSelect, float cameraX, float cameraY)
 
 			switch (rand)
 			{
+				_isMotionPlay = true;
 			case 0:
 				_status = P_L_MOTION_ONE;
 				break;

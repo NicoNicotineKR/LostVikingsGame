@@ -18,6 +18,7 @@ protected:
 	int _motion_Count;			// 캐릭터 가만있으면 모션띄우는거
 	bool _isFlying;				// 캐릭터 공중에 떠있는지
 	animation* _motion;			// 캐릭터 모션
+	bool _isMotionPlay;				// 캐릭터 모션을 한번만 실행해라
 
 	float _cameraX;				// 맵 카메라 담을 공간 x
 	float _cameraY;				// 맵 카메라 담을 공간 y
@@ -35,5 +36,12 @@ public:
 
 
 	POINTFLOAT getPos() { return _pos; }
+
+	//플레이어 상태 접근자, 설정자
+	E_PLAYER_STATUS getCharacterStatus() { return _status; }
+	void setCharacterStatus(E_PLAYER_STATUS status) { _status = status; }
+	//플레이어 애니메이션 접근자, 설정자
+	animation* getCharacterMotion() { return _motion; }
+	void setCharacterMotion(animation* motion) { _motion = motion; }
 };
 
