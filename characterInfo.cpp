@@ -29,3 +29,7 @@ void characterInfo::render()
 {
 }
 
+void characterInfo::move()
+{
+}
+

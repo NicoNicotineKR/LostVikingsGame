@@ -1,22 +1,18 @@
 #pragma once
 #include "gameNode.h"
-//#include "CONFIG.h"
-struct tagPlayer
-{
-	RECT rc;
-	POINTFLOAT pos;
-	tagVector2D vec;
-	float gravity;
-	float speed;
-	int hp;
-	string itemSlot[4];
-	bool isPlaying;
-	bool isAlive;
 
-};
 class characterInfo : public gameNode
 {
-private:
+protected:
+	RECT _rc;
+	POINTFLOAT _pos;
+	tagVector2D _vec;
+	float _gravity;
+	float _speed;
+	int _hp;
+	string _itemSlot[4];
+	bool _isPlaying;
+	bool _isAlive;
 
 public:
 	characterInfo();
@@ -27,6 +23,6 @@ public:
 	virtual void update();
 	virtual void render();
 
-
+	virtual void move();
 };
 
