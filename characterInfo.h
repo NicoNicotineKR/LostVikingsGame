@@ -4,6 +4,7 @@
 class characterInfo : public gameNode
 {
 protected:
+	image* _img;
 	RECT _rc;
 	POINTFLOAT _pos;
 	tagVector2D _vec;
@@ -13,6 +14,7 @@ protected:
 	string _itemSlot[4];
 	bool _isPlaying;
 	bool _isAlive;
+	E_PLAYER_STATUS _status;
 
 public:
 	characterInfo();
