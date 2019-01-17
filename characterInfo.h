@@ -16,8 +16,17 @@ struct tagPlayer
 };
 class characterInfo : public gameNode
 {
+private:
+
 public:
 	characterInfo();
 	~characterInfo();
+	
+	virtual HRESULT init();
+	virtual void release();
+	virtual void update();
+	virtual void render();
+
+
 };
 
