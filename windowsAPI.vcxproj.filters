@@ -49,6 +49,9 @@
     <Filter Include="2DFramework\database">
       <UniqueIdentifier>{dd4f8032-323d-4808-b92d-f3619469e115}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\player">
+      <UniqueIdentifier>{1fdb77bd-2763-464f-835f-6fa3954a0f11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -129,6 +132,12 @@
     <ClInclude Include="CONFIG.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="playerMgr.h">
+      <Filter>PlayGround\player</Filter>
+    </ClInclude>
+    <ClInclude Include="characterInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -193,6 +202,12 @@
     </ClCompile>
     <ClCompile Include="database.cpp">
       <Filter>2DFramework\database</Filter>
+    </ClCompile>
+    <ClCompile Include="playerMgr.cpp">
+      <Filter>PlayGround\player</Filter>
+    </ClCompile>
+    <ClCompile Include="characterInfo.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
