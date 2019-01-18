@@ -20,7 +20,7 @@ private:
 	//정보담기용
 	float _playerx;
 	float _playery;
-	
+
 	//_posX,_posY한번만실행
 	bool posInit;
 
@@ -37,16 +37,16 @@ public:
 
 	HRESULT init();
 	void release();
-	void update(float playerx,float playery,float speed, image* map);
+	void update();
 	void render();
 
-	float Getmapx(){return _camerax;}
-	float Getmapy(){return _cameray;}
+	float Getmapx() { return _camerax; }
+	float Getmapy() { return _cameray; }
 
-	void SetPlayerChange(bool v){ playerChange = v;}
+	void SetPlayerChange(bool v) { playerChange = v; }
 
-	void SetPosX(float v){ _posX = v;}
-	void SetPosY(float v){ _posY = v;}
+	void SetPosX(float v) { _posX = v; }
+	void SetPosY(float v) { _posY = v; }
 
 	// Tap누를시 영웅을 바꿈 - 바꿈모드
 	void PlayerChangeMode();
@@ -63,7 +63,25 @@ public:
 	// 가지마라
 	void DontGoOutMapFuc();
 
-	void SetPosInit(bool v){ posInit = v;}
-	void SetCountFix(int v){ countFix = v;}
+	void SetPosInit(bool v) { posInit = v; }
+	void SetCountFix(int v) { countFix = v; }
+
+	//2019.01.17 오후11시추가 ===================
+	//에릭정보가져옴
+	void SetPlayerX(float v) { _playerx = v; }
+	void SetPlayerY(float v) { _playery = v; }
+	void SetCameraSpeed(float v) { _cameraSpeed = v; }
+	void SetNowMap(image* v) { _NowMap = v; }
+
+	//에릭정보 가져오는거 묶음
+
+	//카메라가 에릭의 좌표정보를 가져와서씀
+	//UpdateEricPos
+	//SettingPlayerPos();
+	//UpdatePlayerPos or cameraChangespeedsetting or 
+	//UpdatePlayerPos,
+	//camera->BringEricPos();
+	void UpdatePlayerPos(float _playerx, float _playery, float _cameraSpeed, image* _NowMap);
+	//2019.01.17 오후11시추가 ===================
 };
 

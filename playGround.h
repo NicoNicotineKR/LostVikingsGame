@@ -14,7 +14,7 @@ private:
 	camera* _camera;
 
 	char str[128];
-	
+
 public:
 	virtual HRESULT init();
 	virtual void release();

@@ -14,8 +14,8 @@ camera::~camera()
 HRESULT camera::init()
 {
 	//카메라중심
-	_camerax = WINSIZEX/2;
-	_cameray = WINSIZEY/2;
+	_camerax = WINSIZEX / 2;
+	_cameray = WINSIZEY / 2;
 
 	//처음엔 플레이어를 바꾸지않음
 	playerChange = false;
@@ -30,13 +30,8 @@ void camera::release()
 {
 }
 
-void camera::update(float playerx, float playery,float speed, image* map)
+void camera::update()
 {
-	_cameraSpeed = speed;
-	_playerx = playerx;
-	_playery = playery;
-	_NowMap = map;
-
 	// Tap누를시 영웅을 바꿈 - 바꿈모드
 	//바꿈모드일때
 	if (playerChange == true)
@@ -54,7 +49,7 @@ void camera::update(float playerx, float playery,float speed, image* map)
 
 void camera::render()
 {
-	sprintf_s(str, "카메라x : %f, 카메라y : %f , 목적지x : %f, 목적지y : %f , 플레이어선택 : %d ,예비용카운트 : %d", _camerax, _cameray,_posX,_posY, playerChange, countFix);
+	sprintf_s(str, "카메라x : %f, 카메라y : %f , 목적지x : %f, 목적지y : %f , 플레이어선택 : %d ,예비용카운트 : %d", _camerax, _cameray, _posX, _posY, playerChange, countFix);
 	TextOut(getMemDC(), 30, 140, str, strlen(str));
 }
 
@@ -192,5 +187,16 @@ void camera::DontGoOutMapFuc()
 		_cameray = _NowMap->GetHeight() - WINSIZEY / 2;
 	}
 }
+
+//2019.01.17 오후11시추가 ===================
+void camera::UpdatePlayerPos(float _playerx, float _playery, float _cameraSpeed, image * _NowMap)
+{
+	this->SetPlayerX(_playerx);
+	this->SetPlayerY(_playery);
+	this->SetCameraSpeed(_cameraSpeed);
+	this->SetNowMap(_NowMap);
+}
+//2019.01.17 오후11시추가 ===================
+
 
 

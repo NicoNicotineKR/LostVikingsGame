@@ -19,7 +19,6 @@ HRESULT playGround::init()
 	//new뜻은 동적할당으로 힙메모리영역에 카메라클래스가 쓸만큼의 메모리공간을 잡고,그주소를 _camera에 포인터에넣어준다.
 	_camera = new camera;
 
-	
 
 	_scene2_1 = new scene2_1;
 
@@ -27,14 +26,14 @@ HRESULT playGround::init()
 	_scene2_1->SetLinkToCamera(_camera);
 	_scene2_1->init();
 
-	
+
 
 
 	return S_OK;
 }
 
 
-void playGround::release()	
+void playGround::release()
 {
 	gameNode::release();
 
@@ -45,7 +44,7 @@ void playGround::release()
 void playGround::update()
 {
 	gameNode::update();
-	
+
 	_scene2_1->update();
 
 }

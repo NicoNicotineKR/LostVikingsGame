@@ -16,12 +16,14 @@ public:
 
 	HRESULT init();
 	void release();
-	void update(int characterSelect, float cameraX, float cameraY);
+	void update();
 	void render();
 
 	void move();
 
-	static void rightRushing(void* obj);
-	static void leftRushing(void* obj);
+	static void rightStuning(void* obj);
+	static void leftStuning(void* obj);
+	static void rightStand(void* obj);
+	static void leftStand (void* obj);
 };
 
