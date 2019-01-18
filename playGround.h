@@ -16,13 +16,15 @@ private:
 	char str[128];
 
 public:
+	playGround();
+	~playGround();
+
 	virtual HRESULT init();
 	virtual void release();
 	virtual void update();
 	virtual void render();
 
 
-	playGround();
-	~playGround();
+
 };
 

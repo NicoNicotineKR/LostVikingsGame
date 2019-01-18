@@ -45,7 +45,7 @@ void camera::update()
 	{
 		PlayerChaseMode();
 	}
-	_rc = RectMakeCenter(_camerax, _cameray, 1024, 768);
+//	_rc = RectMakeCenter(_camerax, _cameray, 1024, 768);
 }
 
 void camera::render()
@@ -130,7 +130,7 @@ void camera::CameraMoveFunc()
 		}
 	}
 
-	//플레이어가 원하는 목적지를 도착했을시
+	//카메라가 원하는 목적지(해당 인덱스값 플레이어 좌표)를 도착했을시
 	if ((_camerax == _posX) && (_cameray == _posY))
 	{
 		//바꿈모드 해제

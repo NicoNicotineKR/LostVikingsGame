@@ -14,8 +14,15 @@
 //	
 //	const int DOUBLE_CLICK_FRAME = 15;
 
+enum E_PLAYER_INDEX{
+	P_ERIC = 0,
+	P_OLAF,
+	P_BALEOG,
+	OUT_OF_LANGE
+};
+
 enum E_PLAYER_STATUS {
-	P_R_IDLE,			//	player right stop
+	P_R_IDLE = 0,		//	player right stop
 	P_L_IDLE,			//	player left  stop
 						
 	P_R_MOVE,			//	player right move

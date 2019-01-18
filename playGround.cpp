@@ -26,7 +26,8 @@ HRESULT playGround::init()
 	_scene2_1->SetLinkToCamera(_camera);
 	_scene2_1->init();
 
-
+	SCENEMANAGER->addScene("scene2_1", _scene2_1);
+	SCENEMANAGER->changeScene("scene2_1");
 
 
 	return S_OK;
@@ -45,6 +46,7 @@ void playGround::update()
 {
 	gameNode::update();
 
+	SCENEMANAGER->update();
 	_scene2_1->update();
 	
 	
@@ -61,8 +63,9 @@ void playGround::render()
 	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, BLACKNESS);
 	//===========================================================
 
-	_scene2_1->render();
-	_camera->render();
+
+	SCENEMANAGER->render();
+//	_camera->render();
 
 	TIMEMANAGER->render(getMemDC());
 	//===========================================================
