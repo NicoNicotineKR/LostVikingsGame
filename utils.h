@@ -14,6 +14,8 @@ namespace BRAVO_UTIL
 {
 	float PixelColFunc(int dir, float x, float y, int searchRange, image* img, HDC dc, COLORREF rgb);
 
+	float PixelColFunction(int dir, float x, float y, int searchRange, image* img, HDC dc, COLORREF rgb, bool* isCol);
+
 	void RefreshAngle(float* angle);
 
 	double getDistanceSqr(double x1, double y1, double x2, double y2);

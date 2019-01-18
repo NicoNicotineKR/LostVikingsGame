@@ -21,7 +21,7 @@ namespace BRAVO_UTIL
 			maxPos = y + searchRange;
 			for (; y < maxPos; y++) {
 				COLORREF color = GetPixel(dc, x, y);
-				if (!(color == rgb)) {
+				if ((color == rgb)) {
 					return y;
 				}
 			}
@@ -43,7 +43,7 @@ namespace BRAVO_UTIL
 			maxPos = x + searchRange;
 			for (; x < maxPos; x++) {
 				COLORREF color = GetPixel(dc, x, y);
-				if (!(color == rgb)) {
+				if ((color == rgb)) {
 					return x;
 				}
 			}
@@ -66,7 +66,68 @@ namespace BRAVO_UTIL
 		}
 		return 0;
 	}
+	float PixelColFunction(int dir, float x, float y, int searchRange, image* img, HDC dc, COLORREF rgb,bool* isCol) {
 
+		float defaultY = y;
+		float defaultX = x;
+		int maxPos;
+
+		switch (dir)
+		{
+			//아래검색
+		case 0:
+			maxPos = y + searchRange;
+			for (; y < maxPos; y++) {
+				COLORREF color = GetPixel(dc, x, y);
+				if ((color == rgb)) {
+					*isCol = true;
+					return y;
+				}
+			}
+			*isCol = false;
+			return defaultY;
+			break;
+			//위검색
+		case 1:
+			maxPos = y - searchRange;
+			for (; y > maxPos; y--) {
+				COLORREF color = GetPixel(dc, x, y);
+				if (!(color == rgb)) {
+					return y;
+				}
+			}
+			return defaultY;
+			break;
+			//오른쪽검색
+		case 2:
+			maxPos = x + searchRange;
+			for (; x < maxPos; x++) {
+				COLORREF color = GetPixel(dc, x, y);
+				if (!(color == rgb)) {
+					*isCol = true;
+					return x;
+				}
+			}
+			*isCol = false;
+			return defaultX;
+			break;
+			//왼쪽검색
+		case 3:
+			maxPos = x - searchRange;
+			for (; x > maxPos; x--) {
+				COLORREF color = GetPixel(dc, x, y);
+				if (!(color == rgb)) {
+					return x;
+				}
+			}
+			return defaultX;
+			break;
+
+		default:
+			break;
+		}
+		return 0;
+	}
 
 
 	//angle을 0~2PI 사이로 만들어줌(주소 넣으면 직접바꿔줌)
