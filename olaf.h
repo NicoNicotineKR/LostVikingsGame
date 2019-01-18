@@ -12,7 +12,7 @@ public:
 
 	HRESULT init();
 	void release();
-	void update(int characterSelect, float cameraX, float cameraY);
+	void update();
 	void render();
 
 	void move();

@@ -83,9 +83,9 @@ void olaf::release()
 {
 }
 
-void olaf::update(int characterSelect, float cameraX, float cameraY)
+void olaf::update()
 {
-	characterInfo::update(characterSelect, cameraX, cameraY);
+	characterInfo::update();
 
 	//울라프 오른쪽 idle
 	if (KEYMANAGER->isOnceKeyDown('D') || KEYMANAGER->isOnceKeyDown('F'))

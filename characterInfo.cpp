@@ -15,6 +15,8 @@ HRESULT characterInfo::init()
 {
 	_status = P_R_IDLE;
 
+	_speed = 5.0f;
+
 	return S_OK;
 }
 

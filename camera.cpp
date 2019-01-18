@@ -45,10 +45,12 @@ void camera::update()
 	{
 		PlayerChaseMode();
 	}
+	_rc = RectMakeCenter(_camerax, _cameray, 1024, 768);
 }
 
 void camera::render()
 {
+//	Rectangle(getMemDC(), _rc);
 	sprintf_s(str, "카메라x : %f, 카메라y : %f , 목적지x : %f, 목적지y : %f , 플레이어선택 : %d ,예비용카운트 : %d", _camerax, _cameray, _posX, _posY, playerChange, countFix);
 	TextOut(getMemDC(), 30, 140, str, strlen(str));
 }

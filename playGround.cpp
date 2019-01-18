@@ -46,6 +46,11 @@ void playGround::update()
 	gameNode::update();
 
 	_scene2_1->update();
+	
+	
+	KEYANIMANAGER->update();
+
+
 
 }
 

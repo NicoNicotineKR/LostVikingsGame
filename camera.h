@@ -5,6 +5,7 @@ class camera : public gameNode
 {
 private:
 	//Ä«¸Þ¶ó
+	RECT _rc;
 	image* _NowMap;
 	float _camerax;
 	float _cameray;

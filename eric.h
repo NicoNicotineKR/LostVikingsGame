@@ -21,9 +21,13 @@ public:
 
 	void move();
 
-	static void rightStuning(void* obj);
-	static void leftStuning(void* obj);
+	static void rightMoving(void* obj);
+	static void leftMoving(void* obj);
 	static void rightStand(void* obj);
 	static void leftStand (void* obj);
+	static void rightStuning(void* obj);
+	static void leftStuning(void* obj);
+	static void rightFlying(void* obj);
+	static void leftFlying(void* obj);
 };
 
