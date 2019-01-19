@@ -12,7 +12,7 @@
 
 namespace BRAVO_UTIL
 {
-	float PixelColFunc(int dir, float x, float y, int searchRange, image* img, COLORREF rgb);
+	float PixelColFunc(int dir, float x, float y, int searchRange, image* img, HDC dc, COLORREF rgb);
 
 	float PixelColFunction(int dir, float x, float y, float probe, int searchRange, image* img, HDC dc, COLORREF rgb, bool* isCol);
 

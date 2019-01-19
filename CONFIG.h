@@ -16,21 +16,9 @@
 
 enum E_PLAYER_INDEX{
 	P_ERIC = 0,
-	P_BALEOG,
 	P_OLAF,
+	P_BALEOG,
 	OUT_OF_LANGE
-};
-
-
-enum E_SCENE_INDEX {
-	E_TITLE = 0,
-	E_MAINMENU,
-	E_SCENE2_1,
-
-
-
-	E_SCENE_IDX_END,
-
 };
 
 enum E_PLAYER_STATUS {
