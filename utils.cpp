@@ -5,10 +5,10 @@
 namespace BRAVO_UTIL
 {
 	//	픽셀충돌계산 - 
-	//	( 방향, 검색시작좌표, 검사할 이미지, 이미지 있는dc, 검사거리, 충돌하지 않는 색(0x000000)이런식으로 )
+	//	( 방향, 검색시작좌표, 검사할 이미지, 검사거리, 충돌할(0x000000)이런식으로 )
 	//	0 : 밑으로 / 1 : 위로 / 2 : 오른쪽 / 3 : 왼쪽
 	//	리턴 = 충돌한 좌표값. (위아래면 y, 좌우면 x리턴) , 충돌안하면 원래값, 에러시 0리턴
-	float PixelColFunc(int dir, float x, float y, int searchRange, image* img, HDC dc, COLORREF rgb) {
+	float PixelColFunc(int dir, float x, float y, int searchRange, image* img, COLORREF rgb) {
 
 		float defaultY = y;
 		float defaultX = x;
@@ -20,7 +20,7 @@ namespace BRAVO_UTIL
 		case 0:
 			maxPos = y + searchRange;
 			for (; y < maxPos; y++) {
-				COLORREF color = GetPixel(dc, x, y);
+				COLORREF color = GetPixel(img->getMemDC(), x, y);
 				if ((color == rgb)) {
 					return y;
 				}
@@ -31,7 +31,7 @@ namespace BRAVO_UTIL
 		case 1:
 			maxPos = y - searchRange;
 			for (; y > maxPos; y--) {
-				COLORREF color = GetPixel(dc, x, y);
+				COLORREF color = GetPixel(img->getMemDC(), x, y);
 				if (!(color == rgb)) {
 					return y;
 				}
@@ -42,7 +42,7 @@ namespace BRAVO_UTIL
 		case 2:
 			maxPos = x + searchRange;
 			for (; x < maxPos; x++) {
-				COLORREF color = GetPixel(dc, x, y);
+				COLORREF color = GetPixel(img->getMemDC(), x, y);
 				if ((color == rgb)) {
 					return x;
 				}
@@ -53,7 +53,7 @@ namespace BRAVO_UTIL
 		case 3:
 			maxPos = x - searchRange;
 			for (; x > maxPos; x--) {
-				COLORREF color = GetPixel(dc, x, y);
+				COLORREF color = GetPixel(img->getMemDC(), x, y);
 				if (!(color == rgb)) {
 					return x;
 				}
