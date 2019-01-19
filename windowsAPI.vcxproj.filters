@@ -52,6 +52,12 @@
     <Filter Include="PlayGround\player">
       <UniqueIdentifier>{1fdb77bd-2763-464f-835f-6fa3954a0f11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\Scene">
+      <UniqueIdentifier>{fd8000b2-a4fc-473a-bd68-e8a7c287e65a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\UI">
+      <UniqueIdentifier>{8b810d94-7525-491f-a153-025b03b86313}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -148,7 +154,19 @@
       <Filter>PlayGround</Filter>
     </ClInclude>
     <ClInclude Include="scene2_1.h">
-      <Filter>PlayGround</Filter>
+      <Filter>PlayGround\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="mainmenu.h">
+      <Filter>PlayGround\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>PlayGround\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="invenUI.h">
+      <Filter>PlayGround\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="mainmenuUI.h">
+      <Filter>PlayGround\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -231,7 +249,19 @@
       <Filter>PlayGround</Filter>
     </ClCompile>
     <ClCompile Include="scene2_1.cpp">
-      <Filter>PlayGround</Filter>
+      <Filter>PlayGround\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="mainmenu.cpp">
+      <Filter>PlayGround\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>PlayGround\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="invenUI.cpp">
+      <Filter>PlayGround\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="mainmenuUI.cpp">
+      <Filter>PlayGround\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

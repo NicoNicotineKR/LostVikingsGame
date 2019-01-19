@@ -17,6 +17,8 @@ HRESULT characterInfo::init()
 
 	_speed = 5.0f;
 
+	_motion_Count = 0;
+
 	return S_OK;
 }
 

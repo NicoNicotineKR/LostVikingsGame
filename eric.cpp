@@ -25,10 +25,13 @@ HRESULT eric::init()
 	_accel = ACCEL_VALUE;	//가속도
 
 	//현재 플레이중인지
-	_isPlaying = true;
+	_isPlaying = false;
 	// 숨쉬어야하는지
-	_isBreath == false;
-	
+	_isBreath = false;
+	_isRushing = false;
+	_isGround = false;
+	_isJumping = false;
+	_isMoving = false;
 	
 
 
@@ -40,79 +43,10 @@ HRESULT eric::init()
 void eric::release()
 {
 }
-
-void eric::update()
-{
-	characterInfo::update();
-
-	// 플레이중이 아니고 상태가 움직이는거였으면 idle로
-	if (!_isPlaying && _status == P_R_MOVE)
-	{
-		_motion_Count = 0;
-		_status = P_R_IDLE;
-	}
-	else if (!_isPlaying && _status == P_L_MOVE)
-	{
-		_motion_Count = 0;
-		_status = P_L_IDLE;
-	}
-
-	if (_isPlaying && !_isFlying)
-	{
-		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
-		{
-			_motion->stop();
-			_status = P_R_MOVE;
-			_motion = KEYANIMANAGER->findAnimation("ericRightMove");
-			_motion->start();
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
-		{
-			_motion->stop();
-			_status = P_L_MOVE;
-			_motion = KEYANIMANAGER->findAnimation("ericLeftMove");
-			_motion->start();
-		}
-		if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-		{
-			_motion->stop();
-			_motion_Count = 0;
-			_status = P_R_IDLE;
-			_motion = KEYANIMANAGER->findAnimation("ericRightStop");
-			_motion->start();
-			if (_isBreath)
-			{
-				_motion->stop();
-				_status = P_R_BREATH;
-				_motion = KEYANIMANAGER->findAnimation("ericRightBreath");
-				_isBreath = false;
-				_motion->start();
-			}
-			
-		}
-		if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
-		{
-			_motion->stop();
-			_motion_Count = 0;
-			_status = P_L_IDLE;	
-			_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
-			_motion->start();
-			if (_isBreath)
-			{
-				_motion->stop();
-				_status = P_L_BREATH;
-				_motion = KEYANIMANAGER->findAnimation("ericLeftBreath");
-				_isBreath = false;
-				_motion->start();
-			}
-	
-		}
-	}
-
-	
+	// 점차 추가해야할것
 
 	// ladder more think
-	//if(KEYMANAGER->isOnceKeyUP
+	// if(KEYMANAGER->isOnceKeyUP
 
 	// hit is later
 
@@ -122,49 +56,188 @@ void eric::update()
 
 	// all airflying is after the map is created
 
-	if (_status == P_R_IDLE)
+void eric::update()
+{
+	characterInfo::update();
+
+	_isJumping = false;
+
+	// 플레이중이 아니고 상태가 움직이는거였으면 idle로
+	_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
+		IMAGEMANAGER->findImage("씬2_1픽셀"),
+		IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
+		RGB(255, 0, 0),
+		&_isGround);
+
+	if (_isPlaying && !_isFlying)
 	{
-		_motion_Count += TIMEMANAGER->getElpasedTime();
-		if (_motion_Count >= 5)
+		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT) && _status != P_R_FLYING && _status != P_R_JUMP)
 		{
-			int rand = RND->getInt(2);
+			_motion->stop();
+			_status = P_R_MOVE;
+			_motion = KEYANIMANAGER->findAnimation("ericRightMove");
+			_motion->start();
+		}
+		if (KEYMANAGER->isOnceKeyDown(VK_LEFT) && _status != P_L_FLYING && _status != P_L_JUMP)
+		{
+			_motion->stop();
+			_status = P_L_MOVE;
+			_motion = KEYANIMANAGER->findAnimation("ericLeftMove");
+			_motion->start();
+		}
+
+
+
+		if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _status != P_R_FLYING && _status != P_R_JUMP)
+		{
+			_motion->stop();
 			_motion_Count = 0;
-			switch (rand)
+			_status = P_R_IDLE;
+			_motion = KEYANIMANAGER->findAnimation("ericRightStop");
+			_motion->start();
+			//최대속도에 도달해서 isBreath가 true가 되면
+			if (_isBreath)
 			{
-			case 0:
-				_status = P_R_MOTION_ONE;
-				_motion = KEYANIMANAGER->findAnimation("ericRightMotionOne");
-				break;
-			case 1:
-				_status = P_R_MOTION_TWO;
-				_motion = KEYANIMANAGER->findAnimation("ericRightMotionTwo");
-				break;
+				_motion->stop();
+				_status = P_R_BREATH;
+				_motion = KEYANIMANAGER->findAnimation("ericRightBreath");
+				_isBreath = false;
+				_motion->start();
+			}
+		}
+		else if (KEYMANAGER->isOnceKeyUp(VK_LEFT) && _status != P_L_FLYING && _status != P_L_JUMP)
+		{
+			_motion->stop();
+			_motion_Count = 0;
+			_status = P_L_IDLE;
+			_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
+			_motion->start();
+			//최대속도에 도달해서 isBreath가 true가 되면
+			if (_isBreath)
+			{
+				_motion->stop();
+				_status = P_L_BREATH;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftBreath");
+				_isBreath = false;
+				_motion->start();
+			}
+		}
+
+		if (KEYMANAGER->isOnceKeyDown('Z') && 
+			(_status != P_R_JUMP && _status != P_L_JUMP && _status != P_R_FLYING && _status != P_L_FLYING && _status != P_L_FALLING && _status != P_R_FALLING))
+		{
+			_vec.y = JUMP_POWER;
+			_isJumping = true;
+			_motion->stop();
+			if (_status == P_R_IDLE || _status == P_R_MOVE || _status == P_R_BREATH)
+			{
+				_status = P_R_JUMP;
+				_motion = KEYANIMANAGER->findAnimation("ericRightJump");
+			}
+			else if (_status == P_L_IDLE || _status == P_L_MOVE || _status == P_L_BREATH)
+			{
+				_status = P_L_JUMP;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftJump");
 			}
 			_motion->start();
 		}
 	}
-	else if (_status == P_L_IDLE)
+	if (_isJumping)
 	{
-		_motion_Count += TIMEMANAGER->getElpasedTime();
-		if (_motion_Count >= 5)
+		_vec.y += GRAVITY;
+		_pos.y += _vec.y;
+	}
+
+
+
+	if (_isGround)
+	{
+		_isFlying = false;
+		if (_status == P_R_FLYING)
 		{
-			int rand = RND->getInt(2);
-			_motion_Count = 0;
-			switch (rand)
+			if (_isMoving)
 			{
-			case 0:
-				_status = P_L_MOTION_ONE;
-				_motion = KEYANIMANAGER->findAnimation("ericLeftMotionOne");
-				break;
-			case 1:
-				_status = P_L_MOTION_TWO;
-				_motion = KEYANIMANAGER->findAnimation("ericLeftMotionTwo");
-				break;
+				_motion->stop();
+				_status = P_R_MOVE;
+				_motion = KEYANIMANAGER->findAnimation("ericRightMove");
+				_motion->start();
+			}
+			else
+			{
+				_motion->stop();
+				_status = P_R_IDLE;
+				_motion = KEYANIMANAGER->findAnimation("ericRightStop");
+				_motion->start();
+			}
+		}
+		if (_status == P_L_FLYING)
+		{
+			if (_isMoving)
+			{
+				_motion->stop();
+				_status = P_L_MOVE;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftMove");
+				_motion->start();
+			}
+			else
+			{
+				_motion->stop();
+				_status = P_L_IDLE;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
+				_motion->start();
 			}
 		}
 	}
+	else if (!_isGround && !_isJumping)
+	{
+		_vec.y += GRAVITY;
+		_pos.y += _vec.y;
+	}
 
+
+
+	if (!_isGround &&_vec.y >= 0)
+	{
+		if (_status == P_R_IDLE || _status == P_R_JUMP)
+		{
+			_status = P_R_FLYING;
+		}
+		else if (_status == P_L_IDLE || _status == P_L_JUMP)
+		{
+			_status = P_L_FLYING;
+		}
+	}
+	else if (_vec.y < 0)
+	{
+		if (_status == P_R_IDLE)
+		{
+			_status = P_R_JUMP;
+		}
+		else if (_status == P_L_IDLE)
+		{
+			_status = P_L_JUMP;
+		}
+	}
+
+	if (_status == P_R_FLYING)
+	{
+		_motion->stop();
+		_motion = KEYANIMANAGER->findAnimation("ericRightFly");
+		_motion->start();
+	}
+	else if (_status == P_L_FLYING)
+	{
+		_motion->stop();
+		_motion = KEYANIMANAGER->findAnimation("ericLeftFly");
+		_motion->start();
+	}
+
+	//가만히 있을때 모션 2개중에 랜덤으로 틀어주는거
+	IdleMotion();
 	move();
+	isNotPlaying();
+
+	
 
 	_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
 	//_rc = RectMake(_pos.x - _cameraX + WINSIZEX / 2, _pos.y - _cameraY + WINSIZEY / 2, _img->getFrameWidth(),_img->getFrameHeight());
@@ -181,6 +254,53 @@ void eric::render()
 	char str1[128];
 	sprintf_s(str1, "%d",_status);
 	TextOut(getMemDC(), 900, 700, str1, strlen(str1));
+}
+
+void eric::move()
+{
+	if (_status == P_R_IDLE || _status == P_R_BREATH || _status == P_R_FLYING)
+	{
+		_isMoving = false;
+		_vec.x -= _accel;
+		if (_vec.x < MIN_SPEED)
+		{
+			_vec.x = MIN_SPEED;
+		}
+	}
+	else if (_status == P_L_IDLE || _status == P_L_BREATH || _status == P_L_FLYING)
+	{
+		_isMoving = false;
+		_vec.x += _accel;
+		if (_vec.x > MIN_SPEED)
+		{
+			_vec.x = MIN_SPEED;
+		}
+	}
+	if (_isPlaying)
+	{
+		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
+		{
+			_isMoving = true;
+			_vec.x += _accel;
+			if (_vec.x > MAX_SPEED)
+			{
+				_vec.x = MAX_SPEED;
+				_isBreath = true;
+			}
+		}
+		else if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+		{
+			_isMoving = true;
+			_vec.x -= _accel;
+			if (_vec.x < -MAX_SPEED)
+			{
+				_vec.x = -MAX_SPEED;
+				_isBreath = true;
+			}
+		}
+	}
+	
+		_pos.x += _vec.x;
 }
 
 void eric::imageInit()
@@ -208,10 +328,10 @@ void eric::imageInit()
 	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMotionOne", "eric", leftMotionOne, 1, 3, false, leftStanding, this);
 
 	//신발끈묶기
-	int rightMotionTwo[] = { 5,6,7 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericRightMotionTwo", "eric", rightMotionTwo, 3, 6, false, rightStanding, this);
-	int leftMotionTwo[] = { 10,9,8 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMotionTwo", "eric", leftMotionTwo, 3, 6, false, leftStanding, this);
+	int rightMotionTwo[] = { 5,6,7,6,7,6,7 };
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightMotionTwo", "eric", rightMotionTwo, 7, 6, false, rightStanding, this);
+	int leftMotionTwo[] = { 10,9,8,9,8,9,8 };
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMotionTwo", "eric", leftMotionTwo, 7, 6, false, leftStanding, this);
 
 	//움직이는거
 	int rightMove[] = { 16,17,18,19,20,21,22,23 };
@@ -300,44 +420,88 @@ void eric::imageInit()
 	//앤이메숑임이쥐들=============================================================================================================================================
 }
 
-void eric::move()
+void eric::IdleMotion()
 {
-	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
+	if (_status == P_R_IDLE)
 	{
-		_vec.x += _accel;
-		if (_vec.x > MAX_SPEED)
+		_motion_Count += TIMEMANAGER->getElpasedTime();
+		if (_motion_Count >= 5)
 		{
-			_vec.x = MAX_SPEED;
-			_isBreath = true;
+			int rand = RND->getInt(2);
+			_motion_Count = 0;
+			switch (rand)
+			{
+			case 0:
+				_status = P_R_MOTION_ONE;
+				_motion = KEYANIMANAGER->findAnimation("ericRightMotionOne");
+				break;
+			case 1:
+				_status = P_R_MOTION_TWO;
+				_motion = KEYANIMANAGER->findAnimation("ericRightMotionTwo");
+				break;
+			}
+			_motion->start();
 		}
 	}
-	else if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+	else if (_status == P_L_IDLE)
 	{
-		_vec.x -= _accel;
-		if (_vec.x < -MAX_SPEED)
+		_motion_Count += TIMEMANAGER->getElpasedTime();
+		if (_motion_Count >= 5)
 		{
-			_vec.x = -MAX_SPEED;
-			_isBreath = true;
+			int rand = RND->getInt(2);
+			_motion_Count = 0;
+			switch (rand)
+			{
+			case 0:
+				_status = P_L_MOTION_ONE;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftMotionOne");
+				break;
+			case 1:
+				_status = P_L_MOTION_TWO;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftMotionTwo");
+				break;
+			}
+			_motion->start();
 		}
 	}
+}
 
-	if (_status == P_R_IDLE || _status == P_R_BREATH)
+void eric::isNotPlaying()
+{
+	if (!_isPlaying && _status == P_R_MOVE)
 	{
-		_vec.x -= _accel;
-		if (_vec.x < MIN_SPEED)
+		_motion->stop();
+		_motion_Count = 0;
+		_status = P_R_IDLE;
+		_motion = KEYANIMANAGER->findAnimation("ericRightStop");
+		_motion->start();
+		//최대속도에 도달해서 isBreath가 true가 되면
+		if (_isBreath)
 		{
-			_vec.x = MIN_SPEED;
+			_motion->stop();
+			_status = P_R_BREATH;
+			_motion = KEYANIMANAGER->findAnimation("ericRightBreath");
+			_isBreath = false;
+			_motion->start();
 		}
 	}
-	else if (_status == P_L_IDLE || _status == P_L_BREATH)
+	else if (!_isPlaying && _status == P_L_MOVE)
 	{
-		_vec.x += _accel;
-		if (_vec.x > MIN_SPEED)
+		_motion->stop();
+		_motion_Count = 0;
+		_status = P_L_IDLE;
+		_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
+		_motion->start();
+		//최대속도에 도달해서 isBreath가 true가 되면
+		if (_isBreath)
 		{
-			_vec.x = MIN_SPEED;
+			_motion->stop();
+			_status = P_L_BREATH;
+			_motion = KEYANIMANAGER->findAnimation("ericLeftBreath");
+			_isBreath = false;
+			_motion->start();
 		}
 	}
-		_pos.x += _vec.x;
 }
 
 void eric::rightMoving(void * obj)
@@ -371,10 +535,9 @@ void eric::leftStanding(void * obj)
 {
 	eric* Eric = (eric*)obj;
 
-	Eric->_status = P_L_IDLE;
-	Eric->_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
-	Eric->_motion->start();
-	
+	Eric->setCharacterStatus(P_L_IDLE);
+	Eric->setCharacterMotion(KEYANIMANAGER->findAnimation("ericLeftStop"));
+	Eric->getCharacterMotion()->start();
 }
 
 void eric::rightStuning(void * obj)

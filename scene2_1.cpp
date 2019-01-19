@@ -37,9 +37,13 @@ void scene2_1::update()
 {
 	if (KEYMANAGER->isOnceKeyDown(VK_TAB))
 	{
+		_pm->getVCharInfo()[playerSelect]->setIsPlaying(false);
 		//와일문 지움
 		playerSelect++;
-		if (playerSelect == OUT_OF_LANGE)
+
+		if(playerSelect == P_BALEOG)
+		//발록 나오고 아래 이프문으로 사용할것
+		//if (playerSelect == OUT_OF_RANGE)
 		{
 			playerSelect = P_ERIC;
 		}
@@ -53,6 +57,8 @@ void scene2_1::update()
 		{
 			_camera->ChangeCharFunc(true, true, _pm->getVCharInfo()[P_OLAF]->getPos().x, _pm->getVCharInfo()[P_OLAF]->getPos().y, 0);
 		}
+		_pm->getVCharInfo()[playerSelect]->setIsPlaying(true);
+
 		//엘스이프 수정 + 내용추가 181533 김도형
 ////////////////////////////////////////////////////////////////////////////////////		else if (playerSelect == P_BALEOG)
 ////////////////////////////////////////////////////////////////////////////////////		{

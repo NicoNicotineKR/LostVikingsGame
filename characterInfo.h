@@ -15,7 +15,7 @@ protected:
 	bool _isPlaying;			// 캐릭터 플레이중인지 여부
 	bool _isAlive;				// 캐릭터 살아있는지 여부
 	E_PLAYER_STATUS _status;	// 캐릭터 상태
-	int _motion_Count;			// 캐릭터 가만있으면 모션띄우는거
+	float _motion_Count;			// 캐릭터 가만있으면 모션띄우는거
 	bool _isFlying;				// 캐릭터 공중에 떠있는지
 	animation* _motion;			// 캐릭터 모션
 
@@ -45,6 +45,14 @@ public:
 	virtual void PixelCrash();
 	//===========유형우추가============
 
+	//2019.01.17 유형우 오후11시추가 ===================
+	//카메라 정보가져옴
+	void setCameraX(float v) { _cameraX = v; }
+	void setCameraY(float v) { _cameraY = v; }
+
+	//카메라 정보가져오는거 묶음
+	void UpdateCameraPos(float _cameraX, float _cameraY);
+	//2019.01.17 유형우 오후11시추가 ===================
 
 
 	//접근자들(get,set)
@@ -59,14 +67,9 @@ public:
 	animation* getCharacterMotion() { return _motion; }
 	void setCharacterMotion(animation* motion) { _motion = motion; }
 
-
-	//2019.01.17 유형우 오후11시추가 ===================
-	//카메라 정보가져옴
-	void setCameraX(float v) { _cameraX = v; }
-	void setCameraY(float v) { _cameraY = v; }
-
-	//카메라 정보가져오는거 묶음
-	void UpdateCameraPos(float _cameraX, float _cameraY);
-	//2019.01.17 유형우 오후11시추가 ===================
+	//현재 누구를 선택해서 플레이 하고 있는지 설정해주는 변수(_isPlaying)접근,설정자
+	bool getIsPlaying() { return _isPlaying; }
+	void setIsPlaying(bool isPlaying) { _isPlaying = isPlaying; }
+	
 };
 

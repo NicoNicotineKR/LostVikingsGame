@@ -25,6 +25,8 @@ HRESULT playerMgr::init()
 		_vChar[i]->init();
 	}
 
+	//첫번째놈인 에릭한만 isPlaying 트루로만듬
+	_vChar[P_ERIC]->setIsPlaying(true);
 	return S_OK;
 }
 

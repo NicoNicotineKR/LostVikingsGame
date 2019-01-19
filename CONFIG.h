@@ -18,7 +18,18 @@ enum E_PLAYER_INDEX{
 	P_ERIC = 0,
 	P_OLAF,
 	P_BALEOG,
-	OUT_OF_LANGE
+	OUT_OF_RANGE
+};
+
+enum E_SCENE_INDEX {
+	E_TITLE = 0,
+	E_MAINMENU,
+	E_SCENE2_1,
+
+
+
+	E_SCENE_IDX_END,
+
 };
 
 enum E_PLAYER_STATUS {
@@ -68,7 +79,10 @@ enum E_PLAYER_STATUS {
 	P_L_SKILL_TWO,		//	left eric(rush), olaf(shiled switch), baleog(Arrow)
 
 	P_R_BREATH = 30,	//	에릭 전용 숨쉬는 모션 이넘값
-	P_L_BREATH
+	P_L_BREATH,
+
+	P_R_JUMP = 32,		// 에릭 점프하는거
+	P_L_JUMP
 };
 
 //	============	알아서 추가하시오		============

@@ -160,8 +160,11 @@
     <ClInclude Include="image.h" />
     <ClInclude Include="imageManager.h" />
     <ClInclude Include="iniDataManager.h" />
+    <ClInclude Include="invenUI.h" />
     <ClInclude Include="keyAniManager.h" />
     <ClInclude Include="keyManager.h" />
+    <ClInclude Include="mainmenu.h" />
+    <ClInclude Include="mainmenuUI.h" />
     <ClInclude Include="olaf.h" />
     <ClInclude Include="playerMgr.h" />
     <ClInclude Include="playGround.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
+    <ClInclude Include="title.h" />
     <ClInclude Include="txtData.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
@@ -193,8 +197,11 @@
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageManager.cpp" />
     <ClCompile Include="iniDataManager.cpp" />
+    <ClCompile Include="invenUI.cpp" />
     <ClCompile Include="keyAniManager.cpp" />
     <ClCompile Include="keyManager.cpp" />
+    <ClCompile Include="mainmenu.cpp" />
+    <ClCompile Include="mainmenuUI.cpp" />
     <ClCompile Include="olaf.cpp" />
     <ClCompile Include="playerMgr.cpp" />
     <ClCompile Include="playGround.cpp" />
@@ -210,6 +217,7 @@
     </ClCompile>
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
+    <ClCompile Include="title.cpp" />
     <ClCompile Include="txtData.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="windowsAPI.cpp" />
