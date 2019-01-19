@@ -37,7 +37,7 @@ HRESULT playGround::init()
 
 
 	//========== 플그 고유 변수들 설정 시작 ===============
-	_curSceneIdx = E_TITLE;	
+	_curSceneIdx = E_TITLE;							
 	
 	
 
