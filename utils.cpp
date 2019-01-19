@@ -66,8 +66,10 @@ namespace BRAVO_UTIL
 		}
 		return 0;
 	}
-	float PixelColFunction(int dir, float x, float y, int searchRange, image* img, HDC dc, COLORREF rgb,bool* isCol) {
+	//픽셀충돌 찬희 펑션 (검색할 방향, 플레이어 x, 플레이어 y, 플레이어 좌표에서 어디서 부터 찾을것인지, 찾을 범위, 픽셀맵 img, 픽셀맵 img->dc, 찾을 rgb, 충돌확인용 bool) 
+	float PixelColFunction(int dir, float x, float y, float probe, int searchRange, image* img, HDC dc, COLORREF rgb, bool* isCol) {
 
+		float pixelProbe;
 		float defaultY = y;
 		float defaultX = x;
 		int maxPos;
@@ -76,12 +78,13 @@ namespace BRAVO_UTIL
 		{
 			//아래검색
 		case 0:
-			maxPos = y + searchRange;
-			for (; y < maxPos; y++) {
-				COLORREF color = GetPixel(dc, x, y);
+			pixelProbe = y + probe;
+			maxPos = pixelProbe + searchRange;
+			for (pixelProbe -= searchRange; pixelProbe < maxPos; pixelProbe++) {
+				COLORREF color = GetPixel(dc, x, pixelProbe);
 				if ((color == rgb)) {
 					*isCol = true;
-					return y;
+					return pixelProbe - probe;
 				}
 			}
 			*isCol = false;
@@ -89,23 +92,27 @@ namespace BRAVO_UTIL
 			break;
 			//위검색
 		case 1:
+			pixelProbe = y - probe;
 			maxPos = y - searchRange;
-			for (; y > maxPos; y--) {
-				COLORREF color = GetPixel(dc, x, y);
-				if (!(color == rgb)) {
-					return y;
+			for (pixelProbe -= searchRange; y > maxPos; y--) {
+				COLORREF color = GetPixel(dc, x, pixelProbe);
+				if ((color == rgb)) {
+					*isCol = true;
+					return pixelProbe + probe;
 				}
 			}
+			*isCol = false;
 			return defaultY;
 			break;
 			//오른쪽검색
 		case 2:
-			maxPos = x + searchRange;
-			for (; x < maxPos; x++) {
-				COLORREF color = GetPixel(dc, x, y);
-				if (!(color == rgb)) {
+			pixelProbe = x + probe;
+			maxPos = pixelProbe + searchRange;
+			for (pixelProbe -= searchRange; x < maxPos; x++) {
+				COLORREF color = GetPixel(dc, pixelProbe, y);
+				if ((color == rgb)) {
 					*isCol = true;
-					return x;
+					return pixelProbe - probe;
 				}
 			}
 			*isCol = false;
@@ -113,13 +120,16 @@ namespace BRAVO_UTIL
 			break;
 			//왼쪽검색
 		case 3:
-			maxPos = x - searchRange;
-			for (; x > maxPos; x--) {
-				COLORREF color = GetPixel(dc, x, y);
-				if (!(color == rgb)) {
-					return x;
+			pixelProbe = x - probe;
+			maxPos = pixelProbe - searchRange;
+			for (pixelProbe -= searchRange; x > maxPos; x--) {
+				COLORREF color = GetPixel(dc, pixelProbe, y);
+				if ((color == rgb)) {
+					*isCol = true;
+					return  pixelProbe + probe;
 				}
 			}
+			*isCol = false;
 			return defaultX;
 			break;
 
@@ -154,7 +164,7 @@ namespace BRAVO_UTIL
 	}
 
 	//거리의 제곱이 튀어나옴(float)
-	float getDistanceSqr(float x1, float y1, float x2, float y2) 
+	float getDistanceSqr(float x1, float y1, float x2, float y2)
 	{
 		float wid = x2 - x1;
 		float hei = y2 - y1;
