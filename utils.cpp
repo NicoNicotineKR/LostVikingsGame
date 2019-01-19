@@ -67,7 +67,7 @@ namespace BRAVO_UTIL
 		return 0;
 	}
 	//픽셀충돌 찬희 펑션 (검색할 방향, 플레이어 x, 플레이어 y, 플레이어 좌표에서 어디서 부터 찾을것인지, 찾을 범위, 픽셀맵 img, 픽셀맵 img->dc, 찾을 rgb, 충돌확인용 bool) 
-	float PixelColFunction(int dir, float x, float y, float probe, int searchRange, image* img, HDC dc, COLORREF rgb, bool* isCol) {
+	float PixelColFunction(int dir, float x, float y,float probe, int searchRange, image* img, HDC dc, COLORREF rgb,bool* isCol) {
 
 		float pixelProbe;
 		float defaultY = y;
@@ -84,7 +84,7 @@ namespace BRAVO_UTIL
 				COLORREF color = GetPixel(dc, x, pixelProbe);
 				if ((color == rgb)) {
 					*isCol = true;
-					return pixelProbe - probe;
+					return pixelProbe -probe;
 				}
 			}
 			*isCol = false;
@@ -109,7 +109,7 @@ namespace BRAVO_UTIL
 			pixelProbe = x + probe;
 			maxPos = pixelProbe + searchRange;
 			for (pixelProbe -= searchRange; x < maxPos; x++) {
-				COLORREF color = GetPixel(dc, pixelProbe, y);
+				COLORREF color = GetPixel(dc, pixelProbe,y );
 				if ((color == rgb)) {
 					*isCol = true;
 					return pixelProbe - probe;
@@ -164,7 +164,7 @@ namespace BRAVO_UTIL
 	}
 
 	//거리의 제곱이 튀어나옴(float)
-	float getDistanceSqr(float x1, float y1, float x2, float y2)
+	float getDistanceSqr(float x1, float y1, float x2, float y2) 
 	{
 		float wid = x2 - x1;
 		float hei = y2 - y1;
