@@ -27,7 +27,7 @@ HRESULT playGround::init()
 	_scene2_1->init();
 
 	SCENEMANAGER->addScene("scene2_1", _scene2_1);
-	SCENEMANAGER->changeScene("scene2_1");
+	SCENEMANAGER->firstScene("scene2_1");
 
 
 	return S_OK;

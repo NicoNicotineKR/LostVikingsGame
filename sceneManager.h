@@ -29,6 +29,7 @@ public:
 
 	//¾À º¯°æ ÇÔ¾¥
 	HRESULT changeScene(string sceneName);
+	HRESULT firstScene(string sceneName);
 
 
 };

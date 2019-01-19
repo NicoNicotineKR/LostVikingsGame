@@ -14,6 +14,177 @@ HRESULT eric::init()
 {
 	characterInfo::init();
 
+	//키애니메이션 이미지 만들고
+	imageInit();
+	//기본모션은 오른쪽서있는거
+	_motion = KEYANIMANAGER->findAnimation("ericRightStop");
+	
+
+	_pos = BEGIN_POS;
+	_vec.x = MIN_SPEED;
+	_accel = ACCEL_VALUE;	//가속도
+
+	//현재 플레이중인지
+	_isPlaying = true;
+	// 숨쉬어야하는지
+	_isBreath == false;
+	
+	
+
+
+	_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
+
+	return S_OK;
+}
+
+void eric::release()
+{
+}
+
+void eric::update()
+{
+	characterInfo::update();
+
+	// 플레이중이 아니고 상태가 움직이는거였으면 idle로
+	if (!_isPlaying && _status == P_R_MOVE)
+	{
+		_motion_Count = 0;
+		_status = P_R_IDLE;
+	}
+	else if (!_isPlaying && _status == P_L_MOVE)
+	{
+		_motion_Count = 0;
+		_status = P_L_IDLE;
+	}
+
+	if (_isPlaying && !_isFlying)
+	{
+		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
+		{
+			_motion->stop();
+			_status = P_R_MOVE;
+			_motion = KEYANIMANAGER->findAnimation("ericRightMove");
+			_motion->start();
+		}
+		if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
+		{
+			_motion->stop();
+			_status = P_L_MOVE;
+			_motion = KEYANIMANAGER->findAnimation("ericLeftMove");
+			_motion->start();
+		}
+		if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+		{
+			_motion->stop();
+			_motion_Count = 0;
+			_status = P_R_IDLE;
+			_motion = KEYANIMANAGER->findAnimation("ericRightStop");
+			_motion->start();
+			if (_isBreath)
+			{
+				_motion->stop();
+				_status = P_R_BREATH;
+				_motion = KEYANIMANAGER->findAnimation("ericRightBreath");
+				_isBreath = false;
+				_motion->start();
+			}
+			
+		}
+		if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
+		{
+			_motion->stop();
+			_motion_Count = 0;
+			_status = P_L_IDLE;	
+			_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
+			_motion->start();
+			if (_isBreath)
+			{
+				_motion->stop();
+				_status = P_L_BREATH;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftBreath");
+				_isBreath = false;
+				_motion->start();
+			}
+	
+		}
+	}
+
+	
+
+	// ladder more think
+	//if(KEYMANAGER->isOnceKeyUP
+
+	// hit is later
+
+	// wall push after the map is created
+
+	// all death after the map is created
+
+	// all airflying is after the map is created
+
+	if (_status == P_R_IDLE)
+	{
+		_motion_Count += TIMEMANAGER->getElpasedTime();
+		if (_motion_Count >= 5)
+		{
+			int rand = RND->getInt(2);
+			_motion_Count = 0;
+			switch (rand)
+			{
+			case 0:
+				_status = P_R_MOTION_ONE;
+				_motion = KEYANIMANAGER->findAnimation("ericRightMotionOne");
+				break;
+			case 1:
+				_status = P_R_MOTION_TWO;
+				_motion = KEYANIMANAGER->findAnimation("ericRightMotionTwo");
+				break;
+			}
+			_motion->start();
+		}
+	}
+	else if (_status == P_L_IDLE)
+	{
+		_motion_Count += TIMEMANAGER->getElpasedTime();
+		if (_motion_Count >= 5)
+		{
+			int rand = RND->getInt(2);
+			_motion_Count = 0;
+			switch (rand)
+			{
+			case 0:
+				_status = P_L_MOTION_ONE;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftMotionOne");
+				break;
+			case 1:
+				_status = P_L_MOTION_TWO;
+				_motion = KEYANIMANAGER->findAnimation("ericLeftMotionTwo");
+				break;
+			}
+		}
+	}
+
+	move();
+
+	_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
+	//_rc = RectMake(_pos.x - _cameraX + WINSIZEX / 2, _pos.y - _cameraY + WINSIZEY / 2, _img->getFrameWidth(),_img->getFrameHeight());
+}
+
+void eric::render()
+{
+	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
+	_img->aniRender(getMemDC(), _rc.left- _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _motion);
+
+//	Rectangle(getMemDC(), _rc);
+//	_img->aniRender(getMemDC(), _rc.left, _rc.top,_motion);
+	
+	char str1[128];
+	sprintf_s(str1, "%d",_status);
+	TextOut(getMemDC(), 900, 700, str1, strlen(str1));
+}
+
+void eric::imageInit()
+{
 	//앤이메숑임이쥐들=============================================================================================================================================
 	_img = IMAGEMANAGER->addFrameImage("eric", "images/character/eric.bmp", 1024, 2688, 8, 21, true, RGB(255, 0, 255));
 
@@ -23,17 +194,24 @@ HRESULT eric::init()
 	int leftStop[] = { 15 };
 	KEYANIMANAGER->addArrayFrameAnimation("ericLeftStop", "eric", leftStop, 1, 1, true);
 
+	//숨벅차하는거
+	int rightBreath[] = { 2,3,4,2,3,4,2,3,4 };
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightBreath", "eric", rightBreath, 9, 10, false, rightStanding, this);
+	int leftBreath[] = { 13,12,11,13,12,11,13,12,11 };
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftBreath", "eric", leftBreath, 9, 10, false, leftStanding, this);
+
+
 	//눈깜빡이기
 	int rightMotionOne[] = { 1 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericRightMotionOne", "eric", rightMotionOne, 1, 3, false, rightStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightMotionOne", "eric", rightMotionOne, 1, 3, false, rightStanding, this);
 	int leftMotionOne[] = { 14 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMotionOne", "eric", leftMotionOne, 1, 3, false, leftStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMotionOne", "eric", leftMotionOne, 1, 3, false, leftStanding, this);
 
 	//신발끈묶기
 	int rightMotionTwo[] = { 5,6,7 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericRightMotionTwo", "eric", rightMotionTwo, 3, 6, false, rightStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightMotionTwo", "eric", rightMotionTwo, 3, 6, false, rightStanding, this);
 	int leftMotionTwo[] = { 10,9,8 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMotionTwo", "eric", leftMotionTwo, 3, 6, false, leftStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMotionTwo", "eric", leftMotionTwo, 3, 6, false, leftStanding, this);
 
 	//움직이는거
 	int rightMove[] = { 16,17,18,19,20,21,22,23 };
@@ -49,9 +227,9 @@ HRESULT eric::init()
 
 	//스턴먹은거 (벽박기, 몹박기, 낙뎀입기)
 	int rightStun[] = { 48,49,50,51,52,50,51,52,50,51,52,53,54,55 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericRightStun", "eric", rightStun, 14, 3, false, rightStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightStun", "eric", rightStun, 14, 3, false, rightStanding, this);
 	int leftStun[] = { 63,62,61,60,59,61,60,59,61,60,59,58,57,56 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericLeftStun", "eric", leftStun, 14, 3, false, leftStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftStun", "eric", leftStun, 14, 3, false, leftStanding, this);
 
 	//사다리 타고있는중(on)
 	int rightOnLadder[] = { 64,65,66,67 };
@@ -61,9 +239,9 @@ HRESULT eric::init()
 
 	//사다리위에 걸친거(off)
 	int rightOffLadder[] = { 68,69 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericRightOffLadder", "eric", rightOffLadder, 2, 2, false, rightStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightOffLadder", "eric", rightOffLadder, 2, 2, false, rightStanding, this);
 	int leftOffLadder[] = { 73,72 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericLeftOffLadder", "eric", leftOffLadder, 2, 2, false, leftStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftOffLadder", "eric", leftOffLadder, 2, 2, false, leftStanding, this);
 
 	//플레이어 벽박기
 	int rightCrashWall[] = { 80,81,82 };
@@ -73,9 +251,9 @@ HRESULT eric::init()
 
 	//몹한테 맞기
 	int rightHit[] = { 83 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericRightHit", "eric", rightHit, 1, 5, false, rightStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightHit", "eric", rightHit, 1, 5, false, rightStanding, this);
 	int leftHit[] = { 89 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericLeftHit", "eric", leftHit, 1, 5, false, leftStand, this);
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftHit", "eric", leftHit, 1, 5, false, leftStanding, this);
 
 	//추락데미지 나오기전 공중 모션 -> 땅에 닿으면 피1까고 스턴됨
 	int rightFalling[] = { 84 };
@@ -120,113 +298,46 @@ HRESULT eric::init()
 	KEYANIMANAGER->addArrayFrameAnimation("ericLeftFly", "eric", leftFly, 2, 3, true);
 
 	//앤이메숑임이쥐들=============================================================================================================================================
-
-	_pos = _beginPos;
-	_isPlaying = true;
-
-
-	_motion = KEYANIMANAGER->findAnimation("ericRightStop");
-
-	_rc = RectMake(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
-
-	return S_OK;
-}
-
-void eric::release()
-{
-}
-
-void eric::update()
-{
-	characterInfo::update();
-
-	//가만쓰
-	if (_status == P_R_IDLE && _isMotionPlay)
-	{
-		_motion = KEYANIMANAGER->findAnimation("ericRightStop");
-		_motion->start();
-		_isMotionPlay = false;
-	}
-	else if (_status == P_L_IDLE && _isMotionPlay)
-	{
-		_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
-		_motion->start();
-		_isMotionPlay = false;
-	}
-
-	//모션1 (눈깜빡)
-	if (_status == P_R_MOTION_ONE && _isMotionPlay)
-	{
-		_motion = KEYANIMANAGER->findAnimation("ericRightMotionOne");
-		_motion->start();
-		_isMotionPlay = false;
-	}
-	else if (_status == P_L_MOTION_ONE && _isMotionPlay)
-	{
-		_motion = KEYANIMANAGER->findAnimation("ericLeftMotionOne");
-		_motion->start();
-		_isMotionPlay = false;
-	}
-
-	//모션2 (신발끈)
-	if (_status == P_R_MOTION_TWO && _isMotionPlay)
-	{
-		_motion = KEYANIMANAGER->findAnimation("ericRightMotionTwo");
-		_motion->start();
-		_isMotionPlay = false;
-	}
-	else if (_status == P_L_MOTION_TWO && _isMotionPlay)
-	{
-		_motion = KEYANIMANAGER->findAnimation("ericLeftMotionTwo");
-		_motion->start();
-		_isMotionPlay = false;
-	}
-
-	//움직이기
-	if (_status == P_R_MOVE && _isMotionPlay)
-	{
-		_motion = KEYANIMANAGER->findAnimation("ericRightMove");
-		_motion->start();
-		_isMotionPlay = false;
-	}
-	else if (_status == P_L_MOVE && _isMotionPlay)
-	{
-		_motion = KEYANIMANAGER->findAnimation("ericLeftMove");
-		_motion->start();
-		_isMotionPlay = false;
-	}
-
-	move();
-
-
-
-	_rc = RectMake(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
-	//_rc = RectMake(_pos.x - _cameraX + WINSIZEX / 2, _pos.y - _cameraY + WINSIZEY / 2, _img->getFrameWidth(),_img->getFrameHeight());
-}
-
-void eric::render()
-{
-	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
-	_img->aniRender(getMemDC(), _rc.left- _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _motion);
-
-//	Rectangle(getMemDC(), _rc);
-//	_img->aniRender(getMemDC(), _rc.left, _rc.top,_motion);
-	
-	char str1[128];
-	sprintf_s(str1, "%d");
-	TextOut(getMemDC(), 900, 700, str1, strlen(str1));
 }
 
 void eric::move()
 {
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 	{
-		_pos.x += _speed;
+		_vec.x += _accel;
+		if (_vec.x > MAX_SPEED)
+		{
+			_vec.x = MAX_SPEED;
+			_isBreath = true;
+		}
 	}
-	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+	else if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 	{
-		_pos.x -= _speed;
+		_vec.x -= _accel;
+		if (_vec.x < -MAX_SPEED)
+		{
+			_vec.x = -MAX_SPEED;
+			_isBreath = true;
+		}
 	}
+
+	if (_status == P_R_IDLE || _status == P_R_BREATH)
+	{
+		_vec.x -= _accel;
+		if (_vec.x < MIN_SPEED)
+		{
+			_vec.x = MIN_SPEED;
+		}
+	}
+	else if (_status == P_L_IDLE || _status == P_L_BREATH)
+	{
+		_vec.x += _accel;
+		if (_vec.x > MIN_SPEED)
+		{
+			_vec.x = MIN_SPEED;
+		}
+	}
+		_pos.x += _vec.x;
 }
 
 void eric::rightMoving(void * obj)
@@ -247,7 +358,7 @@ void eric::leftMoving(void * obj)
 	Eric->getCharacterMotion()->start();
 }
 
-void eric::rightStand(void * obj)
+void eric::rightStanding(void * obj)
 {
 	eric* Eric = (eric*)obj;
 
@@ -256,13 +367,14 @@ void eric::rightStand(void * obj)
 	Eric->getCharacterMotion()->start();
 }
 
-void eric::leftStand(void * obj)
+void eric::leftStanding(void * obj)
 {
 	eric* Eric = (eric*)obj;
 
-	Eric->setCharacterStatus(P_L_IDLE);
-	Eric->setCharacterMotion(KEYANIMANAGER->findAnimation("ericLeftStop"));
-	Eric->getCharacterMotion()->start();
+	Eric->_status = P_L_IDLE;
+	Eric->_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
+	Eric->_motion->start();
+	
 }
 
 void eric::rightStuning(void * obj)

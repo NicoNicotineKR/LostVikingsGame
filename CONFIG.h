@@ -65,7 +65,10 @@ enum E_PLAYER_STATUS {
 	P_L_SKILL_ONE,		//	left  eric(jump), olaf(shiled switch), baleog(sword)
 
 	P_R_SKILL_TWO,		//	right eric(rush), olaf(shiled switch), baleog(Arrow)
-	P_L_SKILL_TWO		//	left eric(rush), olaf(shiled switch), baleog(Arrow)
+	P_L_SKILL_TWO,		//	left eric(rush), olaf(shiled switch), baleog(Arrow)
+
+	P_R_BREATH = 30,	//	에릭 전용 숨쉬는 모션 이넘값
+	P_L_BREATH
 };
 
 //	============	알아서 추가하시오		============
