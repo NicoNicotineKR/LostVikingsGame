@@ -14,8 +14,7 @@ olaf::~olaf()
 HRESULT olaf::init()
 {
 	characterInfo::init();
-	IMAGEMANAGER->addFrameImage("pixxelMap", "images/maps/stage1pixel.bmp", 0, 0, 3904, 1456, true, RGB(255, 0, 255));
-	map = IMAGEMANAGER->findImage("pixxelMap");
+
 	_img = IMAGEMANAGER->addFrameImage("olaf_Sprite", "images/character/olaf_Sprite.bmp", 0, 0, 1024, 1920, 8, 15, true, RGB(255, 0, 255));			//플레이어 이미지 초기화
 
 	int rightShiledDownIdle[] = { 0 };
@@ -54,10 +53,10 @@ HRESULT olaf::init()
 	int leftShiledUpMove[] = { 39,38,37,36,35,34,33,32 };																						 
 	KEYANIMANAGER->addArrayFrameAnimation("olafLeftShiledUpMove", "olaf_Sprite", leftShiledUpMove, 8, 10, true);									 //왼쪽   방패올린 move
 																																				 
-	int rightPushWall[] = { 64,65,66,67 };																										 
+	int rightPushWall[] = { 56,57,58,59 };																										 
 	KEYANIMANAGER->addArrayFrameAnimation("olafRightPushWall", "olaf_Sprite", rightPushWall, 4, 10, true);											 //오른쪽 벽밀기
 																																				 
-	int leftPushWall[] = { 71,70,69,68 };																										 
+	int leftPushWall[] = { 63,62,61,60 };																										 
 	KEYANIMANAGER->addArrayFrameAnimation("olafLeftPushWall", "olaf_Sprite", leftPushWall, 4, 10, true);					   						 //왼쪽  벽밀기
 																																				 
 	int rightShiledUpFall[] = { 56,57 };																										 
@@ -131,21 +130,26 @@ void olaf::release()
 
 void olaf::update()
 {
+	olafKeyInput();
 	characterInfo::update();
 	_vec.y = 0;
 	_vec.x = 0;
+	if (!_isWall)
+	{
+		move();
+		_pos.x += _vec.x;
+		_vec.x = 0;
+	}
+
 	//울라프 오른쪽 idle
 	if (KEYMANAGER->isOnceKeyDown('D') || KEYMANAGER->isOnceKeyDown('F'))
 	{
 		if (_isShiledUp) _isShiledUp = false;
 		else _isShiledUp = true;
-		_isMotionPlay = true;
 	}
 
 	if (_isShiledUp)
 	{
-		if (_isMotionPlay)
-		{
 			if (_status == P_R_IDLE)
 			{
 				_motion = KEYANIMANAGER->findAnimation("olafRightShiledUpIdle");
@@ -173,13 +177,9 @@ void olaf::update()
 				_motion = KEYANIMANAGER->findAnimation("olafLeftShiledUpMove");
 				_motion->start();
 			}
-			_isMotionPlay = false;
-		}
 	}
 	else if (!_isShiledUp)
 	{
-		if (_isMotionPlay)
-		{
 			if (_status == P_R_IDLE)
 			{
 				_motion = KEYANIMANAGER->findAnimation("olafRightShiledDownIdle");
@@ -201,39 +201,68 @@ void olaf::update()
 				_motion = KEYANIMANAGER->findAnimation("olafLeftShiledDownMove");
 				_motion->start();
 			}
-			_isMotionPlay = false;
-		}
 	}
+	//벽밀때
 	if (_status == P_L_MOVE)
 	{
-		 _vec.x = PixelColFunction(2, _pos.x, _rc.bottom - ((_rc.bottom - _rc.top) / 2), 20, map, map->getMemDC(), RGB(255, 255, 0), &_isWall);
+		_pos.x = PixelColFunction(3, _pos.x, _pos.y,64, 5, IMAGEMANAGER->findImage("씬2_1픽셀"), IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(), RGB(255, 255, 0), &_isWall);
 		if (_isWall)
 		{
-			_status == P_L_WALL_PUSH;
-			_pos.x = _vec.x + _img->getFrameHeight() / 2;
-		}
-		if (!_isWall)
-		{
-			_pos.x += _vec.x;
+			_status = P_L_WALL_PUSH;
 		}
 	}
-	//if (_status == P_L_WALL_PUSH && _isWall)
-	//{
-	//	_motion = KEYANIMANAGER->findAnimation("olafLeftPushWall");
-	//	_motion->start();
-	//}
-	move();
+	if (_status == P_R_MOVE)
+	{
+		_pos.x = PixelColFunction(2, _pos.x, _pos.y,64, 5, IMAGEMANAGER->findImage("씬2_1픽셀"), IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(), RGB(0, 255, 0), &_isWall);
+		if (_isWall)
+		{
+			_status = P_R_WALL_PUSH;
+		}
+	}
+	// 벽밀기 애니매이션
+	if (_status == P_L_WALL_PUSH && _isWall)
+	{
+		_motion = KEYANIMANAGER->findAnimation("olafLeftPushWall");
+		_motion->start();
+		_isWall = false;
+	}
+	if (_status == P_R_WALL_PUSH && _isWall)
+	{
+		_motion = KEYANIMANAGER->findAnimation("olafRightPushWall");
+		_motion->start();
+		_isWall = false;
+	}
 
-	_vec.y = PixelColFunction(0, _rc.left + ((_rc.right - _rc.left)/2), _rc.bottom-10,20, map, map->getMemDC(), RGB(255, 0, 0),&_isGround);
-	
+	//땅 충돌
+	_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 10,
+		IMAGEMANAGER->findImage("씬2_1픽셀"),
+		IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
+		RGB(255, 0, 0),
+		&_isGround);
+
+	if (_isGround)
+	{
+		_isFlying = false;
+		if (_status == P_L_FLYING)
+		{
+			_status = P_L_IDLE;
+		}
+		if (_status == P_R_FLYING)
+		{
+			_status = P_R_IDLE;
+		}
+	}
+
 	if (!_isGround)
 	{
-		_vec.y = 3.0f;
+		_vec.y = 6.0f;
 		_pos.y += _vec.y;
+		_status = P_R_FLYING;
 	}
-	else
+	if (_status == P_R_FLYING )
 	{
-		_pos.y = _vec.y - _img->getFrameHeight()/2;
+		//_motion = KEYANIMANAGER->findAnimation("olafRightFallDown");
+		//_motion->start();
 	}
 
 
@@ -242,12 +271,14 @@ void olaf::update()
 
 void olaf::render()
 {
-	Rectangle(getMemDC(), _rc);
-	_img->aniRender(getMemDC(), _pos.x-_img->getFrameWidth()/2, _pos.y-_img->getFrameHeight()/2, _motion);
+	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
+	_img->aniRender(getMemDC(), (_pos.x -_img->getFrameWidth() / 2) - _cameraX + WINSIZEX / 2, 
+		(_pos.y - _img->getFrameHeight() / 2) - _cameraY + WINSIZEY / 2, 
+		_motion);
 
 	//olaf _status 확인용
 	char str[128];
-	sprintf_s(str, "%d", _status, strlen(str));
+	sprintf_s(str, "%d", _isWall, strlen(str));
 	TextOut(getMemDC(), 100, 100, str, strlen(str));	
 
 }
@@ -256,10 +287,98 @@ void olaf::move()
 {
 	if (_status == P_R_MOVE)
 	{
-		_vec.x += 5 ;
+		_vec.x += 3;
 	}
 	if (_status == P_L_MOVE)
 	{
-		_vec.x -= 5;
+		_vec.x -= 3;
+	}
+}
+
+void olaf::olafKeyInput()
+{
+
+	if (_isPlaying && !_isFlying)
+	{
+		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
+		{
+			_status = P_R_MOVE;
+		}
+		if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
+		{
+			_status = P_L_MOVE;
+		}
+		if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+		{
+			_motion_Count = 0;
+			_status = P_R_IDLE;
+		}
+		if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
+		{
+			_motion_Count = 0;
+			_status = P_L_IDLE;
+		}
+	}
+
+	// 플레이중이 아니고 상태가 움직이는거였으면 idle로
+	if (!_isPlaying && _status == P_R_MOVE)
+	{
+		_motion_Count = 0;
+		_status = P_R_IDLE;
+	}
+	else if (!_isPlaying && _status == P_L_MOVE)
+	{
+		_motion_Count = 0;
+		_status = P_L_IDLE;
+	}
+
+	// ladder more think
+	//if(KEYMANAGER->isOnceKeyUP
+
+	// hit is later
+
+	// wall push after the map is created
+
+	// all death after the map is created
+
+	// all airflying is after the map is created
+
+	if (_status == P_R_IDLE)
+	{
+		_motion_Count += TIMEMANAGER->getElpasedTime();
+		if (_motion_Count >= 5)
+		{
+			int rand = RND->getInt(2);
+			_motion_Count = 0;
+			switch (rand)
+			{
+			case 0:
+				_status = P_R_MOTION_ONE;
+				break;
+
+			case 1:
+				_status = P_R_MOTION_TWO;
+				break;
+			}
+		}
+	}
+	else if (_status == P_L_IDLE)
+	{
+		_motion_Count += TIMEMANAGER->getElpasedTime();
+		if (_motion_Count >= 5)
+		{
+			int rand = RND->getInt(2);
+
+			switch (rand)
+			{
+			case 0:
+				_status = P_L_MOTION_ONE;
+				break;
+
+			case 1:
+				_status = P_L_MOTION_TWO;
+				break;
+			}
+		}
 	}
 }

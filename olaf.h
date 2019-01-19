@@ -5,7 +5,7 @@
 class olaf : public characterInfo
 {
 private:
-	image* map;
+
 	bool _isShiledUp;
 	bool _isGround;
 	bool _isWall;
@@ -19,5 +19,6 @@ public:
 	void render();
 
 	void move();
+	void olafKeyInput();
 };
 
