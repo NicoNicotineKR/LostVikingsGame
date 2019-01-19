@@ -16,8 +16,8 @@
 
 enum E_PLAYER_INDEX{
 	P_ERIC = 0,
-	P_BALEOG,
 	P_OLAF,
+	P_BALEOG,
 	OUT_OF_LANGE
 };
 
