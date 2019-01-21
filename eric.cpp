@@ -47,7 +47,12 @@ HRESULT eric::init()
 	//부모로 옮길것
 	_isWaterDead = false;
 	_isDeadAni = false;
+	_isAlive = true;
 	
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	_isLadderMotion = false;
+	_ladderStatus = P_LADDER_NULL;
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 	_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
@@ -76,55 +81,64 @@ void eric::update()
 	characterInfo::update();
 
 	// 땅과 충돌하고있는지
-	_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
-		IMAGEMANAGER->findImage("씬2_1픽셀"),
-		IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
-		RGB(255, 0, 0),
-		&_isGround);
 
+	if (_status != P_L_ON_LADDER && _status != P_R_ON_LADDER)
+	{
+		_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
+			IMAGEMANAGER->findImage("씬2_1픽셀"),
+			IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
+			RGB(255, 0, 0),
+			&_isGround);
+	}
 	
 
-	////물에 닿았으면
-	//if (_isWaterDead)
-	//{
-	//	_isWaterDead = false;
-	//	_isDeadAni = true;
-	//	//오른쪽이면
-	//	if (_status == P_R_MOVE || _status == P_R_IDLE || _status == P_R_BREATH || _status == P_R_SKILL_ONE || _status == P_R_SKILL_TWO || _status == P_R_FALLING || _status == P_R_FLYING ||
-	//		_status == P_R_STUN || _status == P_R_WALL_PUSH)
-	//	{
-	//		_motion->stop();
-	//		_status == P_R_WATER_DEATH;
-	//		_motion = KEYANIMANAGER->findAnimation("ericRightWaterDead");
-	//		_motion->start();
-	//	}
-	//	//왼쪽이면
-	//	else
-	//	{
-	//		_motion->stop();
-	//		_status == P_L_WATER_DEATH;
-	//		_motion = KEYANIMANAGER->findAnimation("ericLeftWaterDead");
-	//		_motion->start();
-	//	}
-	//}
-	//else if (_isDeadAni)
-	//{
-	//	if (_motion->isPlay() == FALSE)
-	//	{
-	//		_isPlaying = false;
-	//		_pos = { -100,-100 };
-	//	}
-	//
-	//}
-	////물에 닿지 않았으면
-	//else if (!_isWaterDead && !_isDeadAni)
-	//{
-	//	// 물과 충돌하고 있는지
-	//	_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
-	//		IMAGEMANAGER->findImage("씬2_1픽셀"),
-	//		IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
-	//		RGB(0, 0, 255),
-	//		&_isWaterDead);
+	//물에 닿았으면
+	if (_isWaterDead)
+	{
+		_isWaterDead = false;
+		_isDeadAni = true;
+		//오른쪽이면
+		if (_status == P_R_MOVE || _status == P_R_IDLE || _status == P_R_BREATH || _status == P_R_SKILL_ONE || _status == P_R_SKILL_TWO || _status == P_R_FALLING || _status == P_R_FLYING ||
+			_status == P_R_STUN || _status == P_R_WALL_PUSH)
+		{
+			_motion->stop();
+			_status = P_R_WATER_DEATH;
+			_motion = KEYANIMANAGER->findAnimation("ericRightWaterDead");
+			_motion->start();
+		}
+		//왼쪽이면
+		else
+		{
+			_motion->stop();
+			_status = P_L_WATER_DEATH;
+			_motion = KEYANIMANAGER->findAnimation("ericLeftWaterDead");
+			_motion->start();
+		}
+	}
+	else if (_isDeadAni)
+	{
+		if (_motion->isPlay() == FALSE)
+		{
+			_isAlive = !_isDeadAni;
+			_isPlaying = false;
+			_pos = { -100,-100 };
+		}
+	
+	}
+	//물에 닿지 않았으면
+	else if (!_isWaterDead && !_isDeadAni)
+	{
+		// 물과 충돌하고 있는지
+		_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
+			IMAGEMANAGER->findImage("씬2_1픽셀"),
+			IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
+			RGB(0, 0, 255),
+			&_isWaterDead);
+
+		if (_status == P_L_ON_LADDER || _status == P_R_ON_LADDER)
+		{
+			_isGround = true;
+		}
 
 		if (_isPlaying && !_isFlying && _status != P_R_STUN && _status != P_L_STUN)		// 플레이 중이고 공중에 있는게 아니라면
 		{
@@ -245,10 +259,10 @@ void eric::update()
 
 
 		//점프했으면 중력계산함
-		if (_isJumping)
+		if (_isJumping && (_status != P_R_ON_LADDER && _status != P_L_ON_LADDER))
 		{
 			_vec.y += GRAVITY;
-			_pos.y += _vec.y;
+			_pos.y += _vec.y; 
 		}
 
 		//땅에 붙어있으면 
@@ -295,7 +309,7 @@ void eric::update()
 				}
 			}
 		}
-		else if (!_isGround && !_isJumping)
+		else if (!_isGround && !_isJumping && (_status != P_R_ON_LADDER && _status != P_L_ON_LADDER))
 		{
 			_vec.y += GRAVITY;
 			_pos.y += _vec.y;
@@ -303,7 +317,7 @@ void eric::update()
 
 
 
-		if (!_isGround &&_vec.y > 0)
+		if (!_isGround &&_vec.y > 0 && (_status != P_R_ON_LADDER && _status != P_L_ON_LADDER))
 		{
 			if (_status == P_R_IDLE || _status == P_R_SKILL_ONE)
 			{
@@ -380,6 +394,28 @@ void eric::update()
 				}
 			}
 		}
+
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+		if (_isLadderMotion)
+		{
+			onLadderMotionStart();
+			_isLadderMotion = false;
+		}
+
+		if (_status != P_R_ON_LADDER && _status != P_L_ON_LADDER)
+		{
+			_ladderStatus = P_LADDER_NULL;
+		}
+		if (_ladderStatus == P_LADDER_PAUSE)
+		{
+			_motion->pause();
+		}
+
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
 		//가만히 있을때 모션 2개중에 랜덤으로 틀어주는거
 		IdleMotion();
 		move();
@@ -398,12 +434,22 @@ void eric::update()
 			_pos.y += _vec.y;
 		}
 
+		if (_ladderStatus == P_LADDER_UP)
+		{
+			_vec.y = -3.0f;
+			_pos.y += _vec.y;
+		}
+		if (_ladderStatus == P_LADDER_DOWN)
+		{
+			_vec.y = 3.0f;
+			_pos.y += _vec.y;
+		}
 
 
 
 		_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
 		//_rc = RectMake(_pos.x - _cameraX + WINSIZEX / 2, _pos.y - _cameraY + WINSIZEY / 2, _img->getFrameWidth(),_img->getFrameHeight());
-	//}
+	}
 }
 
 void eric::render()
@@ -465,20 +511,34 @@ void eric::move()
 	{
 		if (_status == P_R_IDLE || _status == P_R_BREATH || _status == P_R_FLYING)
 		{
-			_isMoving = false;
-			_vec.x -= _accel;
-			if (_vec.x < MIN_SPEED)
+			if (_status == P_R_ON_LADDER)
 			{
-				_vec.x = MIN_SPEED;
+				_vec.x = 0;
+			}
+			else
+			{
+				_isMoving = false;
+				_vec.x -= _accel;
+				if (_vec.x < MIN_SPEED)
+				{
+					_vec.x = MIN_SPEED;
+				}
 			}
 		}
 		else if (_status == P_L_IDLE || _status == P_L_BREATH || _status == P_L_FLYING)
 		{
-			_isMoving = false;
-			_vec.x += _accel;
-			if (_vec.x > MIN_SPEED)
+			if (_status == P_L_ON_LADDER)
 			{
-				_vec.x = MIN_SPEED;
+				_vec.x = 0;
+			}
+			else
+			{
+				_isMoving = false;
+				_vec.x += _accel;
+				if (_vec.x > MIN_SPEED)
+				{
+					_vec.x = MIN_SPEED;
+				}
 			}
 		}
 		if (_isPlaying)
@@ -530,7 +590,22 @@ void eric::move()
 		}
 	}
 		_pos.x += _vec.x;
+
+
+	
+
+
 }
+
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+void eric::onLadderMotionStart()
+{
+	_motion = KEYANIMANAGER->findAnimation("ericRightOnLadder");
+	_motion->start();
+}
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 
 void eric::imageInit()
 {
@@ -564,9 +639,9 @@ void eric::imageInit()
 
 	//움직이는거
 	int rightMove[] = { 16,17,18,19,20,21,22,23 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericRightMove", "eric", rightMove, 8, 10, true);
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightMove", "eric", rightMove, 8, 13, true);
 	int leftMove[] = { 31,30,29,28,27,26,25,24 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMove", "eric", leftMove, 8, 10, true);
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftMove", "eric", leftMove, 8, 13, true);
 
 	//돌진하는스킬
 	int rightRush[] = { 32,33,34,35,36,37,38,39,37,38,39,37,38,39,37,38,39 };

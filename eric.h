@@ -19,9 +19,7 @@ private:
 	bool _isStuning;
 	bool _isRoof; //지붕 닿았는지
 
-	//나중에 부모한테 옮길것
-	bool _isWaterDead;
-	bool _isDeadAni;
+
 
 	// 콘스트 변수
 
@@ -44,7 +42,7 @@ public:
 	void imageInit();		//에릭 이미지 + 키애니메이션 이미지 초기화
 	void IdleMotion();		//가만히 있을때 특수행동 모션
 	void isNotPlaying();		// 얘가 플레이 중이 아닐때 idle로 변경해주는거
-
+	void onLadderMotionStart();
 
 	static void rightMoving(void* obj);
 	static void leftMoving(void* obj);

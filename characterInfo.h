@@ -23,6 +23,10 @@ protected:
 	bool _isLadderMotion;		// 사다리 모션을 실행하는 불
 	animation* _motion;			// 캐릭터 모션
 
+	//나중에 부모한테 옮길것
+	bool _isWaterDead;
+	bool _isDeadAni;
+
 	float _cameraX;				// 맵 카메라 담을 공간 x
 	float _cameraY;				// 맵 카메라 담을 공간 y
 
