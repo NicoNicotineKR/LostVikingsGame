@@ -2,17 +2,11 @@
 #include "characterInfo.h"
 
 
-class olaf : public characterInfo
+class baleog : public characterInfo
 {
 private:
-	RECT _shiled;
-	int  _shiledX, _shiledY;
-	int  _shiledWidth, _shiledHeight;
 
-	float _acceleration;
 	POINTFLOAT _fallStartPos;
-
-	bool _isShiledUp;
 
 	bool _isGround;
 	bool _isWall;
@@ -23,8 +17,8 @@ private:
 	bool _isRightMove;
 
 public:
-	olaf();
-	~olaf();
+	baleog();
+	~baleog();
 
 	HRESULT init();
 	void release();
@@ -42,7 +36,7 @@ public:
 
 	static void rightIdle(void* obj);
 	static void leftIdle(void* obj);
-	static void hitDead(void* obj);
+
 
 };
 

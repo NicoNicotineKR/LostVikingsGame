@@ -216,6 +216,9 @@
     <ClInclude Include="itemKeyYellow.h">
       <Filter>PlayGround\items</Filter>
     </ClInclude>
+    <ClInclude Include="baleog.h">
+      <Filter>PlayGround\player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -352,6 +355,9 @@
     </ClCompile>
     <ClCompile Include="itemMeat.cpp">
       <Filter>PlayGround\items</Filter>
+    </ClCompile>
+    <ClCompile Include="baleog.cpp">
+      <Filter>PlayGround\player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
