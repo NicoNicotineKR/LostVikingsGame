@@ -14,7 +14,7 @@ invenUI::~invenUI()
 HRESULT invenUI::init()
 {
 	//	아이템슬롯 이미지 추가 시작
-	IMAGEMANAGER->addFrameImage("icon_items", "images/UI/invenUI/icon_items.bmp", 38, 38, 1, 1, false, 0x000000);
+	IMAGEMANAGER->addFrameImage("icon_items", "images/UI/invenUI/icon_items.bmp", 38 * 5, 38, 5, 1, false, 0x000000);
 
 
 
@@ -23,7 +23,7 @@ HRESULT invenUI::init()
 		IMAGEMANAGER->addFrameImage("invenCursor", "images/UI/invenUI/invenCursor.bmp", 52, 52, 1, 1, true, 0xFF00FF);
 		IMAGEMANAGER->addFrameImage("invenFrame", "images/UI/invenUI/invenFrame.bmp", 1024, 199, 1, 1, false, 0x000000);
 		IMAGEMANAGER->addFrameImage("charfaces", "images/UI/invenUI/charFaces.bmp", 297, 219, 3, 3, false, 0x000000);		//캐릭터 초상화 이미지 99*73
-
+		IMAGEMANAGER->addFrameImage("hpIcon", "images/UI/invenUI/icon_hp.bmp", 20, 25, 1, 1, false, 0x000000);
 	}	//	인벤UI이미지 추가 끝
 
 	//	invenUI 변수 기본세팅 시작
@@ -33,9 +33,27 @@ HRESULT invenUI::init()
 		_invenFrame.pos.y = WINSIZEY - 100;
 		_invenFrame.rc = RectMakeCenter(_invenFrame.pos.x, _invenFrame.pos.y, 1024, 199);
 
-		_curCharIdx = 0;
+		_curCharIdx = 0;		//	커서 나머지는 밑에이씀
+
+		//밑에는 hp아이콘 시작!
+		for (int i = 0; i < 3; i++) 
+		{
+			POINT tmpPos;
+			tmpPos.x = 154 + i*230;	//	허드 왼쪽, i x 초상화당
+			tmpPos.y = WINSIZEY - 70 + 16;		//	맨밑부터 허드 일부뻄(시작위치) + 허드일부
+			for (int j = 0; j < 3; j++)
+			{	
+				_hp[i * 3 + j].img = IMAGEMANAGER->findImage("hpIcon");
+				_hp[i * 3 + j].pos.x = tmpPos.x + j * 26;
+				_hp[i * 3 + j].pos.y = tmpPos.y;
+				_hp[i * 3 + j].rc = RectMakeCenter(_hp[i * 3 + j].pos.x, _hp[i * 3 + j].pos.y, 20, 25);
+			}
+		}
 
 		_isInvenMode = false;
+		_isSelectItem = false;
+
+
 	}	//	invenUI 변수 기본세팅 끝
 
 
@@ -51,6 +69,7 @@ HRESULT invenUI::init()
 				for (int k = 0; k < 2; k++)
 				{
 					_inven[i][j][k].name = "empty";
+					_inven[i][j][k].E_ITEM = E_EMPTY;
 					_inven[i][j][k].imgInfo.img = IMAGEMANAGER->findImage("icon_items");
 					_inven[i][j][k].imgInfo.pos.x = tmpPos.x;
 					_inven[i][j][k].imgInfo.pos.y = tmpPos.y;
@@ -103,10 +122,24 @@ HRESULT invenUI::init()
 		_cursorAlpha = 0;
 		_isCursorAlphaRise = false;
 		MakeCursorPos(_curCharIdx);		//	_curCharIdx 위에 초기화 해둠 : 0
-	}
-	
+	}	//	커서정보 초기화 끝
 
-	//	커서정보 초기화 끝
+
+	//	테스트용 아이템
+	{
+		_inven[0][0][0].E_ITEM = E_BOMB;
+		_inven[0][0][0].name = "bomb";
+
+		_inven[1][0][0].E_ITEM = E_KEY_RED;
+		_inven[1][0][0].name = "key_red";
+
+	}
+
+	//	테스트용 죽음
+	{
+		_charInfo[0].isDead = true;
+	}
+
 
 
 
@@ -119,15 +152,191 @@ void invenUI::release()
 
 void invenUI::update()
 {
-	MoveCursorFunc();
-	CursorBlinkFunc();
 	FaceSelectFunc();
+
+	//	아이템 선택중이아닐때,
+	if (!_isSelectItem)
+	{
+		if (KEYMANAGER->isOnceKeyDown('Z'))
+		{
+			_isSelectItem = true;
+
+			_sendInven = _inven[_curCharIdx][_charInfo[_curCharIdx].curInvenY][_charInfo[_curCharIdx].curInvenX];
+			_sendPos.x = _receivePos.x = _charInfo[_curCharIdx].curInvenX;
+			_sendPos.y = _receivePos.y = _charInfo[_curCharIdx].curInvenY;
+			_sendIdx = _receiveIdx = _curCharIdx;
+
+		}
+		else
+		{
+			MoveCursorFunc();
+			CursorBlinkFunc();
+		}
+	}
+
+	//	아이템 선택중이라면,
+	else if (_isSelectItem)
+	{
+		CursorBlinkFunc();
+		if (KEYMANAGER->isOnceKeyDown('Z'))
+		{
+			_isSelectItem = false;
+			SwapItem();
+
+		}
+
+		else if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
+			_receiveIdx++;
+		RefreshRecieveIdx();
+
+
+		if (_receiveIdx < 3)
+		{
+			bool isFound = false;
+
+			//	찾지못했거나, 다음것이 휴지통이 아니라면 계쏙 찾아라
+			while (_receiveIdx < 3)
+			{
+				if (_charInfo[_receiveIdx].isDead)		// 죽었을떄 스킵. 위에 체크 순서 조심
+				{
+					_receiveIdx++;
+					RefreshRecieveIdx();
+				}
+				if (_receiveIdx == 3)	break;		//	휴지통일때 뷁
+
+				if (_receiveIdx > 3) _receiveIdx = 0;
+				//	받는 인덱스에서 맨처음 빈칸을 찾는다.  recievePos 갱신해준다.
+				isFound = FindEmptyInven();
+
+				if (isFound)	break;
+				_receiveIdx++;
+				RefreshRecieveIdx();
+
+
+				
+
+				
+			}
+		}
+
+		// 휴지통
+		//else if (_recieveIdx == 3)
+		//{
+		//	_cursor.pos.x = TRASHCAN_X;
+		//	_cursor.pos.y = TRASHCAN_Y;
+		//}
+
+
+
+	}
+	if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
+	{
+		_receiveIdx--;
+		RefreshRecieveIdx();
+
+		if (_receiveIdx > -1)
+		{
+			bool isFound = false;
+
+			//	찾지못했거나, 다음것이 휴지통이 아니라면 계쏙 찾아라
+			while (-1 < _receiveIdx && _receiveIdx < 3)
+			{
+				if (_charInfo[_receiveIdx].isDead)		// 죽었을떄 스킵. 체크 순서 조심
+				{
+					_receiveIdx--;
+					RefreshRecieveIdx();
+				} 
+				if (_receiveIdx == 3)	break;
+
+				if (_receiveIdx < 0) _receiveIdx = 3;
+				//	받는 인덱스에서 맨처음 빈칸을 찾는다.  recievePos 갱신해준다.
+				isFound = FindEmptyInven();
+
+				if (isFound)	break;
+				_receiveIdx--;
+				RefreshRecieveIdx();
+				
+
+				
+
+			}
+			
+
+		}
+		//else if (_recieveIdx == 3)
+		//{
+		//	_cursor.pos.x = TRASHCAN_X;
+		//	_cursor.pos.y = TRASHCAN_Y;
+		//}
+
+
+
+	}
 }
+
 
 void invenUI::render()
 {
 	_invenFrame.img->render(getMemDC(), _invenFrame.rc.left, _invenFrame.rc.top);	//	맨위에 먼저 깔아둬야함(허드)
-	_cursor.img->alphaRender(getMemDC(), _cursor.rc.left, _cursor.rc.top, _cursorAlpha);	//	허드 다음에 깔아야함
+	
+	//	hp 똥그라미 그려어어
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < _charInfo[i].hp; j++)
+		{
+			_hp[i * 3 + j].img->render(getMemDC(), _hp[i * 3 + j].rc.left, _hp[i * 3 + j].rc.top);
+		}
+	}
+
+
+	//	인벤 내 아이템아이콘 출력
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			for (int k = 0; k < 2; k++)
+			{
+				_inven[i][j][k].imgInfo.img->frameRender(getMemDC(),
+					_inven[i][j][k].imgInfo.rc.left,
+					_inven[i][j][k].imgInfo.rc.top,
+					_inven[i][j][k].E_ITEM, 0);
+			}
+		}
+	}
+
+
+
+	//	아이템 옮기는중이 아니면,
+	if(!_isSelectItem)
+		_cursor.img->alphaRender(getMemDC(), _cursor.rc.left, _cursor.rc.top, _cursorAlpha);	//	허드 다음에 깔아야함
+
+	//	아이템 옮기는중이면,
+	else if (_isSelectItem)
+	{
+		if (_receiveIdx != 3) 
+		{
+			_cursor.img->render(getMemDC(),
+				_inven[_sendIdx][_sendPos.y][_sendPos.x].imgInfo.rc.left - 7,
+				_inven[_sendIdx][_sendPos.y][_sendPos.x].imgInfo.rc.top - 7
+			);
+
+
+			_cursor.img->alphaRender(getMemDC(),
+				_inven[_receiveIdx][_receivePos.y][_receivePos.x].imgInfo.rc.left - 7,
+				_inven[_receiveIdx][_receivePos.y][_receivePos.x].imgInfo.rc.top - 7,
+				_cursorAlpha);
+		}
+		else
+		{
+			_cursor.img->render(getMemDC(),
+				_inven[_sendIdx][_sendPos.y][_sendPos.x].imgInfo.rc.left - 7,
+				_inven[_sendIdx][_sendPos.y][_sendPos.x].imgInfo.rc.top - 7
+			);
+			_cursor.img->alphaRender(getMemDC(), TRASHCAN_X, TRASHCAN_Y, _cursorAlpha);
+		}
+
+
+	}
 
 
 	for (int i = 0; i < 3; i++)
@@ -235,6 +444,65 @@ void invenUI::ReposCursorFunc()
 	if (_charInfo[_curCharIdx].curInvenY > 1)	_charInfo[_curCharIdx].curInvenY = 1;
 	if (_charInfo[_curCharIdx].curInvenY < 0)	_charInfo[_curCharIdx].curInvenY = 0;
 }
+
+void invenUI::SwapItem()
+{
+	if (_receiveIdx == 3)
+	{
+		
+		_inven[_sendIdx][_sendPos.y][_sendPos.x].E_ITEM = E_EMPTY;
+		_inven[_sendIdx][_sendPos.y][_sendPos.x].name = "empty";
+	}
+
+	else
+	{
+		tagInvenInfo tmpInven;
+		tmpInven = _inven[_sendIdx][_sendPos.y][_sendPos.x];
+		_inven[_sendIdx][_sendPos.y][_sendPos.x].imgInfo.img = _inven[_receiveIdx][_receivePos.y][_receivePos.x].imgInfo.img;
+		_inven[_sendIdx][_sendPos.y][_sendPos.x].E_ITEM = _inven[_receiveIdx][_receivePos.y][_receivePos.x].E_ITEM;
+		_inven[_sendIdx][_sendPos.y][_sendPos.x].name = _inven[_receiveIdx][_receivePos.y][_receivePos.x].name;
+
+		_inven[_receiveIdx][_receivePos.y][_receivePos.x].E_ITEM = tmpInven.E_ITEM;
+		_inven[_receiveIdx][_receivePos.y][_receivePos.x].imgInfo.img = tmpInven.imgInfo.img;
+		_inven[_receiveIdx][_receivePos.y][_receivePos.x].name = tmpInven.name;
+	}
+
+}
+
+bool invenUI::FindEmptyInven()
+{
+	bool isFind = false;
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			if (_inven[_receiveIdx][i][j].name == "empty")
+			{
+				isFind = true;
+				_receivePos.y = i;
+				_receivePos.x = j;
+			
+				return isFind;
+			}
+				
+			
+			if (isFind)		break;
+		}
+		if (isFind)	break;
+	}
+
+	return isFind;
+	
+	
+}
+
+void invenUI::RefreshRecieveIdx()
+{
+	if (_receiveIdx < 0) _receiveIdx = 3;
+	if (_receiveIdx > 3) _receiveIdx = 0;
+}
+
 
 void invenUI::FaceSelectFunc()
 {
