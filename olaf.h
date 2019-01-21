@@ -19,8 +19,8 @@ private:
 
 	bool _isFlyMotion;
 
-	bool _leftMove;
-	bool _rightMove;
+	bool _isLeftMove;
+	bool _isRightMove;
 
 
 public:

@@ -159,11 +159,6 @@ void olaf::update()
 	characterInfo::update();
 	_vec.y = 0;
 	_vec.x = 0;
-	RECT temp;
-	//if (IntersectRect(&temp, &_sadari, &_rc))
-	//{
-	//	_status = P_L_FLYING;
-	//}
 
 	if (!_isWall)
 	{
@@ -263,13 +258,15 @@ void olaf::update()
 
 		_isFlyMotion = false;
 		_isFlying = false;
-
-
 	}
 
 
-	if (!_isGround && _status != P_R_ON_LADDER)
-	{
+	if (!_isGround)
+	{	
+		if (_status == P_R_ON_LADDER || _status == P_L_ON_LADDER)
+		{
+			_isGround = true;
+		}
 		if (_isShiledUp)
 		{
 			_vec.y = 3.0f;
@@ -278,20 +275,18 @@ void olaf::update()
 		{
 			_vec.y = 6.0f;
 		}
-
 		_pos.y += _vec.y;
-
 		if (!_isFlying)
 		{
 			_fallStartPos.x = _pos.x;
 			_fallStartPos.y = _pos.y;
 		}
 		_isFlying = true;
-		
-		if(_status == P_R_MOVE)
-		_status = P_R_FLYING;
+
+		if (_status == P_R_MOVE)
+			_status = P_R_FLYING;
 		if (_status == P_L_MOVE)
-		_status = P_L_FLYING;
+			_status = P_L_FLYING;
 
 		if (!_isFlyMotion)
 		{
@@ -356,16 +351,18 @@ void olaf::update()
 			_shiledY = _rc.top;
 		}
 	}
+	if (_status == P_L_ON_LADDER || _status == P_R_ON_LADDER)
+	{
 
+	}
 
 	_shiled = RectMake(_shiledX, _shiledY, _shiledWidth, _shiledHeight);
-	//_shiled = RectMake(_shiled.left - _cameraX + WINSIZEX / 2, _shiled.top - _cameraY + WINSIZEY / 2, _shiled.right - _cameraX + WINSIZEX / 2, _shiled.bottom - _cameraY + WINSIZEY / 2);
 }
 
 void olaf::render()
 {
 	
-	//Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
+	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
 	
 	_img->aniRender(getMemDC(), (_pos.x -_img->getFrameWidth() / 2) - _cameraX + WINSIZEX / 2, 
 		(_pos.y - _img->getFrameHeight() / 2) - _cameraY + WINSIZEY / 2, 
@@ -380,21 +377,11 @@ void olaf::render()
 
 void olaf::move()
 {
-
-	if (_status == P_R_MOVE)
+	if (_isRightMove)
 	{
 		_vec.x += 3.0f;
 	}
-	else if (_status == P_L_MOVE)
-	{
-		_vec.x -= 3.0f;
-	}
-
-	if (_rightMove)
-	{
-		_vec.x += 3.0f;
-	}
-	else if (_leftMove)
+	else if (_isLeftMove)
 	{
 		_vec.x -= 3.0f;
 	}
@@ -467,35 +454,40 @@ void olaf::olafKeyInput()
 				{
 					_status = P_R_MOVE;
 					moveMotionStart("right");
+					_isRightMove = true;
 				}
 				if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
 				{
 					_status = P_L_MOVE;
 					moveMotionStart("left");
+					_isLeftMove = true;
 				}
 				if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
 				{
 					_motion_Count = 0;
-					if (_status != P_R_STUN)
+					if (_status != P_R_STUN || _status != P_R_ON_LADDER)
 					{
 						_status = P_R_IDLE;
 						idleMotionStart("right");
 					}
-					_rightMove = false;
+					_isRightMove = false;
 				}
 				if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
 				{
 					_motion_Count = 0;
-					_status = P_L_IDLE;
-					idleMotionStart("left");
-					_leftMove = false;
+					if (_status != P_L_STUN || _status != P_L_ON_LADDER)
+					{
+						_status = P_L_IDLE;
+						idleMotionStart("left");
+					}
+					_isLeftMove = false;
 				}
 			}
 			else
 			{
 				if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 				{
-					if (_status != P_R_STUN) _rightMove = true;
+					if (_status != P_R_STUN) _isRightMove = true;
 
 					if (_status == P_L_FLYING)
 					{
@@ -513,7 +505,7 @@ void olaf::olafKeyInput()
 				}
 				if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 				{
-					if (_status != P_L_STUN) _leftMove = true;
+					if (_status != P_L_STUN) _isLeftMove = true;
 
 					if (_status == P_R_FLYING)
 					{
@@ -531,11 +523,11 @@ void olaf::olafKeyInput()
 				}
 				if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
 				{
-					_rightMove = false;
+					_isRightMove = false;
 				}
 				if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
 				{
-					_leftMove = false;
+					_isLeftMove = false;
 				}
 			}
 		}

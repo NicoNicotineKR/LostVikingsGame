@@ -65,8 +65,14 @@ void playerMgr::ladderFunc()
 		{
 			if (KEYMANAGER->isOnceKeyDown(VK_UP))
 			{
-				if(_vChar[i]->getStatus() == P_R_MOVE || _vChar[i]->getStatus() == P_R_IDLE) _vChar[i]->setStatus(P_R_ON_LADDER);
-				else if (_vChar[i]->getStatus() == P_L_MOVE || _vChar[i]->getStatus() == P_L_IDLE) _vChar[i]->setStatus(P_R_ON_LADDER);
+				if(_vChar[i]->getStatus() == P_R_MOVE ||
+					_vChar[i]->getStatus() == P_R_IDLE ||
+					_vChar[i]->getStatus() == P_R_FLYING ||
+					_vChar[i]->getStatus() == P_R_FALLING) _vChar[i]->setStatus(P_R_ON_LADDER);
+				else if (_vChar[i]->getStatus() == P_L_MOVE ||
+					_vChar[i]->getStatus() == P_L_IDLE ||
+					_vChar[i]->getStatus() == P_L_FLYING ||
+					_vChar[i]->getStatus() == P_L_FALLING) _vChar[i]->setStatus(P_R_ON_LADDER);
 
 				_vChar[i]->setLadderStatus(P_LADDER_UP);
 			}
