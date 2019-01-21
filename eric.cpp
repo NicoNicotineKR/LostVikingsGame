@@ -43,6 +43,10 @@ HRESULT eric::init()
 
 	//벽충돌
 	_isWall = false;
+
+	//부모로 옮길것
+	_isWaterDead = false;
+	_isDeadAni = false;
 	
 
 
@@ -71,295 +75,340 @@ void eric::update()
 {
 	characterInfo::update();
 
-	// 플레이중이 아니고 상태가 움직이는거였으면 idle로
+	// 땅과 충돌하고있는지
 	_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
 		IMAGEMANAGER->findImage("씬2_1픽셀"),
 		IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
 		RGB(255, 0, 0),
 		&_isGround);
 
-	if (_isPlaying && !_isFlying && _status != P_R_STUN && _status != P_L_STUN)		// 플레이 중이고 공중에 있는게 아니라면
-	{
-
-		//키값   오른쪽  or 왼쪽입력에 따라 최초 눌렀을때만 status바꿔주고 키애니메이션 바꿈
-
-		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT) && _status != P_R_FLYING && _status != P_R_SKILL_ONE )
-		{
-			_motion->stop();
-			_status = P_R_MOVE;
-			_motion = KEYANIMANAGER->findAnimation("ericRightMove");
-			_motion->start();
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_LEFT) && _status != P_L_FLYING && _status != P_L_SKILL_ONE)
-		{
-			_motion->stop();
-			_status = P_L_MOVE;
-			_motion = KEYANIMANAGER->findAnimation("ericLeftMove");
-			_motion->start();
-		}
-		if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _status != P_R_FLYING && _status != P_R_SKILL_ONE)
-		{
-			_motion->stop();
-			_motion_Count = 0;
-			_status = P_R_IDLE;
-			_motion = KEYANIMANAGER->findAnimation("ericRightStop");
-			_motion->start();
-			//최대속도에 도달해서 isBreath가 true가 되면s
-			if (_isBreath)
-			{
-				//호흡하는 이미지 띄움
-				_motion->stop();
-				_status = P_R_BREATH;
-				_motion = KEYANIMANAGER->findAnimation("ericRightBreath");
-				_isBreath = false;
-				_motion->start();
-			}
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_LEFT) && _status != P_L_FLYING && _status != P_L_SKILL_ONE)
-		{
-			_motion->stop();
-			_motion_Count = 0;
-			_status = P_L_IDLE;
-			_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
-			_motion->start();
-			//최대속도에 도달해서 isBreath가 true가 되면
-			if (_isBreath)
-			{
-				_motion->stop();
-				_status = P_L_BREATH;
-				_motion = KEYANIMANAGER->findAnimation("ericLeftBreath");
-				_isBreath = false;
-				_motion->start();
-			}
-		}
-
-		// Z키를 눌러서 점프스킬을 쓰고, 점프스킬사용중이 아니고, 공중에 있는 중이 아니라면(더블점프 방지)
-		if (KEYMANAGER->isOnceKeyDown('Z') 
-			&& (_status != P_R_SKILL_ONE && _status != P_L_SKILL_ONE 
-			&& _status != P_R_FLYING && _status != P_L_FLYING ))
-		{
-			//점프값이 벡터값이되어서 점프를함
-			_vec.y = JUMP_POWER;
-
-			// 점프 불값은 트루로
-			_isJumping = true;
-			
-			// 오른쪽 왼쪽에 맞춰서 이미지출력시켜주기
-			_motion->stop();
-			if (_status == P_R_IDLE || _status == P_R_MOVE || _status == P_R_BREATH)
-			{
-				_status = P_R_SKILL_ONE;
-				_motion = KEYANIMANAGER->findAnimation("ericRightJump");
-			}
-			else if (_status == P_L_IDLE || _status == P_L_MOVE || _status == P_L_BREATH)
-			{
-				_status = P_L_SKILL_ONE;
-				_motion = KEYANIMANAGER->findAnimation("ericLeftJump");
-			}
-			_motion->start();
-		}
-		else if (KEYMANAGER->isOnceKeyDown('X') && (_vec.x >= MAX_SPEED || _vec.x <= MAX_SPEED) && _status != P_R_SKILL_TWO && _status != P_L_SKILL_TWO)
-		{
-			_isRushing = true;
-			if (_status == P_R_MOVE && _vec.x == MAX_SPEED)
-			{
-				_status = P_R_SKILL_TWO;
-				_motion = KEYANIMANAGER->findAnimation("ericRightRush");
-				_motion->start();
-			}
-			else if (_status == P_L_MOVE && _vec.x == -MAX_SPEED)
-			{
-				_status = P_L_SKILL_TWO;
-				_motion = KEYANIMANAGER->findAnimation("ericLeftRush");
-				_motion->start();
-			}
-			//돌진
-		}
-	}
-
-	//오른쪽 돌진인 상태가 아닌데
-	if (_status != P_R_SKILL_TWO)
-	{
-		//왼쪽 돌진상태도 아니면
-		if (_status != P_L_SKILL_TWO)
-		{
-			_isRushing = false;
-		}
-	}
-	else if (_status != P_L_SKILL_TWO)
-	{
-		if (_status != P_R_SKILL_TWO)
-		{
-			_isRushing = false;
-		}
-	}
-	// 좌or 우로 이동중에 벽과 충돌하면
 	
 
-	//점프했으면 중력계산함
-	if (_isJumping)
+	//물에 닿았으면
+	if (_isWaterDead)
 	{
-			_vec.y += GRAVITY;
-			_pos.y += _vec.y;
-	}
-
-	//땅에 붙어있으면 
-	if (_isGround)
-	{
-		_isJumping = false;
-		//공중은 flase
-		_isFlying = false;
-
-		//땅에 붙었을때 상태가 공중이면
-		if (_status == P_R_FLYING)
+		_isWaterDead = false;
+		_isDeadAni = true;
+		//오른쪽이면
+		if (_status == P_R_MOVE || _status == P_R_IDLE || _status == P_R_BREATH || _status == P_R_SKILL_ONE || _status == P_R_SKILL_TWO || _status == P_R_FALLING || _status == P_R_FLYING ||
+			_status == P_R_STUN || _status == P_R_WALL_PUSH)
 		{
-			// 키를 누르고있으면 트루, 떼면 펄스임
-			if (_isMoving)
+			_motion->stop();
+			_status == P_R_WATER_DEATH;
+			_motion = KEYANIMANAGER->findAnimation("ericRightWaterDead");
+			_motion->start();
+		}
+		//왼쪽이면
+		else
+		{
+			_motion->stop();
+			_status == P_L_WATER_DEATH;
+			_motion = KEYANIMANAGER->findAnimation("ericLeftWaterDead");
+			_motion->start();
+		}
+	}
+	else if (_isDeadAni)
+	{
+		if (_motion->isPlay() == FALSE)
+		{
+			_isPlaying = false;
+			_pos = { -100,-100 };
+		}
+	
+	}
+	//물에 닿지 않았으면
+	else if (!_isWaterDead && !_isDeadAni)
+	{
+		// 물과 충돌하고 있는지
+		_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
+			IMAGEMANAGER->findImage("씬2_1픽셀"),
+			IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
+			RGB(0, 0, 255),
+			&_isWaterDead);
+
+		if (_isPlaying && !_isFlying && _status != P_R_STUN && _status != P_L_STUN)		// 플레이 중이고 공중에 있는게 아니라면
+		{
+
+			//키값   오른쪽  or 왼쪽입력에 따라 최초 눌렀을때만 status바꿔주고 키애니메이션 바꿈
+
+			if (KEYMANAGER->isOnceKeyDown(VK_RIGHT) && _status != P_R_FLYING && _status != P_R_SKILL_ONE)
 			{
 				_motion->stop();
 				_status = P_R_MOVE;
 				_motion = KEYANIMANAGER->findAnimation("ericRightMove");
 				_motion->start();
 			}
-			else
-			{
-				_motion->stop();
-				_status = P_R_IDLE;
-				_motion = KEYANIMANAGER->findAnimation("ericRightStop");
-				_motion->start();
-			}
-		}
-		if (_status == P_L_FLYING)
-		{
-			if (_isMoving)
+			if (KEYMANAGER->isOnceKeyDown(VK_LEFT) && _status != P_L_FLYING && _status != P_L_SKILL_ONE)
 			{
 				_motion->stop();
 				_status = P_L_MOVE;
 				_motion = KEYANIMANAGER->findAnimation("ericLeftMove");
 				_motion->start();
 			}
-			else
+			if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _status != P_R_FLYING && _status != P_R_SKILL_ONE)
 			{
 				_motion->stop();
+				_motion_Count = 0;
+				_status = P_R_IDLE;
+				_motion = KEYANIMANAGER->findAnimation("ericRightStop");
+				_motion->start();
+				//최대속도에 도달해서 isBreath가 true가 되면s
+				if (_isBreath)
+				{
+					//호흡하는 이미지 띄움
+					_motion->stop();
+					_status = P_R_BREATH;
+					_motion = KEYANIMANAGER->findAnimation("ericRightBreath");
+					_isBreath = false;
+					_motion->start();
+				}
+			}
+			else if (KEYMANAGER->isOnceKeyUp(VK_LEFT) && _status != P_L_FLYING && _status != P_L_SKILL_ONE)
+			{
+				_motion->stop();
+				_motion_Count = 0;
 				_status = P_L_IDLE;
 				_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
 				_motion->start();
+				//최대속도에 도달해서 isBreath가 true가 되면
+				if (_isBreath)
+				{
+					_motion->stop();
+					_status = P_L_BREATH;
+					_motion = KEYANIMANAGER->findAnimation("ericLeftBreath");
+					_isBreath = false;
+					_motion->start();
+				}
+			}
+
+			// Z키를 눌러서 점프스킬을 쓰고, 점프스킬사용중이 아니고, 공중에 있는 중이 아니라면(더블점프 방지)
+			if (KEYMANAGER->isOnceKeyDown('Z')
+				&& (_status != P_R_SKILL_ONE && _status != P_L_SKILL_ONE
+					&& _status != P_R_FLYING && _status != P_L_FLYING))
+			{
+				//점프값이 벡터값이되어서 점프를함
+				_vec.y = JUMP_POWER;
+
+				// 점프 불값은 트루로
+				_isJumping = true;
+
+				// 오른쪽 왼쪽에 맞춰서 이미지출력시켜주기
+				_motion->stop();
+				if (_status == P_R_IDLE || _status == P_R_MOVE || _status == P_R_BREATH)
+				{
+					_status = P_R_SKILL_ONE;
+					_motion = KEYANIMANAGER->findAnimation("ericRightJump");
+				}
+				else if (_status == P_L_IDLE || _status == P_L_MOVE || _status == P_L_BREATH)
+				{
+					_status = P_L_SKILL_ONE;
+					_motion = KEYANIMANAGER->findAnimation("ericLeftJump");
+				}
+				_motion->start();
+			}
+			else if (KEYMANAGER->isOnceKeyDown('X') && (_vec.x >= MAX_SPEED || _vec.x <= MAX_SPEED) && _status != P_R_SKILL_TWO && _status != P_L_SKILL_TWO)
+			{
+				_isRushing = true;
+				if (_status == P_R_MOVE && _vec.x == MAX_SPEED)
+				{
+					_status = P_R_SKILL_TWO;
+					_motion = KEYANIMANAGER->findAnimation("ericRightRush");
+					_motion->start();
+				}
+				else if (_status == P_L_MOVE && _vec.x == -MAX_SPEED)
+				{
+					_status = P_L_SKILL_TWO;
+					_motion = KEYANIMANAGER->findAnimation("ericLeftRush");
+					_motion->start();
+				}
+				//돌진
 			}
 		}
-	}
-	else if (!_isGround && !_isJumping)
-	{
+
+		//오른쪽 돌진인 상태가 아닌데
+		if (_status != P_R_SKILL_TWO)
+		{
+			//왼쪽 돌진상태도 아니면
+			if (_status != P_L_SKILL_TWO)
+			{
+				_isRushing = false;
+			}
+		}
+		else if (_status != P_L_SKILL_TWO)
+		{
+			if (_status != P_R_SKILL_TWO)
+			{
+				_isRushing = false;
+			}
+		}
+		// 좌or 우로 이동중에 벽과 충돌하면
+
+
+		//점프했으면 중력계산함
+		if (_isJumping)
+		{
 			_vec.y += GRAVITY;
 			_pos.y += _vec.y;
-	}
-
-
-
-	if (!_isGround &&_vec.y > 0)
-	{
-		if (_status == P_R_IDLE || _status == P_R_SKILL_ONE)
-		{
-			_status = P_R_FLYING;
-			if (!_isFlying)
-			{
-				_motion->stop();
-				_motion = KEYANIMANAGER->findAnimation("ericRightFly");
-				_motion->start();
-			}
-			_isFlying = true;
-		}
-		else if (_status == P_L_IDLE || _status == P_L_SKILL_ONE)
-		{
-			_status = P_L_FLYING;
-			if (!_isFlying)
-			{
-				_motion->stop();
-				_motion = KEYANIMANAGER->findAnimation("ericLeftFly");
-				_motion->start();
-			}
-			_isFlying = true;
 		}
 
-
-	}
-
-
-if (_vec.y >= 1)
-{
-
-	if (_status == P_R_SKILL_ONE || _status == P_R_FLYING)
-	{
-		_isFlying = true;
-		_status = P_R_FLYING;
-	}
-	else if (_status == P_L_SKILL_ONE || _status == P_L_FLYING)
-	{
-		_isFlying = true;
-		_status = P_L_FLYING;
-	}
-}
-
-	if (_status == P_R_FLYING)
-	{
-		_motion->stop();
-		_motion = KEYANIMANAGER->findAnimation("ericRightFly");
-		_motion->start();
-	}
-	else if (_status == P_L_FLYING)
-	{
-		_motion->stop();
-		_motion = KEYANIMANAGER->findAnimation("ericLeftFly");
-		_motion->start();
-	}
-	if (_isWall)
-	{
-		if (_status == P_L_WALL_PUSH)
+		//땅에 붙어있으면 
+		if (_isGround)
 		{
-			if (!_isRushing)
+			_isJumping = false;
+			//공중은 flase
+			_isFlying = false;
+
+			//땅에 붙었을때 상태가 공중이면
+			if (_status == P_R_FLYING)
 			{
-				_motion = KEYANIMANAGER->findAnimation("ericLeftWallPush");
-				_motion->start();
-				_isWall = false;
+				// 키를 누르고있으면 트루, 떼면 펄스임
+				if (_isMoving)
+				{
+					_motion->stop();
+					_status = P_R_MOVE;
+					_motion = KEYANIMANAGER->findAnimation("ericRightMove");
+					_motion->start();
+				}
+				else
+				{
+					_motion->stop();
+					_status = P_R_IDLE;
+					_motion = KEYANIMANAGER->findAnimation("ericRightStop");
+					_motion->start();
+				}
+			}
+			if (_status == P_L_FLYING)
+			{
+				if (_isMoving)
+				{
+					_motion->stop();
+					_status = P_L_MOVE;
+					_motion = KEYANIMANAGER->findAnimation("ericLeftMove");
+					_motion->start();
+				}
+				else
+				{
+					_motion->stop();
+					_status = P_L_IDLE;
+					_motion = KEYANIMANAGER->findAnimation("ericLeftStop");
+					_motion->start();
+				}
 			}
 		}
-		if (_status == P_R_WALL_PUSH)
+		else if (!_isGround && !_isJumping)
 		{
-			if (!_isRushing)
+			_vec.y += GRAVITY;
+			_pos.y += _vec.y;
+		}
+
+
+
+		if (!_isGround &&_vec.y > 0)
+		{
+			if (_status == P_R_IDLE || _status == P_R_SKILL_ONE)
 			{
-				_motion = KEYANIMANAGER->findAnimation("ericRightWallPush");
-				_motion->start();
-				_isWall = false;
+				_status = P_R_FLYING;
+				if (!_isFlying)
+				{
+					_motion->stop();
+					_motion = KEYANIMANAGER->findAnimation("ericRightFly");
+					_motion->start();
+				}
+				_isFlying = true;
+			}
+			else if (_status == P_L_IDLE || _status == P_L_SKILL_ONE)
+			{
+				_status = P_L_FLYING;
+				if (!_isFlying)
+				{
+					_motion->stop();
+					_motion = KEYANIMANAGER->findAnimation("ericLeftFly");
+					_motion->start();
+				}
+				_isFlying = true;
+			}
+
+
+		}
+
+
+		if (_vec.y >= 1)
+		{
+
+			if (_status == P_R_SKILL_ONE || _status == P_R_FLYING)
+			{
+				_isFlying = true;
+				_status = P_R_FLYING;
+			}
+			else if (_status == P_L_SKILL_ONE || _status == P_L_FLYING)
+			{
+				_isFlying = true;
+				_status = P_L_FLYING;
 			}
 		}
+
+		if (_status == P_R_FLYING)
+		{
+			_motion->stop();
+			_motion = KEYANIMANAGER->findAnimation("ericRightFly");
+			_motion->start();
+		}
+		else if (_status == P_L_FLYING)
+		{
+			_motion->stop();
+			_motion = KEYANIMANAGER->findAnimation("ericLeftFly");
+			_motion->start();
+		}
+		if (_isWall)
+		{
+			if (_status == P_L_WALL_PUSH)
+			{
+				if (!_isRushing)
+				{
+					_motion = KEYANIMANAGER->findAnimation("ericLeftWallPush");
+					_motion->start();
+					_isWall = false;
+				}
+			}
+			if (_status == P_R_WALL_PUSH)
+			{
+				if (!_isRushing)
+				{
+					_motion = KEYANIMANAGER->findAnimation("ericRightWallPush");
+					_motion->start();
+					_isWall = false;
+				}
+			}
+		}
+		//가만히 있을때 모션 2개중에 랜덤으로 틀어주는거
+		IdleMotion();
+		move();
+		isNotPlaying();
+
+
+		_pos.y = PixelColFunction(1, _pos.x, _pos.y, 64, 5,
+			IMAGEMANAGER->findImage("씬2_1픽셀"),
+			IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
+			RGB(0, 255, 255),
+			&_isRoof);
+
+		if (_isRoof)
+		{
+			_vec.y += 1;
+			_pos.y += _vec.y;
+		}
+
+
+
+
+		_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
+		//_rc = RectMake(_pos.x - _cameraX + WINSIZEX / 2, _pos.y - _cameraY + WINSIZEY / 2, _img->getFrameWidth(),_img->getFrameHeight());
 	}
-	//가만히 있을때 모션 2개중에 랜덤으로 틀어주는거
-	IdleMotion();
-	move();
-	isNotPlaying();
-
-
-	_pos.y = PixelColFunction(1, _pos.x, _pos.y, 64, 5,
-		IMAGEMANAGER->findImage("씬2_1픽셀"),
-		IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
-		RGB(0, 255, 255),
-		&_isRoof);
-
-	if (_isRoof)
-	{
-		_vec.y += 1;
-		_pos.y += _vec.y;
-	}
-
-
-	
-
-	_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
-	//_rc = RectMake(_pos.x - _cameraX + WINSIZEX / 2, _pos.y - _cameraY + WINSIZEY / 2, _img->getFrameWidth(),_img->getFrameHeight());
 }
 
 void eric::render()
 {
-	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
+//	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
 	_img->aniRender(getMemDC(), _rc.left- _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _motion);
 
 //	Rectangle(getMemDC(), _rc);
@@ -575,9 +624,9 @@ void eric::imageInit()
 
 	//빠져죽는모션
 	int rightWaterDead[] = { 128,129,130,131,132 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericRightWaterDead", "eric", rightWaterDead, 5, 5, false);
+	KEYANIMANAGER->addArrayFrameAnimation("ericRightWaterDead", "eric", rightWaterDead, 5, 4, false);
 	int  leftWaterDead[] = { 140,139,138,137,136 };
-	KEYANIMANAGER->addArrayFrameAnimation("ericLeftWaterDead", "eric", leftWaterDead, 5, 5, false);
+	KEYANIMANAGER->addArrayFrameAnimation("ericLeftWaterDead", "eric", leftWaterDead, 5, 4, false);
 
 	//낙뎀으로 죽는 모션
 	int rightFallDead[] = { 144,145,146,147,148,149 };

@@ -19,6 +19,10 @@ private:
 	bool _isStuning;
 	bool _isRoof; //지붕 닿았는지
 
+	//나중에 부모한테 옮길것
+	bool _isWaterDead;
+	bool _isDeadAni;
+
 	// 콘스트 변수
 
 	const POINTFLOAT BEGIN_POS = { WINSIZEX / 2, WINSIZEY / 2 - 100 };
