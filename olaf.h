@@ -22,7 +22,6 @@ private:
 	bool _isLeftMove;
 	bool _isRightMove;
 
-
 public:
 	olaf();
 	~olaf();
@@ -43,6 +42,7 @@ public:
 
 	static void rightIdle(void* obj);
 	static void leftIdle(void* obj);
+
 
 };
 

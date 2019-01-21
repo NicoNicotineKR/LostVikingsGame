@@ -146,6 +146,7 @@ HRESULT olaf::init()
 	_isGround = false;
 	_isWall = false;
 
+	_isLadderMotion = false;
 	return S_OK;
 }
 
@@ -163,6 +164,11 @@ void olaf::update()
 	if (!_isWall)
 	{
 		move();
+		if (_status == P_L_STUN || _status == P_R_STUN || _status == P_L_WALL_PUSH || _status == P_R_WALL_PUSH)
+		{
+			_vec.x = 0;
+			_vec.y = 0;
+		}
 		_pos.x += _vec.x;
 		_pos.y += _vec.y;
 		_vec.x = 0;
@@ -215,7 +221,7 @@ void olaf::update()
 	}
 
 	//¶¥ Ãæµ¹
-	
+
 	if (_status != P_L_ON_LADDER && _status != P_R_ON_LADDER)
 	{
 		_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 10,
@@ -226,9 +232,20 @@ void olaf::update()
 	}
 
 
-
 	if (_isGround)
 	{
+		if (_status == P_R_FLYING && _isRightMove)
+		{
+			_status = P_R_MOVE;
+			moveMotionStart("right");
+		}
+		else if (_status == P_L_FLYING && _isLeftMove)
+		{
+			_status = P_L_MOVE;
+			moveMotionStart("left");
+		}
+
+
 		if (!_isShiledUp)
 		{
 			if (_status == P_R_FALLING)
@@ -260,13 +277,12 @@ void olaf::update()
 		_isFlying = false;
 	}
 
-
+	if (_status == P_R_ON_LADDER || _status == P_L_ON_LADDER)
+	{
+		_isGround = true;
+	}
 	if (!_isGround)
-	{	
-		if (_status == P_R_ON_LADDER || _status == P_L_ON_LADDER)
-		{
-			_isGround = true;
-		}
+	{
 		if (_isShiledUp)
 		{
 			_vec.y = 3.0f;
@@ -303,7 +319,7 @@ void olaf::update()
 	}
 	if (_isFlying && !_isShiledUp)
 	{
-		if (getDistanceSqr(_pos.x, _pos.y, _fallStartPos.x, _fallStartPos.y) > 300*300)
+		if (getDistanceSqr(_pos.x, _pos.y, _fallStartPos.x, _fallStartPos.y) > 300 * 300)
 		{
 			if (_status == P_R_FLYING)
 			{
@@ -326,7 +342,7 @@ void olaf::update()
 		_fallStartPos.x = _pos.x;
 		_fallStartPos.y = _pos.y;
 	}
-	_rc = RectMakeCenter(_pos.x, _pos.y, 128, 128);
+
 	if (_isShiledUp)
 	{
 		_shiledWidth = 128;
@@ -343,7 +359,7 @@ void olaf::update()
 			_shiledX = _rc.right - _shiledWidth;
 			_shiledY = _rc.top;
 		}
-		else if( _status == P_L_MOVE || _status == P_L_IDLE)
+		else if (_status == P_L_MOVE || _status == P_L_IDLE)
 		{
 			_shiledWidth = 20;
 			_shiledHeight = 128;
@@ -351,11 +367,28 @@ void olaf::update()
 			_shiledY = _rc.top;
 		}
 	}
-	if (_status == P_L_ON_LADDER || _status == P_R_ON_LADDER)
-	{
 
+	if (_isLadderMotion)
+	{
+		onLadderMotionStart();
+		_isLadderMotion = false;
 	}
 
+	if (_status != P_R_ON_LADDER && _status != P_L_ON_LADDER)
+	{
+		_ladderStatus = P_LADDER_NULL;
+	}
+	if (_ladderStatus == P_LADDER_PAUSE)
+	{
+		_motion->pause();
+	}
+
+	if (_ladderStatus == P_LADDER_DOWN)
+	{
+		_motion->resume();
+	}
+
+	_rc = RectMakeCenter(_pos.x, _pos.y, 128, 128);
 	_shiled = RectMake(_shiledX, _shiledY, _shiledWidth, _shiledHeight);
 }
 
@@ -485,7 +518,7 @@ void olaf::olafKeyInput()
 			}
 			else
 			{
-				if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
+				if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 				{
 					if (_status != P_R_STUN) _isRightMove = true;
 
@@ -503,7 +536,7 @@ void olaf::olafKeyInput()
 						_motion->pause();
 					}
 				}
-				if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+				if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
 				{
 					if (_status != P_L_STUN) _isLeftMove = true;
 

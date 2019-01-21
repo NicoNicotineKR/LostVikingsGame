@@ -33,7 +33,7 @@ HRESULT scene2_1::init()
 		_isInvenMode = false;	
 	}
 	
-	_ladderRc = RectMake(WINSIZEX / 2, 0, 100, 500);
+	_ladderRc = RectMake(900, 120, 100, 315);
 	_pm->setLadderRc(_ladderRc);
 	return S_OK;
 }

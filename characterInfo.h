@@ -20,6 +20,7 @@ protected:
 	E_PLAYER_STATUS _ladderStatus;	//사다리 타고있는 상태
 	float _motion_Count;			// 캐릭터 가만있으면 모션띄우는거
 	bool _isFlying;				// 캐릭터 공중에 떠있는지
+	bool _isLadderMotion;		// 사다리 모션을 실행하는 불
 	animation* _motion;			// 캐릭터 모션
 
 	float _cameraX;				// 맵 카메라 담을 공간 x
@@ -82,5 +83,9 @@ public:
 	//사다리 status 겟셋(기)
 	E_PLAYER_STATUS getLadderStatus() { return _ladderStatus; }
 	void			setLadderStatus(E_PLAYER_STATUS ladderStatus) { _ladderStatus = ladderStatus; }
+
+	void			setPostionX(float posX) { _pos.x = posX; }
+
+	void			setIsLadderMotion(bool isLadderMotion) { _isLadderMotion = isLadderMotion; }
 };
 
