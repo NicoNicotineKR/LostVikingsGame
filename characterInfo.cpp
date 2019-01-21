@@ -13,12 +13,12 @@ characterInfo::~characterInfo()
 
 HRESULT characterInfo::init()
 {
+	
 	_status = P_R_IDLE;
 
 	_speed = 5.0f;
 
 	_motion_Count = 0;
-
 	return S_OK;
 }
 
@@ -28,7 +28,7 @@ void characterInfo::release()
 
 void characterInfo::update()
 {
-	
+
 
 	//===========유형우추가===============
 	//===========픽셀충돌실험용============

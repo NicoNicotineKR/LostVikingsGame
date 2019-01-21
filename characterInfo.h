@@ -1,6 +1,8 @@
 #pragma once
 #include "gameNode.h"
 
+class scene2_1;
+
 class characterInfo : public gameNode
 {
 protected:
@@ -15,13 +17,13 @@ protected:
 	bool _isPlaying;			// 캐릭터 플레이중인지 여부
 	bool _isAlive;				// 캐릭터 살아있는지 여부
 	E_PLAYER_STATUS _status;	// 캐릭터 상태
+	E_PLAYER_STATUS _ladderStatus;	//사다리 타고있는 상태
 	float _motion_Count;			// 캐릭터 가만있으면 모션띄우는거
 	bool _isFlying;				// 캐릭터 공중에 떠있는지
 	animation* _motion;			// 캐릭터 모션
 
 	float _cameraX;				// 맵 카메라 담을 공간 x
 	float _cameraY;				// 맵 카메라 담을 공간 y
-
 
 	//픽셀충돌
 	//===========유형우추가============
@@ -71,5 +73,14 @@ public:
 	bool getIsPlaying() { return _isPlaying; }
 	void setIsPlaying(bool isPlaying) { _isPlaying = isPlaying; }
 	
+	RECT getPlayerRc() { return _rc; }
+	
+	//status 겟셋(기)
+	E_PLAYER_STATUS getStatus() { return _status; }
+	void			setStatus(E_PLAYER_STATUS status) { _status = status; }
+
+	//사다리 status 겟셋(기)
+	E_PLAYER_STATUS getLadderStatus() { return _ladderStatus; }
+	void			setLadderStatus(E_PLAYER_STATUS ladderStatus) { _ladderStatus = ladderStatus; }
 };
 
