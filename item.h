@@ -1,4 +1,7 @@
 #pragma once
+#include "gameNode.h"
+
+
 
 //enum E_ITEMICONS {
 //	E_EMPTY = 0,
@@ -9,10 +12,42 @@
 //};
 
 
-class item
+class item : public gameNode
 {
+protected:
+	struct tagItemInfo {
+		image* img;
+		RECT rc;
+		POINT pos;
+		E_ITEMICONS kindof;
+
+
+	};
+
+	tagItemInfo _itemInfo;
+
+
 public:
 	item();
 	~item();
+
+	virtual HRESULT init();
+	virtual void release();
+	virtual void update();
+	virtual void render();
+
+	virtual void UsingFunc();
+
+	RECT getRc() { return _itemInfo.rc; }
+
+	POINT getPos() { return _itemInfo.pos; }
+
+	image* getImg() { return _itemInfo.img; }
+
+	int getPosX() { return _itemInfo.pos.x; }
+	int getPosY() { return _itemInfo.pos.y; }
+
+
+
 };
 

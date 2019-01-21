@@ -5,6 +5,7 @@
 #include "camera.h"
 #include "playerMgr.h"
 #include "invenUI.h"
+#include "itemMgr.h"
 
 //20190122형우추가
 #include "objectMgr.h"
@@ -23,6 +24,8 @@ private:
 
 	invenUI* _invenUI;		//	재만추가
 	bool _isInvenMode;
+	
+	itemMgr* _itemMgr;
 
 	//20190122형우추가
 	objectMgr* _objectMgr;
