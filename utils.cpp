@@ -93,8 +93,8 @@ namespace BRAVO_UTIL
 			//À§°Ë»ö
 		case 1:
 			pixelProbe = y - probe;
-			maxPos = y - searchRange;
-			for (pixelProbe += searchRange; pixelProbe > maxPos; pixelProbe++) {
+			maxPos = pixelProbe - searchRange;
+			for (pixelProbe += searchRange; pixelProbe > maxPos; pixelProbe--) {
 				COLORREF color = GetPixel(dc, x, pixelProbe);
 				if ((color == rgb)) {
 					*isCol = true;
