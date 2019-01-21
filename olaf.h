@@ -42,7 +42,7 @@ public:
 
 	static void rightIdle(void* obj);
 	static void leftIdle(void* obj);
-
+	static void hitDead(void* obj);
 
 };
 
