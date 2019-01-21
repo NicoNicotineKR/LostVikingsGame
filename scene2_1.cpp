@@ -23,7 +23,7 @@ HRESULT scene2_1::init()
 
 	_pm = new playerMgr;
 	_pm->init();
-
+	
 	playerSelect = 0;
 
 	//	재만 추가
@@ -33,13 +33,14 @@ HRESULT scene2_1::init()
 		_isInvenMode = false;	
 	}
 	
-
-
+	_ladderRc = RectMake(WINSIZEX / 2, 0, 100, 500);
+	_pm->setLadderRc(_ladderRc);
 	return S_OK;
 }
 
 void scene2_1::release()
 {
+
 }
 
 void scene2_1::update()
@@ -125,8 +126,8 @@ void scene2_1::update()
 	for (int i = 0; i < _pm->getVCharInfo().size(); i++)
 	{
 		_pm->getVCharInfo()[i]->UpdateCameraPos(_camera->Getmapx(), _camera->Getmapy());
-		_pm->getVCharInfo()[i]->update();
 	}
+	_pm->update();
 }
 
 void scene2_1::render()
@@ -135,7 +136,14 @@ void scene2_1::render()
 
 	_mapImgPixel->render(getMemDC(), 0, 0, _camera->Getmapx() - WINSIZEX / 2, _camera->Getmapy() - WINSIZEY / 2, WINSIZEX, WINSIZEY);
 
+	Rectangle(getMemDC(), _ladderRc.left - _camera->Getmapx() + WINSIZEX / 2
+		, _ladderRc.top - _camera->Getmapy() + WINSIZEY / 2
+		, _ladderRc.right - _camera->Getmapx() + WINSIZEX / 2
+		, _ladderRc.bottom - _camera->Getmapy() + WINSIZEY / 2);
+
 	_pm->render();
 
 	_invenUI->render();
+
+
 }

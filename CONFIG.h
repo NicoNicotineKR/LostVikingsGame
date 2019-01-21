@@ -35,28 +35,28 @@ enum E_SCENE_INDEX {
 enum E_PLAYER_STATUS {
 	P_R_IDLE = 0,		//	player right stop
 	P_L_IDLE,			//	player left  stop
-						
+
 	P_R_MOVE,			//	player right move
 	P_L_MOVE,			//	player left  move
-						
+
 	P_R_ON_LADDER,		//	player right on ladder
 	P_L_ON_LADDER,		//	player left	 on ladder
 
 	P_R_HIT,			//	player right hit
 	P_L_HIT,			//	player left	 hit
-						
+
 	P_R_WALL_PUSH,		//	player right wall push
 	P_L_WALL_PUSH,		//	player left	 wall push
-						
+
 	P_R_HIT_DEATH,		//	player right hit death
 	P_L_HIT_DEATH,		//	player left	 hit death
-						
+
 	P_R_WATER_DEATH,	//	player right water death
 	P_L_WATER_DEATH,	//	player left  water death
-						
+
 	P_R_FALL_DEATH,		//	player right falldown death
 	P_L_FALL_DEATH,		//	player left  falldown death
-						
+
 	P_R_FLYING,			//	player right flying - no damege
 	P_L_FLYING,			//	player left  flying - no damege
 
@@ -68,10 +68,10 @@ enum E_PLAYER_STATUS {
 
 	P_R_MOTION_ONE,		//	player right motion1 - over time to blink eye(eric, baleog) & nostril dig(olaf)
 	P_L_MOTION_ONE,		//	player left  motion1 - over time to blink eye(eric, baleog) & nostril dig(olaf)
-						
+
 	P_R_MOTION_TWO,		//	player right motion2 - over time to motion start
 	P_L_MOTION_TWO,		//	player left	 motion2 - over time to motion start
-	 
+
 	P_R_SKILL_ONE,		//	right eric(jump), olaf(shiled switch), baleog(sword)
 	P_L_SKILL_ONE,		//	left  eric(jump), olaf(shiled switch), baleog(sword)
 
@@ -81,9 +81,12 @@ enum E_PLAYER_STATUS {
 	P_R_BREATH = 30,	//	에릭 전용 숨쉬는 모션 이넘값
 	P_L_BREATH,
 
-	P_R_JUMP = 32,		// 에릭 점프하는거
-	P_L_JUMP
+	P_LADDER_PAUSE = 32,    //32
+	P_LADDER_UP,
+	P_LADDER_DOWN
 };
+
+
 
 //	============	알아서 추가하시오		============
 

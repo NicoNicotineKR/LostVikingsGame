@@ -21,6 +21,8 @@ private:
 	invenUI* _invenUI;		//	재만추가
 	bool _isInvenMode;
 
+	RECT _ladderRc;
+
 
 public:
 	scene2_1();
