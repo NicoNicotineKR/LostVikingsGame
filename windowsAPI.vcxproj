@@ -23,7 +23,7 @@
     <ProjectGuid>{BE5C2545-DA5C-402F-8068-3E1EDF185C1C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>windowsAPI</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -165,6 +165,14 @@
     <ClInclude Include="keyManager.h" />
     <ClInclude Include="mainmenu.h" />
     <ClInclude Include="mainmenuUI.h" />
+    <ClInclude Include="object1.h" />
+    <ClInclude Include="object2.h" />
+    <ClInclude Include="object3.h" />
+    <ClInclude Include="object4.h" />
+    <ClInclude Include="object5.h" />
+    <ClInclude Include="object6.h" />
+    <ClInclude Include="objectMgr.h" />
+    <ClInclude Include="objects.h" />
     <ClInclude Include="olaf.h" />
     <ClInclude Include="playerMgr.h" />
     <ClInclude Include="playGround.h" />
@@ -202,6 +210,14 @@
     <ClCompile Include="keyManager.cpp" />
     <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="mainmenuUI.cpp" />
+    <ClCompile Include="object1.cpp" />
+    <ClCompile Include="object2.cpp" />
+    <ClCompile Include="object3.cpp" />
+    <ClCompile Include="object4.cpp" />
+    <ClCompile Include="object5.cpp" />
+    <ClCompile Include="object6.cpp" />
+    <ClCompile Include="objectMgr.cpp" />
+    <ClCompile Include="objects.cpp" />
     <ClCompile Include="olaf.cpp" />
     <ClCompile Include="playerMgr.cpp" />
     <ClCompile Include="playGround.cpp" />

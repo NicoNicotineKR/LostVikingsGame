@@ -58,6 +58,9 @@
     <Filter Include="PlayGround\UI">
       <UniqueIdentifier>{8b810d94-7525-491f-a153-025b03b86313}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\objects">
+      <UniqueIdentifier>{fc8ba861-b398-4f8b-ae62-e90f1fa33c54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -168,6 +171,30 @@
     <ClInclude Include="mainmenuUI.h">
       <Filter>PlayGround\UI</Filter>
     </ClInclude>
+    <ClInclude Include="objects.h">
+      <Filter>PlayGround\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="objectMgr.h">
+      <Filter>PlayGround\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="object6.h">
+      <Filter>PlayGround\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="object5.h">
+      <Filter>PlayGround\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="object4.h">
+      <Filter>PlayGround\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="object3.h">
+      <Filter>PlayGround\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="object2.h">
+      <Filter>PlayGround\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="object1.h">
+      <Filter>PlayGround\objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -262,6 +289,30 @@
     </ClCompile>
     <ClCompile Include="mainmenuUI.cpp">
       <Filter>PlayGround\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="objects.cpp">
+      <Filter>PlayGround\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="objectMgr.cpp">
+      <Filter>PlayGround\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="object6.cpp">
+      <Filter>PlayGround\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="object5.cpp">
+      <Filter>PlayGround\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="object4.cpp">
+      <Filter>PlayGround\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="object3.cpp">
+      <Filter>PlayGround\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="object2.cpp">
+      <Filter>PlayGround\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="object1.cpp">
+      <Filter>PlayGround\objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

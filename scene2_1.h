@@ -6,6 +6,9 @@
 #include "playerMgr.h"
 #include "invenUI.h"
 
+//20190122형우추가
+#include "objectMgr.h"
+
 class scene2_1 : public gameNode
 {
 private:
@@ -21,7 +24,8 @@ private:
 	invenUI* _invenUI;		//	재만추가
 	bool _isInvenMode;
 
-	RECT _ladderRc;
+	//20190122형우추가
+	objectMgr* _objectMgr;
 
 
 public:
@@ -32,6 +36,12 @@ public:
 	void release();
 	void update();
 	void render();
+
+	//20190122형우추가
+	void WorkObject1();
+	void WorkObject2();
+	void WorkObject3();
+	void WorkObject4();
 
 	image* GetImage() { return _mapImg; }
 

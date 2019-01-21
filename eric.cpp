@@ -84,47 +84,47 @@ void eric::update()
 
 	
 
-	//물에 닿았으면
-	if (_isWaterDead)
-	{
-		_isWaterDead = false;
-		_isDeadAni = true;
-		//오른쪽이면
-		if (_status == P_R_MOVE || _status == P_R_IDLE || _status == P_R_BREATH || _status == P_R_SKILL_ONE || _status == P_R_SKILL_TWO || _status == P_R_FALLING || _status == P_R_FLYING ||
-			_status == P_R_STUN || _status == P_R_WALL_PUSH)
-		{
-			_motion->stop();
-			_status == P_R_WATER_DEATH;
-			_motion = KEYANIMANAGER->findAnimation("ericRightWaterDead");
-			_motion->start();
-		}
-		//왼쪽이면
-		else
-		{
-			_motion->stop();
-			_status == P_L_WATER_DEATH;
-			_motion = KEYANIMANAGER->findAnimation("ericLeftWaterDead");
-			_motion->start();
-		}
-	}
-	else if (_isDeadAni)
-	{
-		if (_motion->isPlay() == FALSE)
-		{
-			_isPlaying = false;
-			_pos = { -100,-100 };
-		}
-	
-	}
-	//물에 닿지 않았으면
-	else if (!_isWaterDead && !_isDeadAni)
-	{
-		// 물과 충돌하고 있는지
-		_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
-			IMAGEMANAGER->findImage("씬2_1픽셀"),
-			IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
-			RGB(0, 0, 255),
-			&_isWaterDead);
+	////물에 닿았으면
+	//if (_isWaterDead)
+	//{
+	//	_isWaterDead = false;
+	//	_isDeadAni = true;
+	//	//오른쪽이면
+	//	if (_status == P_R_MOVE || _status == P_R_IDLE || _status == P_R_BREATH || _status == P_R_SKILL_ONE || _status == P_R_SKILL_TWO || _status == P_R_FALLING || _status == P_R_FLYING ||
+	//		_status == P_R_STUN || _status == P_R_WALL_PUSH)
+	//	{
+	//		_motion->stop();
+	//		_status == P_R_WATER_DEATH;
+	//		_motion = KEYANIMANAGER->findAnimation("ericRightWaterDead");
+	//		_motion->start();
+	//	}
+	//	//왼쪽이면
+	//	else
+	//	{
+	//		_motion->stop();
+	//		_status == P_L_WATER_DEATH;
+	//		_motion = KEYANIMANAGER->findAnimation("ericLeftWaterDead");
+	//		_motion->start();
+	//	}
+	//}
+	//else if (_isDeadAni)
+	//{
+	//	if (_motion->isPlay() == FALSE)
+	//	{
+	//		_isPlaying = false;
+	//		_pos = { -100,-100 };
+	//	}
+	//
+	//}
+	////물에 닿지 않았으면
+	//else if (!_isWaterDead && !_isDeadAni)
+	//{
+	//	// 물과 충돌하고 있는지
+	//	_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
+	//		IMAGEMANAGER->findImage("씬2_1픽셀"),
+	//		IMAGEMANAGER->findImage("씬2_1픽셀")->getMemDC(),
+	//		RGB(0, 0, 255),
+	//		&_isWaterDead);
 
 		if (_isPlaying && !_isFlying && _status != P_R_STUN && _status != P_L_STUN)		// 플레이 중이고 공중에 있는게 아니라면
 		{
@@ -403,7 +403,7 @@ void eric::update()
 
 		_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
 		//_rc = RectMake(_pos.x - _cameraX + WINSIZEX / 2, _pos.y - _cameraY + WINSIZEY / 2, _img->getFrameWidth(),_img->getFrameHeight());
-	}
+	//}
 }
 
 void eric::render()

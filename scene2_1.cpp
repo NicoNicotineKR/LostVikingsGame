@@ -33,8 +33,12 @@ HRESULT scene2_1::init()
 		_isInvenMode = false;	
 	}
 	
-	_ladderRc = RectMake(900, 120, 100, 315);
-	_pm->setLadderRc(_ladderRc);
+	//_ladderRc = RectMake(900, 120, 100, 315);
+	//_pm->setLadderRc(_ladderRc);
+
+	//20190122형우추가
+	_objectMgr = new objectMgr;
+	_objectMgr->init();
 	return S_OK;
 }
 
@@ -128,22 +132,232 @@ void scene2_1::update()
 		_pm->getVCharInfo()[i]->UpdateCameraPos(_camera->Getmapx(), _camera->Getmapy());
 	}
 	_pm->update();
+
+	//20190122형우추가
+	_objectMgr->update();
+
+	//20190122형우추가
+	{
+		vector<objects*>					_vObjects = _objectMgr->getVObjects();
+		vector<objects*>::iterator			_viObjects = _objectMgr->getVIObjects();
+
+		for (_viObjects = _vObjects.begin(); _viObjects != _vObjects.end(); _viObjects++)
+		{
+			(*_viObjects)->setCameraX(_camera->Getmapx());
+			(*_viObjects)->setCameraY(_camera->Getmapy());
+		}
+	}
+
+	//20190122형우추가
+	//연쇄폭발 지형
+	WorkObject1();
+	//문따는문과 열쇠 
+	WorkObject2();
+	//내려오는 나무다리와 버튼
+	WorkObject3();
+	//사다리
+	WorkObject4();
+
 }
 
 void scene2_1::render()
 {
 	_mapImg->render(getMemDC(), 0, 0, _camera->Getmapx() - WINSIZEX / 2, _camera->Getmapy() - WINSIZEY / 2, WINSIZEX, WINSIZEY);
 
-	_mapImgPixel->render(getMemDC(), 0, 0, _camera->Getmapx() - WINSIZEX / 2, _camera->Getmapy() - WINSIZEY / 2, WINSIZEX, WINSIZEY);
+	//_mapImgPixel->render(getMemDC(), 0, 0, _camera->Getmapx() - WINSIZEX / 2, _camera->Getmapy() - WINSIZEY / 2, WINSIZEX, WINSIZEY);
 
-	Rectangle(getMemDC(), _ladderRc.left - _camera->Getmapx() + WINSIZEX / 2
-		, _ladderRc.top - _camera->Getmapy() + WINSIZEY / 2
-		, _ladderRc.right - _camera->Getmapx() + WINSIZEX / 2
-		, _ladderRc.bottom - _camera->Getmapy() + WINSIZEY / 2);
+	//Rectangle(getMemDC(), _ladderRc.left - _camera->Getmapx() + WINSIZEX / 2
+	//	, _ladderRc.top - _camera->Getmapy() + WINSIZEY / 2
+	//	, _ladderRc.right - _camera->Getmapx() + WINSIZEX / 2
+	//	, _ladderRc.bottom - _camera->Getmapy() + WINSIZEY / 2);
 
 	_pm->render();
 
+	//20190122형우추가
+	_objectMgr->render();
+
 	_invenUI->render();
+	
+}
 
+void scene2_1::WorkObject1()
+{
+	//구조체를 담는 벡터컨테이너
+	vector<tagObjects>				_vObject1 = _objectMgr->getObject1()->getvObjects();
+	vector<tagObjects>::iterator	_viObject1 = _objectMgr->getObject1()->getviObjects();
 
+	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD1))
+	{
+		//이건엄마꺼가아닌데? 직접인데?
+		_objectMgr->getObject1()->setMainActivate(true);
+	}
+
+	//플레이어 조건으로 수정하시오(플레이어 렉트와 닿을시)
+
+	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD2))
+	{
+		for (_viObject1 = _vObject1.begin(); _viObject1 != _vObject1.end(); _viObject1++)
+		{
+			_vObject1.erase(_viObject1);
+			_objectMgr->getObject1()->setvObject(_vObject1);
+			break;
+		}
+	}
+}
+
+void scene2_1::WorkObject2()
+{
+	//오브젝트2
+	vector<tagObjects>				_vObject2 = _objectMgr->getObject2()->getvObjects();
+	vector<tagObjects>::iterator	_viObject2 = _objectMgr->getObject2()->getviObjects();
+
+	//오브젝트5
+	vector<tagObjects>				_vObject5 = _objectMgr->getObject5()->getvObjects();
+	vector<tagObjects>::iterator	_viObject5 = _objectMgr->getObject5()->getviObjects();
+
+	RECT temp;
+	RECT tempPlayer;
+
+	//첫번째문
+	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD4))
+	{
+		for (_viObject2 = _vObject2.begin(); _viObject2 != _vObject2.end(); _viObject2++)
+		{
+			for (_viObject5 = _vObject5.begin(); _viObject5 != _vObject5.end();)
+			{
+				//만약 1번열쇠면
+				if (_viObject5->_property == 1)
+				{
+					//문의 성질 1가진녀석을
+					if (_viObject2->_property == 1)
+					{
+						//2번문을열고
+						_viObject2->_start = true;
+
+						//5번열쇠를 지운다.
+						_vObject5.erase(_viObject5);
+						//기모찌
+						_objectMgr->getObject2()->setvObject(_vObject2);
+						_objectMgr->getObject5()->setvObject(_vObject5);
+						break;
+					}
+				}
+				_viObject5++;
+			}
+		}
+	}
+
+	//두번째문
+	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD5))
+	{
+		for (_viObject2 = _vObject2.begin(); _viObject2 != _vObject2.end(); _viObject2++)
+		{
+			for (_viObject5 = _vObject5.begin(); _viObject5 != _vObject5.end();)
+			{
+				//만약 1번열쇠면
+				if (_viObject2->_property == 2)
+				{
+					//문의 성질 1가진녀석을
+					if (_viObject5->_property == 2)
+					{
+						//2번문을열고
+						_viObject2->_start = true;
+
+						//5번열쇠를 지운다.
+						_vObject5.erase(_viObject5);
+						//기모찌
+						_objectMgr->getObject2()->setvObject(_vObject2);
+						_objectMgr->getObject5()->setvObject(_vObject5);
+						break;
+					}
+				}
+				_viObject5++;
+
+			}
+		}
+	}
+
+}
+
+void scene2_1::WorkObject3()
+{
+	//오브젝트3
+	vector<tagObjects>				_vObject3 = _objectMgr->getObject3()->getvObjects();
+	vector<tagObjects>::iterator	_viObject3 = _objectMgr->getObject3()->getviObjects();
+
+	//오브젝트6
+	vector<tagObjects>				_vObject6 = _objectMgr->getObject6()->getvObjects();
+	vector<tagObjects>::iterator	_viObject6 = _objectMgr->getObject6()->getviObjects();
+
+	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD7))
+	{
+		for (_viObject3 = _vObject3.begin(); _viObject3 != _vObject3.end(); _viObject3++)
+		{
+			for (_viObject6 = _vObject6.begin(); _viObject6 != _vObject6.end();)
+			{
+				//만약 1번열쇠면
+				if (_viObject3->_property == 1)
+				{
+					//문의 성질 1가진녀석을
+					if (_viObject6->_property == 1)
+					{
+						//2번문을열고
+						_viObject3->_start = true;
+
+						//5번열쇠를 지운다.
+						_vObject6.erase(_viObject6);
+						//기모찌
+						_objectMgr->getObject3()->setvObject(_vObject3);
+						_objectMgr->getObject6()->setvObject(_vObject6);
+						break;
+					}
+				}
+				_viObject6++;
+			}
+		}
+	}
+
+	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD8))
+	{
+		for (_viObject3 = _vObject3.begin(); _viObject3 != _vObject3.end(); _viObject3++)
+		{
+			for (_viObject6 = _vObject6.begin(); _viObject6 != _vObject6.end();)
+			{
+				//만약 1번열쇠면
+				if (_viObject3->_property == 2)
+				{
+					//문의 성질 1가진녀석을
+					if (_viObject6->_property == 2)
+					{
+						//2번문을열고
+						_viObject3->_start = true;
+
+						//5번열쇠를 지운다.
+						_vObject6.erase(_viObject6);
+						//기모찌
+						_objectMgr->getObject3()->setvObject(_vObject3);
+						_objectMgr->getObject6()->setvObject(_vObject6);
+						break;
+					}
+				}
+				_viObject6++;
+			}
+		}
+	}
+
+}
+
+void scene2_1::WorkObject4()
+{
+	//오브젝트4
+	vector<tagObjects>				_vObject4 = _objectMgr->getObject4()->getvObjects();
+	vector<tagObjects>::iterator	_viObject4 = _objectMgr->getObject4()->getviObjects();
+
+	//플레이어 와의 조건 넣으셈
+	//for (_viObject4 = _vObject4.begin(); _viObject4 != _vObject4.end(); _viObject4++)
+	//{
+	//
+	//
+	//
+	//}
 }
