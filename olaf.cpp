@@ -84,10 +84,10 @@ HRESULT olaf::init()
 	KEYANIMANAGER->addArrayFrameAnimation("olafLeftFallDown", "olaf_Sprite", leftFallDown, 5, 3, false, leftIdle,this);								//¿ÞÂÊ  Ãß¶ô(damage)
 
 	int rightFallDownDead[] = { 69,70,71 };
-	KEYANIMANAGER->addArrayFrameAnimation("olafRightFallDownDead", "olaf_Sprite", rightFallDownDead, 3, 10, false);									//¿À¸¥ÂÊ Ãß¶ô»ç
+	KEYANIMANAGER->addArrayFrameAnimation("olafRightFallDownDead", "olaf_Sprite", rightFallDownDead, 3, 5, false,hitDead,this);									//¿À¸¥ÂÊ Ãß¶ô»ç
 
 	int leftFallDownDead[] = { 79,78,77 };
-	KEYANIMANAGER->addArrayFrameAnimation("olafLeftFallDownDead", "olaf_Sprite", leftFallDownDead, 3, 10, false);									//¿ÞÂÊ   Ãß¶ô»ç
+	KEYANIMANAGER->addArrayFrameAnimation("olafLeftFallDownDead", "olaf_Sprite", leftFallDownDead, 3, 5, false, hitDead, this);									//¿ÞÂÊ   Ãß¶ô»ç
 
 	int onLadder[] = { 40,41,42,43 };
 	KEYANIMANAGER->addArrayFrameAnimation("olafOnLadder", "olaf_Sprite", onLadder, 4, 10, true);													//»ç´Ù¸®¿¡ ¿Ã¶óÅ½
@@ -102,7 +102,7 @@ HRESULT olaf::init()
 	KEYANIMANAGER->addArrayFrameAnimation("olafLeftHit", "olaf_Sprite", leftHit, 1, 15, false);														//¿ÞÂÊ   Àû¿¡°Ô ¸ÂÀ½
 
 	int rightHitDead[] = { 80,81,82,83,84,85,86 };
-	KEYANIMANAGER->addArrayFrameAnimation("olafRightHitDead", "olaf_Sprite", rightHitDead, 7, 10, false);											//¿À¸¥ÂÊ ¸Â¾Æ Á×À½
+	KEYANIMANAGER->addArrayFrameAnimation("olafRightHitDead", "olaf_Sprite", rightHitDead, 7, 3, false,hitDead,this);								//¿À¸¥ÂÊ ¸Â¾Æ Á×À½
 
 	int leftHitDead[] = { 94,93,92,91,90,89,88 };
 	KEYANIMANAGER->addArrayFrameAnimation("olafLeftHitDead", "olaf_Sprite", leftHitDead, 5, 10, false);												//¿ÞÂÊ   ¸Â¾Æ Á×À½
@@ -141,11 +141,12 @@ HRESULT olaf::init()
 
 	_speed = 0;
 	_acceleration = 0;
+	_hp = 3;
+	_isAlive = true;
 	_isPlaying = false;
 	_isShiledUp = false;
 	_isGround = false;
 	_isWall = false;
-
 	_isLadderMotion = false;
 	return S_OK;
 }
@@ -156,282 +157,355 @@ void olaf::release()
 
 void olaf::update()
 {
-	olafKeyInput();
-	characterInfo::update();
-	_vec.y = 0;
-	_vec.x = 0;
-
-	if (!_isWall)
+	if (_isAlive)
 	{
-		move();
-		if (_status == P_L_STUN || _status == P_R_STUN || _status == P_L_WALL_PUSH || _status == P_R_WALL_PUSH)
+		//¹°¿¡ ´ê¾ÒÀ¸¸é
+		if (_isWaterDead)
 		{
+			_isWaterDead = false;
+			_isDeadAni = true;
+			//¿À¸¥ÂÊÀÌ¸é
+			if (_status == P_R_MOVE || _status == P_R_IDLE || _status == P_R_BREATH || _status == P_R_SKILL_ONE || _status == P_R_SKILL_TWO || _status == P_R_FALLING || _status == P_R_FLYING ||
+				_status == P_R_STUN || _status == P_R_WALL_PUSH)
+			{
+				_motion->stop();
+				_status == P_R_WATER_DEATH;
+				_motion = KEYANIMANAGER->findAnimation("olafRightWaterDead");
+				_motion->start();
+			}
+			//¿ÞÂÊÀÌ¸é
+			else
+			{
+				_motion->stop();
+				_status == P_L_WATER_DEATH;
+				_motion = KEYANIMANAGER->findAnimation("olafLeftWaterDead");
+				_motion->start();
+			}
+		}
+		else if (_isDeadAni)
+		{
+			if (_motion->isPlay() == FALSE)
+			{
+				_isPlaying = false;
+				_isAlive = false;
+				_hp = 0;
+				_pos = { -100,-100 };
+			}
+
+		}
+		if (!_isDeadAni)
+		{
+			_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
+				IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"),
+				IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(),
+				RGB(0, 0, 255),
+				&_isWaterDead);
+		}
+
+		olafKeyInput();
+		characterInfo::update();
+		_vec.y = 0;
+		_vec.x = 0;
+
+		if (!_isWall)
+		{
+			move();
+			if (_status == P_L_STUN || _status == P_R_STUN || _status == P_L_WALL_PUSH || _status == P_R_WALL_PUSH)
+			{
+				_vec.x = 0;
+				_vec.y = 0;
+			}
+			_pos.x += _vec.x;
+			_pos.y += _vec.y;
 			_vec.x = 0;
 			_vec.y = 0;
 		}
-		_pos.x += _vec.x;
-		_pos.y += _vec.y;
-		_vec.x = 0;
-		_vec.y = 0;
-	}
 
-	//º®¹Ð¶§
-	if (_status == P_L_MOVE)
-	{
-		_pos.x = PixelColFunction(3, _pos.x, _pos.y, 64, 5, IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"), IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(), RGB(255, 255, 0), &_isWall);
+		//º®¹Ð¶§
+		if (_status == P_L_MOVE)
+		{
+			_pos.x = PixelColFunction(3, _pos.x, _pos.y, 64, 5, IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"), IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(), RGB(255, 255, 0), &_isWall);
+			if (_isWall)
+			{
+				_status = P_L_WALL_PUSH;
+			}
+		}
+		if (_status == P_R_MOVE)
+		{
+			_pos.x = PixelColFunction(2, _pos.x, _pos.y, 64, 5, IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"), IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(), RGB(0, 255, 0), &_isWall);
+			if (_isWall)
+			{
+				_status = P_R_WALL_PUSH;
+			}
+		}
+
+		//³¯´Ù°¡ º®
+		if (_status == P_L_FLYING || _status == P_L_FALLING)
+		{
+			_pos.x = PixelColFunction(3, _pos.x, _pos.y, 64, 5, IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"), IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(), RGB(255, 255, 0), &_isWall);
+		}
+		else if (_status == P_R_FLYING || _status == P_R_FALLING)
+		{
+			_pos.x = PixelColFunction(2, _pos.x, _pos.y, 64, 5, IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"), IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(), RGB(0, 255, 0), &_isWall);
+		}
+
+		// º®¹Ð±â ¾Ö´Ï¸ÅÀÌ¼Ç
 		if (_isWall)
 		{
-			_status = P_L_WALL_PUSH;
-		}
-	}
-	if (_status == P_R_MOVE)
-	{
-		_pos.x = PixelColFunction(2, _pos.x, _pos.y, 64, 5, IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"), IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(), RGB(0, 255, 0), &_isWall);
-		if (_isWall)
-		{
-			_status = P_R_WALL_PUSH;
-		}
-	}
-
-	//³¯´Ù°¡ º®
-	if (_status == P_L_FLYING || _status == P_L_FALLING)
-	{
-		_pos.x = PixelColFunction(3, _pos.x, _pos.y, 64, 5, IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"), IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(), RGB(255, 255, 0), &_isWall);
-	}
-	else if (_status == P_R_FLYING || _status == P_R_FALLING)
-	{
-		_pos.x = PixelColFunction(2, _pos.x, _pos.y, 64, 5, IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"), IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(), RGB(0, 255, 0), &_isWall);
-	}
-
-	// º®¹Ð±â ¾Ö´Ï¸ÅÀÌ¼Ç
-	if (_isWall)
-	{
-		if (_status == P_L_WALL_PUSH)
-		{
-			_motion = KEYANIMANAGER->findAnimation("olafLeftPushWall");
-			_motion->start();
-			_isWall = false;
-		}
-		if (_status == P_R_WALL_PUSH)
-		{
-			_motion = KEYANIMANAGER->findAnimation("olafRightPushWall");
-			_motion->start();
-			_isWall = false;
-		}
-	}
-
-	//¶¥ Ãæµ¹
-
-	if (_status != P_L_ON_LADDER && _status != P_R_ON_LADDER)
-	{
-		_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 10,
-			IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"),
-			IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(),
-			RGB(255, 0, 0),
-			&_isGround);
-	}
-
-
-	if (_isGround)
-	{
-		if (_status == P_R_FLYING && _isRightMove)
-		{
-			_status = P_R_MOVE;
-			moveMotionStart("right");
-		}
-		else if (_status == P_L_FLYING && _isLeftMove)
-		{
-			_status = P_L_MOVE;
-			moveMotionStart("left");
-		}
-
-
-		if (!_isShiledUp)
-		{
-			if (_status == P_R_FALLING)
+			if (_status == P_L_WALL_PUSH)
 			{
-				_status = P_R_STUN;
-				_motion->resume();
+				_motion = KEYANIMANAGER->findAnimation("olafLeftPushWall");
+				_motion->start();
+				_isWall = false;
 			}
-			else if (_status == P_L_FALLING)
+			if (_status == P_R_WALL_PUSH)
 			{
-				_status = P_L_STUN;
-				_motion->resume();
-			}
-		}
-		if (_isFlying)
-		{
-			if (_status == P_L_FLYING)
-			{
-				_status = P_L_IDLE;
-				idleMotionStart("left");
-			}
-			if (_status == P_R_FLYING)
-			{
-				_status = P_R_IDLE;
-				idleMotionStart("right");
+				_motion = KEYANIMANAGER->findAnimation("olafRightPushWall");
+				_motion->start();
+				_isWall = false;
 			}
 		}
 
-		_isFlyMotion = false;
-		_isFlying = false;
-	}
+		//¶¥ Ãæµ¹
 
-	if (_status == P_R_ON_LADDER || _status == P_L_ON_LADDER)
-	{
-		_isGround = true;
-	}
-	if (!_isGround)
-	{
-		if (_isShiledUp)
+		if (_status != P_L_ON_LADDER && _status != P_R_ON_LADDER)
 		{
-			_vec.y = 3.0f;
+			_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 10,
+				IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"),
+				IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(),
+				RGB(255, 0, 0),
+				&_isGround);
 		}
-		else
+
+
+		if (_isGround)
 		{
-			_vec.y = 6.0f;
+			if (_status == P_R_FLYING && _isRightMove)
+			{
+				_status = P_R_MOVE;
+				moveMotionStart("right");
+			}
+			else if (_status == P_L_FLYING && _isLeftMove)
+			{
+				_status = P_L_MOVE;
+				moveMotionStart("left");
+			}
+
+
+			if (!_isShiledUp)
+			{
+				if (_status == P_R_FALLING)
+				{
+					_status = P_R_STUN;
+					_motion->resume();
+					_hp--;
+					if (_hp <= 0)
+					{
+						_motion = KEYANIMANAGER->findAnimation("olafRightFallDownDead");
+						_motion->start();
+					}
+				}
+				else if (_status == P_L_FALLING)
+				{
+					_status = P_L_STUN;
+					_motion->resume();
+					_hp--;
+					if (_hp <= 0)
+					{
+						_motion = KEYANIMANAGER->findAnimation("olafLeftFallDownDead");
+						_motion->start();
+					}
+				}
+			}
+			if (_isFlying)
+			{
+				if (_status == P_L_FLYING)
+				{
+					_status = P_L_IDLE;
+					idleMotionStart("left");
+				}
+				if (_status == P_R_FLYING)
+				{
+					_status = P_R_IDLE;
+					idleMotionStart("right");
+				}
+			}
+
+			_isFlyMotion = false;
+			_isFlying = false;
 		}
-		_pos.y += _vec.y;
-		if (!_isFlying)
+
+		if (_status == P_R_ON_LADDER || _status == P_L_ON_LADDER)
+		{
+			_isGround = true;
+		}
+		if (!_isGround && !_isDeadAni)
+		{
+			if (_isShiledUp)
+			{
+				_vec.y = 3.0f;
+			}
+			else
+			{
+				_vec.y = 6.0f;
+			}
+			_pos.y += _vec.y;
+			if (!_isFlying)
+			{
+				_fallStartPos.x = _pos.x;
+				_fallStartPos.y = _pos.y;
+			}
+			_isFlying = true;
+
+			if (_status == P_R_MOVE)
+				_status = P_R_FLYING;
+			if (_status == P_L_MOVE)
+				_status = P_L_FLYING;
+
+			if (!_isFlyMotion)
+			{
+				_isFlyMotion = true;
+				if (_status == P_R_FLYING)
+				{
+					fallMotionStart("right");
+				}
+				if (_status == P_L_FLYING)
+				{
+					fallMotionStart("left");
+				}
+			}
+		}
+		if (_isFlying && !_isShiledUp)
+		{
+			if (getDistanceSqr(_pos.x, _pos.y, _fallStartPos.x, _fallStartPos.y) > 300 * 300)
+			{
+				if (_status == P_R_FLYING)
+				{
+					_status = P_R_FALLING;
+					_motion = KEYANIMANAGER->findAnimation("olafRightFallDown");
+					_motion->start();
+					_motion->pause();
+				}
+				else if (_status == P_L_FLYING)
+				{
+					_status = P_L_FALLING;
+					_motion = KEYANIMANAGER->findAnimation("olafLeftFallDown");
+					_motion->start();
+					_motion->pause();
+				}
+			}
+		}
+		else if (_isFlying && _isShiledUp)
 		{
 			_fallStartPos.x = _pos.x;
 			_fallStartPos.y = _pos.y;
 		}
-		_isFlying = true;
 
-		if (_status == P_R_MOVE)
-			_status = P_R_FLYING;
-		if (_status == P_L_MOVE)
-			_status = P_L_FLYING;
-
-		if (!_isFlyMotion)
+		if (_isShiledUp)
 		{
-			_isFlyMotion = true;
-			if (_status == P_R_FLYING)
-			{
-				fallMotionStart("right");
-			}
-			if (_status == P_L_FLYING)
-			{
-				fallMotionStart("left");
-			}
-		}
-	}
-	if (_isFlying && !_isShiledUp)
-	{
-		if (getDistanceSqr(_pos.x, _pos.y, _fallStartPos.x, _fallStartPos.y) > 300 * 300)
-		{
-			if (_status == P_R_FLYING)
-			{
-				_status = P_R_FALLING;
-				_motion = KEYANIMANAGER->findAnimation("olafRightFallDown");
-				_motion->start();
-				_motion->pause();
-			}
-			else if (_status == P_L_FLYING)
-			{
-				_status = P_L_FALLING;
-				_motion = KEYANIMANAGER->findAnimation("olafLeftFallDown");
-				_motion->start();
-				_motion->pause();
-			}
-		}
-	}
-	else if (_isFlying && _isShiledUp)
-	{
-		_fallStartPos.x = _pos.x;
-		_fallStartPos.y = _pos.y;
-	}
-
-	if (_isShiledUp)
-	{
-		_shiledWidth = 128;
-		_shiledHeight = 20;
-		_shiledX = _rc.left;
-		_shiledY = _rc.top;
-	}
-	else
-	{
-		if (_status == P_R_MOVE || _status == P_R_IDLE)
-		{
-			_shiledWidth = 20;
-			_shiledHeight = 128;
-			_shiledX = _rc.right - _shiledWidth;
-			_shiledY = _rc.top;
-		}
-		else if (_status == P_L_MOVE || _status == P_L_IDLE)
-		{
-			_shiledWidth = 20;
-			_shiledHeight = 128;
+			_shiledWidth = 128;
+			_shiledHeight = 20;
 			_shiledX = _rc.left;
 			_shiledY = _rc.top;
 		}
-	}
+		else
+		{
+			if (_status == P_R_MOVE || _status == P_R_IDLE)
+			{
+				_shiledWidth = 20;
+				_shiledHeight = 128;
+				_shiledX = _rc.right - _shiledWidth;
+				_shiledY = _rc.top;
+			}
+			else if (_status == P_L_MOVE || _status == P_L_IDLE)
+			{
+				_shiledWidth = 20;
+				_shiledHeight = 128;
+				_shiledX = _rc.left;
+				_shiledY = _rc.top;
+			}
+		}
 
-	if (_isLadderMotion)
-	{
-		onLadderMotionStart();
-		_isLadderMotion = false;
-	}
+		if (_isLadderMotion)
+		{
+			onLadderMotionStart();
+			_isLadderMotion = false;
+		}
 
-	if (_status != P_R_ON_LADDER && _status != P_L_ON_LADDER)
-	{
-		_ladderStatus = P_LADDER_NULL;
-	}
-	if (_ladderStatus == P_LADDER_PAUSE)
-	{
-		_motion->pause();
-	}
+		if (_status != P_R_ON_LADDER && _status != P_L_ON_LADDER)
+		{
+			_ladderStatus = P_LADDER_NULL;
+		}
+		if (_ladderStatus == P_LADDER_PAUSE)
+		{
+			_motion->pause();
+		}
 
-	if (_ladderStatus == P_LADDER_DOWN)
-	{
-		_motion->resume();
-	}
+		if (_ladderStatus == P_LADDER_DOWN)
+		{
+			_motion->resume();
+		}
 
-	_rc = RectMakeCenter(_pos.x, _pos.y, 128, 128);
-	_shiled = RectMake(_shiledX, _shiledY, _shiledWidth, _shiledHeight);
+		_rc = RectMakeCenter(_pos.x, _pos.y, 128, 128);
+		_shiled = RectMake(_shiledX, _shiledY, _shiledWidth, _shiledHeight);
+	}
+	
 }
 
 void olaf::render()
 {
-	
-	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
-	
-	_img->aniRender(getMemDC(), (_pos.x -_img->getFrameWidth() / 2) - _cameraX + WINSIZEX / 2, 
-		(_pos.y - _img->getFrameHeight() / 2) - _cameraY + WINSIZEY / 2, 
-		_motion);
-	//Rectangle(getMemDC(), _shiled.left - _cameraX + WINSIZEX / 2, _shiled.top - _cameraY + WINSIZEY / 2, _shiled.right - _cameraX + WINSIZEX / 2, _shiled.bottom - _cameraY + WINSIZEY / 2);
+	if (_isAlive)
+	{
+		//Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
 
-	//olaf _status È®ÀÎ¿ë
-	char str[128];
-	sprintf_s(str, "%d", _status, strlen(str));
-	TextOut(getMemDC(), 100, 100, str, strlen(str));
+		_img->aniRender(getMemDC(), (_pos.x - _img->getFrameWidth() / 2) - _cameraX + WINSIZEX / 2,
+			(_pos.y - _img->getFrameHeight() / 2) - _cameraY + WINSIZEY / 2,
+			_motion);
+		//Rectangle(getMemDC(), _shiled.left - _cameraX + WINSIZEX / 2, _shiled.top - _cameraY + WINSIZEY / 2, _shiled.right - _cameraX + WINSIZEX / 2, _shiled.bottom - _cameraY + WINSIZEY / 2);
+
+		//olaf _status È®ÀÎ¿ë
+		char str[128];
+		sprintf_s(str, "%d", _status, strlen(str));
+		TextOut(getMemDC(), 100, 100, str, strlen(str));
+	}
 }
 
 void olaf::move()
 {
-	if (_isRightMove)
+	if (!_isDeadAni)
 	{
-		_vec.x += 3.0f;
-	}
-	else if (_isLeftMove)
-	{
-		_vec.x -= 3.0f;
-	}
+		if (_isRightMove)
+		{
+			_vec.x += 3.0f;
+		}
+		else if (_isLeftMove)
+		{
+			_vec.x -= 3.0f;
+		}
 
-	if (_ladderStatus == P_LADDER_UP)
-	{
-		_vec.y -= 3.0f;
-	}
+		if (_ladderStatus == P_LADDER_UP)
+		{
+			_vec.y -= 3.0f;
+		}
 
-	if (_ladderStatus == P_LADDER_DOWN)
-	{
-		_vec.y += 3.0f;
+		if (_ladderStatus == P_LADDER_DOWN)
+		{
+			_vec.y += 3.0f;
+		}
 	}
 }
 
 void olaf::olafKeyInput()
 {
+	if (KEYMANAGER->isOnceKeyDown('D'))
+	{
+		_hp--;
+		if (_hp <= 0)
+		{
+			_motion = KEYANIMANAGER->findAnimation("olafRightHitDead");
+			_motion->start();
+		}
+	}
 	//¹æÆÐ ¾÷´Ù¿î.
 	if (_isPlaying)
 	{
@@ -741,4 +815,12 @@ void olaf::leftIdle(void* obj)
 	Olaf->setCharacterStatus(P_L_IDLE);
 	Olaf->setCharacterMotion(KEYANIMANAGER->findAnimation("olafLeftShiledDownIdle"));
 	Olaf->getCharacterMotion()->start();
+}
+
+void olaf::hitDead(void* obj)
+{
+	olaf* Olaf = (olaf*)obj;
+
+	Olaf->_isAlive = false;
+	Olaf->_hp = 0;
 }

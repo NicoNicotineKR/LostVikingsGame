@@ -32,6 +32,14 @@ enum E_SCENE_INDEX {
 
 };
 
+enum E_ITEMICONS {
+	E_EMPTY = 0,
+	E_BOMB,
+	E_KEY_RED,
+	E_KEY_YELLOW,
+	E_MEAT,
+};
+
 enum E_PLAYER_STATUS {
 	P_R_IDLE = 0,		//	player right stop
 	P_L_IDLE,			//	player left  stop

@@ -49,11 +49,14 @@ void object6::render()
 {
 	for (_viObjects = _vObjects.begin(); _viObjects != _vObjects.end(); _viObjects++)
 	{
-		//Rectangle(getMemDC(),
-		//	_viObjects->_rc.left - _cameraX + WINSIZEX / 2,
-		//	_viObjects->_rc.top - _cameraY + WINSIZEY / 2,
-		//	_viObjects->_rc.right - _cameraX + WINSIZEX / 2,
-		//	_viObjects->_rc.bottom - _cameraY + WINSIZEY / 2);
+		if (KEYMANAGER->isToggleKey(VK_F12))
+		{
+			Rectangle(getMemDC(),
+				_viObjects->_rc.left - _cameraX + WINSIZEX / 2,
+				_viObjects->_rc.top - _cameraY + WINSIZEY / 2,
+				_viObjects->_rc.right - _cameraX + WINSIZEX / 2,
+				_viObjects->_rc.bottom - _cameraY + WINSIZEY / 2);
+		}
 
 		_viObjects->_image->render(getMemDC()
 			, _viObjects->_rc.left - _cameraX + WINSIZEX / 2

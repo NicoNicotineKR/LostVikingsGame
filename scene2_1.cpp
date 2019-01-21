@@ -31,6 +31,11 @@ HRESULT scene2_1::init()
 		_invenUI = new invenUI;
 		_invenUI->init();
 		_isInvenMode = false;	
+
+		_itemMgr = new itemMgr;
+		_itemMgr->init();
+		_itemMgr->getAddressLinkToCamera(_camera);
+
 	}
 	
 	//_ladderRc = RectMake(900, 120, 100, 315);
@@ -101,6 +106,9 @@ void scene2_1::update()
 	//	재만추가 : 인벤모드가 아니면, 카메라업뎃/ 적용
 	if (!_isInvenMode)
 	{
+		
+		_itemMgr->update();			//	아이템매니저 업뎃 추가
+
 		if (playerSelect == P_ERIC)
 		{
 			//2019.01.17 오후11시추가 ===================
@@ -172,6 +180,7 @@ void scene2_1::render()
 	//	, _ladderRc.bottom - _camera->Getmapy() + WINSIZEY / 2);
 
 	_pm->render();
+	_itemMgr->render();
 
 	//20190122형우추가
 	_objectMgr->render();

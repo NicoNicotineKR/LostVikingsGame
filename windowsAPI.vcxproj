@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="action.h" />
     <ClInclude Include="animation.h" />
+    <ClInclude Include="baleog.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="characterInfo.h" />
     <ClInclude Include="CONFIG.h" />
@@ -161,6 +162,12 @@
     <ClInclude Include="imageManager.h" />
     <ClInclude Include="iniDataManager.h" />
     <ClInclude Include="invenUI.h" />
+    <ClInclude Include="item.h" />
+    <ClInclude Include="itemBomb.h" />
+    <ClInclude Include="itemKeyRed.h" />
+    <ClInclude Include="itemKeyYellow.h" />
+    <ClInclude Include="itemMeat.h" />
+    <ClInclude Include="itemMgr.h" />
     <ClInclude Include="keyAniManager.h" />
     <ClInclude Include="keyManager.h" />
     <ClInclude Include="mainmenu.h" />
@@ -195,6 +202,7 @@
   <ItemGroup>
     <ClCompile Include="action.cpp" />
     <ClCompile Include="animation.cpp" />
+    <ClCompile Include="baleog.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="characterInfo.cpp" />
     <ClCompile Include="database.cpp" />
@@ -206,6 +214,12 @@
     <ClCompile Include="imageManager.cpp" />
     <ClCompile Include="iniDataManager.cpp" />
     <ClCompile Include="invenUI.cpp" />
+    <ClCompile Include="item.cpp" />
+    <ClCompile Include="itemBomb.cpp" />
+    <ClCompile Include="itemKeyRed.cpp" />
+    <ClCompile Include="itemKeyYellow.cpp" />
+    <ClCompile Include="itemMeat.cpp" />
+    <ClCompile Include="itemMgr.cpp" />
     <ClCompile Include="keyAniManager.cpp" />
     <ClCompile Include="keyManager.cpp" />
     <ClCompile Include="mainmenu.cpp" />
