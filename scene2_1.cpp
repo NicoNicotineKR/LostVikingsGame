@@ -26,6 +26,15 @@ HRESULT scene2_1::init()
 
 	playerSelect = 0;
 
+	//	재만 추가
+	{
+		_invenUI = new invenUI;
+		_invenUI->init();
+		_isInvenMode = false;	
+	}
+	
+
+
 	return S_OK;
 }
 
@@ -35,6 +44,14 @@ void scene2_1::release()
 
 void scene2_1::update()
 {
+	// 재만 추가: invenMode on/Off : '~'
+	if (KEYMANAGER->isOnceKeyDown(VK_OEM_3))
+	{
+		if (_isInvenMode)		_isInvenMode = false;
+		else if (!_isInvenMode)	_isInvenMode = true;
+	}
+
+
 	if (KEYMANAGER->isOnceKeyDown(VK_TAB))
 	{
 		_pm->getVCharInfo()[playerSelect]->setIsPlaying(false);
@@ -59,6 +76,11 @@ void scene2_1::update()
 		}
 		_pm->getVCharInfo()[playerSelect]->setIsPlaying(true);
 
+		//	재만추가 : inven한테 현재 charIdx알려줌 , 그에 따른 얼굴 출력
+		_invenUI->setSelectCharIdx(playerSelect);
+		_invenUI->FaceSelectFunc();
+
+
 		//엘스이프 수정 + 내용추가 181533 김도형
 ////////////////////////////////////////////////////////////////////////////////////		else if (playerSelect == P_BALEOG)
 ////////////////////////////////////////////////////////////////////////////////////		{
@@ -69,25 +91,36 @@ void scene2_1::update()
 	//_eric->UpdateCameraPos(_camera->Getmapx(), _camera->Getmapy());
 	//2019.01.17 오후11시추가 ===================
 	//_eric->update();
+	
 
-	if (playerSelect == P_ERIC)
+	//	재만추가 : 인벤모드가 아니면, 카메라업뎃/ 적용
+	if (!_isInvenMode)
 	{
-		//2019.01.17 오후11시추가 ===================
-		//_camera->UpdatePlayerPos(_eric->getPos().x, _eric->getPos().y, 5, _mapImg);
-		//_camera->update();
-		//2019.01.17 오후11시추가 ===================
-		_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_ERIC]->getPos().x, _pm->getVCharInfo()[P_ERIC]->getPos().y, 5, _mapImg);
-	}
-	else if (playerSelect == P_OLAF)
-	{
-		_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_OLAF]->getPos().x, _pm->getVCharInfo()[P_OLAF]->getPos().y, 5, _mapImg);
-	}
-/////////////////////////////////////////////////////////////////////////////////	else if (playerSelect == P_BALEOG)
-/////////////////////////////////////////////////////////////////////////////////	{
-/////////////////////////////////////////////////////////////////////////////////		_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_BALEOG]->getPos().x, _pm->getVCharInfo()[P_BALEOG]->getPos().y, 5, _mapImg);
-/////////////////////////////////////////////////////////////////////////////////	}
+		if (playerSelect == P_ERIC)
+		{
+			//2019.01.17 오후11시추가 ===================
+			//_camera->UpdatePlayerPos(_eric->getPos().x, _eric->getPos().y, 5, _mapImg);
+			//_camera->update();
+			//2019.01.17 오후11시추가 ===================
+			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_ERIC]->getPos().x, _pm->getVCharInfo()[P_ERIC]->getPos().y, 5, _mapImg);
+		}
+		else if (playerSelect == P_OLAF)
+		{
+			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_OLAF]->getPos().x, _pm->getVCharInfo()[P_OLAF]->getPos().y, 5, _mapImg);
+		}
+		/////////////////////////////////////////////////////////////////////////////////	else if (playerSelect == P_BALEOG)
+		/////////////////////////////////////////////////////////////////////////////////	{
+		/////////////////////////////////////////////////////////////////////////////////		_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_BALEOG]->getPos().x, _pm->getVCharInfo()[P_BALEOG]->getPos().y, 5, _mapImg);
+		/////////////////////////////////////////////////////////////////////////////////	}
 
-	_camera->update();
+		_camera->update();
+	}
+	else if (_isInvenMode)
+	{
+		_invenUI->update();
+	}
+
+	
 
 	for (int i = 0; i < _pm->getVCharInfo().size(); i++)
 	{
@@ -103,4 +136,6 @@ void scene2_1::render()
 	_mapImgPixel->render(getMemDC(), 0, 0, _camera->Getmapx() - WINSIZEX / 2, _camera->Getmapy() - WINSIZEY / 2, WINSIZEX, WINSIZEY);
 
 	_pm->render();
+
+	_invenUI->render();
 }
