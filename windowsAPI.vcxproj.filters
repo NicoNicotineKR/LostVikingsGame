@@ -61,6 +61,9 @@
     <Filter Include="PlayGround\objects">
       <UniqueIdentifier>{fc8ba861-b398-4f8b-ae62-e90f1fa33c54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\items">
+      <UniqueIdentifier>{5f302922-4e69-4ffd-bc7f-94d740d0ca8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -195,6 +198,24 @@
     <ClInclude Include="object1.h">
       <Filter>PlayGround\objects</Filter>
     </ClInclude>
+    <ClInclude Include="itemMgr.h">
+      <Filter>PlayGround\items</Filter>
+    </ClInclude>
+    <ClInclude Include="item.h">
+      <Filter>PlayGround\items</Filter>
+    </ClInclude>
+    <ClInclude Include="itemMeat.h">
+      <Filter>PlayGround\items</Filter>
+    </ClInclude>
+    <ClInclude Include="itemBomb.h">
+      <Filter>PlayGround\items</Filter>
+    </ClInclude>
+    <ClInclude Include="itemKeyRed.h">
+      <Filter>PlayGround\items</Filter>
+    </ClInclude>
+    <ClInclude Include="itemKeyYellow.h">
+      <Filter>PlayGround\items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -313,6 +334,24 @@
     </ClCompile>
     <ClCompile Include="object1.cpp">
       <Filter>PlayGround\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="itemMgr.cpp">
+      <Filter>PlayGround\items</Filter>
+    </ClCompile>
+    <ClCompile Include="item.cpp">
+      <Filter>PlayGround\items</Filter>
+    </ClCompile>
+    <ClCompile Include="itemBomb.cpp">
+      <Filter>PlayGround\items</Filter>
+    </ClCompile>
+    <ClCompile Include="itemKeyRed.cpp">
+      <Filter>PlayGround\items</Filter>
+    </ClCompile>
+    <ClCompile Include="itemKeyYellow.cpp">
+      <Filter>PlayGround\items</Filter>
+    </ClCompile>
+    <ClCompile Include="itemMeat.cpp">
+      <Filter>PlayGround\items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
