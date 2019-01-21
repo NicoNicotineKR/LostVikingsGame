@@ -141,8 +141,8 @@ HRESULT olaf::init()
 
 	_speed = 0;
 	_acceleration = 0;
-	_isPlaying = true;
-	_isShiledUp =false;
+	_isPlaying = false;
+	_isShiledUp = false;
 	_isGround = false;
 	_isWall = false;
 

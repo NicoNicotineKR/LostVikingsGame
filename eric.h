@@ -14,16 +14,19 @@ private:
 	bool _isGround;
 	bool _isJumping;
 	bool _isMoving;
-
+	bool _isWall;
+	bool _isWallAni;
+	bool _isStuning;
+	bool _isRoof; //지붕 닿았는지
 
 	// 콘스트 변수
 
-	const POINTFLOAT BEGIN_POS = { WINSIZEX / 2, WINSIZEY / 2 };
-	const float ACCEL_VALUE = 0.05f;
+	const POINTFLOAT BEGIN_POS = { WINSIZEX / 2, WINSIZEY / 2 - 200 };
+	const float ACCEL_VALUE = 0.4f;
 	const float MIN_SPEED = 0;
-	const float MAX_SPEED = 4.0f;
-	const float JUMP_POWER = -10.0f;
-	const float GRAVITY = 0.2f;
+	const float MAX_SPEED = 5.0f;
+	const float JUMP_POWER = -8.0f;
+	const float GRAVITY = 0.15f;
 public:
 	eric();
 	~eric();
