@@ -21,7 +21,7 @@ private:
 
 	// 콘스트 변수
 
-	const POINTFLOAT BEGIN_POS = { WINSIZEX / 2, WINSIZEY / 2 - 200 };
+	const POINTFLOAT BEGIN_POS = { WINSIZEX / 2, WINSIZEY / 2 - 100 };
 	const float ACCEL_VALUE = 0.4f;
 	const float MIN_SPEED = 0;
 	const float MAX_SPEED = 5.0f;

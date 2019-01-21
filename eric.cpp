@@ -199,8 +199,8 @@ void eric::update()
 	//Á¡ÇÁÇßÀ¸¸é Áß·Â°è»êÇÔ
 	if (_isJumping)
 	{
-		_vec.y += GRAVITY;
-		_pos.y += _vec.y;
+			_vec.y += GRAVITY;
+			_pos.y += _vec.y;
 	}
 
 	//¶¥¿¡ ºÙ¾îÀÖÀ¸¸é 
@@ -249,15 +249,14 @@ void eric::update()
 	}
 	else if (!_isGround && !_isJumping)
 	{
-		_vec.y += GRAVITY;
-		_pos.y += _vec.y;
+			_vec.y += GRAVITY;
+			_pos.y += _vec.y;
 	}
 
 
 
 	if (!_isGround &&_vec.y > 0)
 	{
-
 		if (_status == P_R_IDLE || _status == P_R_SKILL_ONE)
 		{
 			_status = P_R_FLYING;
@@ -280,11 +279,14 @@ void eric::update()
 			}
 			_isFlying = true;
 		}
+
+
 	}
 
 
 if (_vec.y >= 1)
 {
+
 	if (_status == P_R_SKILL_ONE || _status == P_R_FLYING)
 	{
 		_isFlying = true;
@@ -336,7 +338,7 @@ if (_vec.y >= 1)
 	isNotPlaying();
 
 
-	PixelColFunction(1, _pos.x, _pos.y, 64, 5,
+	_pos.y = PixelColFunction(1, _pos.x, _pos.y, 64, 5,
 		IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"),
 		IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(),
 		RGB(0, 255, 255),
@@ -344,12 +346,11 @@ if (_vec.y >= 1)
 
 	if (_isRoof)
 	{
-		_pos.y = PixelColFunction(1, _pos.x, _pos.y, 64, 5,
-			IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿"),
-			IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿")->getMemDC(),
-			RGB(0, 255, 255),
-			&_isRoof);
+		_vec.y += 1;
+		_pos.y += _vec.y;
 	}
+
+
 	
 
 	_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
