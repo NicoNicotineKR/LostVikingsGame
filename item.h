@@ -44,6 +44,8 @@ public:
 
 	image* getImg() { return _itemInfo.img; }
 
+	E_ITEMICONS getKindof() { return _itemInfo.kindof; }
+
 	int getPosX() { return _itemInfo.pos.x; }
 	int getPosY() { return _itemInfo.pos.y; }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "gameNode.h"
+//#include <map>
 
 class invenUI : public gameNode
 {
@@ -38,6 +39,9 @@ private:
 		int curInvenX;
 		int curInvenY;
 	};
+
+	//map<E_ITEMICONS, tagInvenInfo> _mItems;
+	//map<E_ITEMICONS, tagInvenInfo> _miItems;
 
 	tagInvenInfo _inven[3][2][2];
 	tagCharInfo _charInfo[3];
@@ -91,6 +95,8 @@ public:
 	void RefreshRecieveIdx();
 
 	void FaceSelectFunc();
+
+	void AddItem(int charIdx, E_ITEMICONS kindof);
 
 
 

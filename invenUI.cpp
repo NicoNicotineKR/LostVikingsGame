@@ -105,7 +105,7 @@ HRESULT invenUI::init()
 			_charInfo[i].faceFrameX = 1;
 			_charInfo[i].faceFrameY = i;		//	캐릭터별 이미지프레임이니까
 
-			_charInfo[i].hp = i + 1;				//	캐릭별로 hp 설정	----------------
+			_charInfo[i].hp = 3;				//	캐릭별로 hp 설정	----------------
 			
 			//	hp이미지 콤보 초기화
 			
@@ -125,20 +125,23 @@ HRESULT invenUI::init()
 	}	//	커서정보 초기화 끝
 
 
-	//	테스트용 아이템
-	{
-		_inven[0][0][0].E_ITEM = E_BOMB;
-		_inven[0][0][0].name = "bomb";
 
-		_inven[1][0][0].E_ITEM = E_KEY_RED;
-		_inven[1][0][0].name = "key_red";
 
-	}
 
-	//	테스트용 죽음
-	{
-		_charInfo[0].isDead = true;
-	}
+	////	테스트용 아이템
+	//{
+	//	_inven[0][0][0].E_ITEM = E_BOMB;
+	//	_inven[0][0][0].name = "bomb";
+	//
+	//	_inven[1][0][0].E_ITEM = E_KEY_RED;
+	//	_inven[1][0][0].name = "key_red";
+	//
+	//}
+	//
+	////	테스트용 죽음
+	//{
+	//	_charInfo[0].isDead = true;
+	//}
 
 
 
@@ -515,6 +518,23 @@ void invenUI::FaceSelectFunc()
 		if (_charInfo[i].isDead)
 			_charInfo[i].faceFrameX = 2;	//순서주의. 죽은놈은 2	//	사실DeadFunc()에서해놨긴하지만 혹시몰라서 ㅇㅇ;
 
+	}
+}
+
+void invenUI::AddItem(int charIdx, E_ITEMICONS kindof)
+{
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			if (_inven[charIdx][i][j].E_ITEM != E_EMPTY)
+				continue;
+
+			_inven[charIdx][i][j].E_ITEM = kindof;
+			return;
+
+		}
 	}
 }
 

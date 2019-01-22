@@ -36,7 +36,8 @@ void itemMgr::release()
 
 void itemMgr::update()
 {
-
+	GetPlayerInfo();
+	GetItemFunc();
 }
 
 void itemMgr::render()
@@ -50,6 +51,38 @@ void itemMgr::render()
 	}
 
 
+}
+
+void itemMgr::GetItemFunc()
+{
+	for (int i = 0; i < _vItemMgr.size();)
+	{
+		RECT tmpRc;
+		if (IntersectRect(&tmpRc, &_playerRc, &_vItemMgr[i]->getRc()))
+		{
+			//	인벤UI에 넣어주고,
+			_inven->AddItem(_playerIdx, _vItemMgr[i]->getKindof());
+			//	지운다.
+			_vItemMgr.erase(_vItemMgr.begin() + i);
+		}
+		else
+		{
+			i++;
+		}
+	}
+}
+
+void itemMgr::GetPlayerInfo()
+{
+	for (int i = 0; i < _pm->getVCharInfo().size(); i++)
+	{
+		if (_pm->getVCharInfo()[i]->getIsPlaying())
+		{
+			_playerIdx = i;
+			_playerRc = _pm->getVCharInfo()[i]->getPlayerRc();
+		}
+			
+	}
 }
 
 void itemMgr::EraseVecIdx(int idx)

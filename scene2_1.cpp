@@ -35,6 +35,8 @@ HRESULT scene2_1::init()
 		_itemMgr = new itemMgr;
 		_itemMgr->init();
 		_itemMgr->getAddressLinkToCamera(_camera);
+		_itemMgr->getAddressLinkToInvenUI(_invenUI);
+		_itemMgr->getAddressLinkToPlayerMgr(_pm);
 
 	}
 	
