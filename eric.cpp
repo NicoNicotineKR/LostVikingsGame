@@ -474,11 +474,12 @@ void eric::move()
 		{
 			if (_isRushing)
 			{
-				_vec.x += 15;
-				_status = P_L_STUN;
-				_motion->stop();
-				_motion = KEYANIMANAGER->findAnimation("ericLeftStun");
-				_motion->start();
+				ericLeftStun();
+			//	_vec.x += 15;
+			//	_status = P_L_STUN;
+			//	_motion->stop();
+			//	_motion = KEYANIMANAGER->findAnimation("ericLeftStun");
+			//	_motion->start();
 			}
 			else
 			{
@@ -494,11 +495,12 @@ void eric::move()
 		{
 			if (_isRushing)
 			{
-				_vec.x -= 15;
-				_status = P_R_STUN;
-				_motion->stop();
-				_motion = KEYANIMANAGER->findAnimation("ericRightStun");
-				_motion->start();
+				ericRightStun();
+			//	_vec.x -= 15;
+			//	_status = P_R_STUN;
+			//	_motion->stop();
+			//	_motion = KEYANIMANAGER->findAnimation("ericRightStun");
+			//	_motion->start();
 			}
 			else
 			{
@@ -602,6 +604,22 @@ void eric::move()
 void eric::onLadderMotionStart()
 {
 	_motion = KEYANIMANAGER->findAnimation("ericRightOnLadder");
+	_motion->start();
+}
+void eric::ericRightStun()
+{
+	_vec.x -= 15;
+	_status = P_R_STUN;
+	_motion->stop();
+	_motion = KEYANIMANAGER->findAnimation("ericRightStun");
+	_motion->start();
+}
+void eric::ericLeftStun()
+{
+	_vec.x += 15;
+	_status = P_L_STUN;
+	_motion->stop();
+	_motion = KEYANIMANAGER->findAnimation("ericLeftStun");
 	_motion->start();
 }
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

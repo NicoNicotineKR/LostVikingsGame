@@ -10,11 +10,10 @@ class eric : public characterInfo
 private:
 	float _accel;
 	bool _isBreath;
-	bool _isRushing;
 	bool _isGround;
 	bool _isJumping;
 	bool _isMoving;
-	bool _isWall;
+//	bool _isWall;
 	bool _isWallAni;
 	bool _isStuning;
 	bool _isRoof; //지붕 닿았는지
@@ -44,6 +43,12 @@ public:
 	void isNotPlaying();		// 얘가 플레이 중이 아닐때 idle로 변경해주는거
 	void onLadderMotionStart();
 
+	//스턴해주는거
+	void ericRightStun();
+	void ericLeftStun();
+
+
+
 	static void rightMoving(void* obj);
 	static void leftMoving(void* obj);
 	static void rightStanding(void* obj);
@@ -53,11 +58,11 @@ public:
 	static void rightFlying(void* obj);
 	static void leftFlying(void* obj);
 
-	//플레이어 상태 접근자, 설정자
-	
+	//접근자
+
 	
 
-	//플레이어 애니메이션 접근자, 설정자
+	
 
 };
 

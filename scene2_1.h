@@ -36,6 +36,8 @@ private:
 	RECT _endrc;
 	RECT _endPlayer;
 	image* _endImg;
+
+
 public:
 	scene2_1();
 	~scene2_1();

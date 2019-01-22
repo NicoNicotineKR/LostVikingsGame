@@ -78,4 +78,12 @@ void characterInfo::UpdateCameraPos(float _cameraX, float _cameraY)
 	this->setCameraX(_cameraX);
 	this->setCameraY(_cameraY);
 }
+void characterInfo::ericRightStun()
+{
+	//에릭전용
+}
+void characterInfo::ericLeftStun()
+{
+	//응없어
+}
 //2019.01.17 오후11시추가 ===================

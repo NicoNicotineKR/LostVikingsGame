@@ -188,7 +188,6 @@ void scene2_1::update()
 
 	//엔딩관련 - 유형우
 	ending();
-
 }
 
 void scene2_1::render()
@@ -228,6 +227,40 @@ void scene2_1::WorkObject1()
 	vector<tagObjects>				_vObject1 = _objectMgr->getObject1()->getvObjects();
 	vector<tagObjects>::iterator	_viObject1 = _objectMgr->getObject1()->getviObjects();
 
+	RECT temp;
+
+
+
+
+
+	for (_viObject1 = _vObject1.begin(); _viObject1 != _vObject1.end(); _viObject1++)
+	{
+		if (IntersectRect(&temp, &_pm->getVCharInfo()[P_ERIC]->getPlayerRc(), &_viObject1->_rc) && _pm->getVCharInfo()[P_ERIC]->getIsRushing())
+		{
+			_pm->getVCharInfo()[P_ERIC]->setIsRushing(false);
+			_pm->getVCharInfo()[P_ERIC]->ericRightStun();
+			_objectMgr->getObject1()->setMainActivate(true);
+		}
+
+	}
+
+	for (int i = 0; i < _pm->getVCharInfo().size(); i++)
+	{
+		for (int j = 0; j < _vObject1.size(); j++)
+		{
+			if (IntersectRect(&temp, &_pm->getVCharInfo()[i]->getPlayerRc(), &_vObject1[j]._rc))
+			{
+				if (_pm->getVCharInfo()[i]->getStatus() == P_R_MOVE || _pm->getVCharInfo()[i]->getStatus() == P_L_MOVE)
+				{
+					_pm->getVCharInfo()[i]->setStatus(P_R_WALL_PUSH);
+					_pm->getVCharInfo()[i]->setIsWall(true);
+				}
+				_pm->getVCharInfo()[i]->setPostionX((float)_vObject1[j]._rc.left -64);
+					// 월푸시 변경
+			}
+		}
+	}
+
 	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD1))
 	{
 		//이건엄마꺼가아닌데? 직접인데?
@@ -242,6 +275,8 @@ void scene2_1::WorkObject1()
 		{
 			_vObject1.erase(_viObject1);
 			_objectMgr->getObject1()->setvObject(_vObject1);
+
+			_viObject1->_rc;
 			break;
 		}
 	}
@@ -397,9 +432,7 @@ void scene2_1::WorkObject4()
 	_pm->setLadderRc(_vObject4[0]._rc);
 	_pm->setLadderRc2(_vObject4[1]._rc);
 }
-
 //엔딩관련 - 유형우
 void scene2_1::ending()
 {
-
 }

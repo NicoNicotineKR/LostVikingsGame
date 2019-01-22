@@ -23,6 +23,11 @@ protected:
 	bool _isLadderMotion;		// 사다리 모션을 실행하는 불
 	animation* _motion;			// 캐릭터 모션
 
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 오브젝트 충돌하다 추가한것
+	bool _isRushing;			//에릭전용
+	bool _isWall;
+	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 오브젝트 충돌하다 추가한것
+
 	//나중에 부모한테 옮길것
 	bool _isWaterDead;
 	bool _isDeadAni;
@@ -95,5 +100,20 @@ public:
 	bool			getPlayerIsAlive() { return _isAlive;}
 
 	int				getPlayerHp() { return _hp; }
+
+
+
+	//오브젝트 충돌하다 추가한것들
+	bool getIsRushing() { return _isRushing; }
+	void setIsRushing(bool value) { _isRushing = value; }
+
+	virtual void setIsWall(bool value) { _isWall = value; }
+	bool getIsWall() { return _isWall; }
+
+
+	virtual void ericRightStun();
+	virtual void ericLeftStun();
+
+
 };
 
