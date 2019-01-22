@@ -16,8 +16,8 @@ HRESULT baleog::init()
 	characterInfo::init();
 
 	_img = IMAGEMANAGER->addFrameImage("baleog_sprite", "images/character/baleog_sprite.bmp", 0, 0, 1024, 2432, 8, 19, true, RGB(255, 0, 255));			//플레이어 이미지 초기화
-	_arowImg[0] = IMAGEMANAGER->addImage("arowRight", "images/character/arowRight.bmp", 100, 10, true, RGB(255, 0, 255));
-	_arowImg[1] = IMAGEMANAGER->addImage("arowLeft", "images/character/arowLeft.bmp", 100, 10, true, RGB(255, 0, 255));
+	_arowImg[0] = IMAGEMANAGER->addImage("arowRight", "images/character/arowRight.bmp", 400, 40, true, RGB(255, 0, 255));
+	_arowImg[1] = IMAGEMANAGER->addImage("arowLeft", "images/character/arowLeft.bmp", 400, 40, true, RGB(255, 0, 255));
 	int rightIdleMotion[] = { 0 };
 	KEYANIMANAGER->addArrayFrameAnimation("baleogRightIdle", "baleog_sprite", rightIdleMotion, 1, 10, true);								 //오른쪽 방패내린 idle
 
@@ -67,10 +67,10 @@ HRESULT baleog::init()
 	KEYANIMANAGER->addArrayFrameAnimation("baleogLeftFall", "baleog_sprite", leftFall, 6, 5, false,leftIdle,this);									 //왼쪽  방패올린 fall
 
 	int rightFallDownDead[] = { 80,81,82,83,84,85,86 };
-	KEYANIMANAGER->addArrayFrameAnimation("baleogRightFallDead", "baleog_sprite", rightFallDownDead, 6, 5, false);							 //오른쪽 방패올린 fall Move
+	KEYANIMANAGER->addArrayFrameAnimation("baleogRightFallDead", "baleog_sprite", rightFallDownDead, 6, 5, false, hitDead, this);							 //오른쪽 방패올린 fall Move
 
 	int leftFallDownDead[] = { 93,92,91,90,89,88 };
-	KEYANIMANAGER->addArrayFrameAnimation("baleogLeftFallDead", "baleog_sprite", leftFallDownDead, 6, 5, false);							 //왼쪽   방패올린 fall Move
+	KEYANIMANAGER->addArrayFrameAnimation("baleogLeftFallDead", "baleog_sprite", leftFallDownDead, 6, 5, false, hitDead, this);							 //왼쪽   방패올린 fall Move
 
 	int rightHitDead[] = { 96,97,98,99,100,101,102 };
 	KEYANIMANAGER->addArrayFrameAnimation("baleogRightHitDead", "baleog_sprite", rightHitDead, 7, 5, false, hitDead,this);								 //오른쪽 방패내린 fall
@@ -252,13 +252,34 @@ void baleog::update()
 
 			if (_status == P_R_FALLING)
 			{
-				_status = P_R_STUN;
-				_motion->resume();
+				_hp--;
+				if (_hp > 0)
+				{
+					_status = P_R_STUN;
+					_motion->resume();
+				}
+				else
+				{
+					_status = P_R_FALL_DEATH;
+					_motion = KEYANIMANAGER->findAnimation("baleogRightFallDead");
+					_motion->start();
+				}
+
 			}
 			else if (_status == P_L_FALLING)
 			{
-				_status = P_L_STUN;
-				_motion->resume();
+				_hp--;
+				if (_hp > 0)
+				{
+					_status = P_L_STUN;
+					_motion->resume();
+				}
+				else
+				{
+					_status = P_L_FALL_DEATH;
+					_motion = KEYANIMANAGER->findAnimation("baleogLeftFallDead");
+					_motion->start();
+				}
 			}
 
 			if (_isFlying)
@@ -626,24 +647,14 @@ void baleog::arrowFire()
 {
 	if (!_isFire)
 	{
-		if(_status == P_R_SKILL_TWO)	_arrowPos.x = _rc.right -_arowImg[0]->GetWidth();
-		else if (_status == P_L_SKILL_TWO)	_arrowPos.x = _rc.left;
+		if(_status == P_R_SKILL_TWO)	_arrowPos.x = _rc.right;
+		else if (_status == P_L_SKILL_TWO)	_arrowPos.x = _rc.left - _arowImg[0]->GetWidth();
 
 		_arrowPos.y = _pos.y;
 		_arrowStartPos.x = _arrowPos.x;
 		_arrowStartPos.y = _arrowPos.y;
 		_arrowRc = RectMake(_arrowPos.x, _arrowPos.y, 100, 10);
 		_isFire = true;
-		//if (_status == P_L_SKILL_TWO)
-		//{
-		//	_isArrowDirection = true;
-		//	//왼쪽
-		//}
-		//else if(_status == P_R_SKILL_TWO)
-		//{
-		//	_isArrowDirection = false;
-		//	//오른쪽
-		//}
 	}
 }
 
@@ -661,7 +672,7 @@ void baleog::arrowMove(bool isArrowDirection)
 		}
 		_arrowRc = RectMake(_arrowPos.x, _arrowPos.y, 100, 10);
 		
-		if (getDistanceSqr(_arrowPos.x, _arrowPos.y, _arrowStartPos.x, _arrowStartPos.y) > 500 * 500)
+		if (getDistanceSqr(_arrowPos.x, _arrowPos.y, _arrowStartPos.x, _arrowStartPos.y) > 1000 * 1000)
 		{
 			_isFire = false;
 			_arrowRc = RectMake(-100, -100, 100, 10);
