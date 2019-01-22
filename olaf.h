@@ -14,9 +14,6 @@ private:
 
 	bool _isShiledUp;
 
-	bool _isGround;
-	bool _isWall;
-
 	bool _isFlyMotion;
 
 	bool _isLeftMove;

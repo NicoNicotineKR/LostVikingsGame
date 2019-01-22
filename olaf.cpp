@@ -273,7 +273,6 @@ void olaf::update()
 		}
 
 		//¶¥ Ãæµ¹
-
 		if (_status != P_L_ON_LADDER && _status != P_R_ON_LADDER)
 		{
 			_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 10,

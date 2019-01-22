@@ -8,8 +8,6 @@ private:
 
 	POINTFLOAT _fallStartPos;
 
-	bool _isGround;
-	bool _isWall;
 
 	bool _isFlyMotion;
 
@@ -17,7 +15,7 @@ private:
 	bool _isRightMove;
 	bool _isFire;
 
-	RECT _arrowRc;
+
 	POINTFLOAT _arrowPos;
 	POINTFLOAT _arrowStartPos;
 	bool _isArrowDirection;
@@ -48,5 +46,6 @@ public:
 	static void leftIdle(void* obj);
 	static void hitDead(void* obj);
 
+	//RECT getArrowRc() { return _arrowRc; }
 };
 

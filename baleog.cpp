@@ -15,6 +15,7 @@ HRESULT baleog::init()
 {
 	characterInfo::init();
 
+
 	SOUNDMANAGER->addSound("벨로그1", "sounds/baleogPick1.mp3", false, false);
 	SOUNDMANAGER->addSound("벨로그2", "sounds/baleogPick2.mp3", false, false);
 	SOUNDMANAGER->addSound("벨로그3", "sounds/baleogPick3.mp3", false, false);
@@ -231,6 +232,7 @@ void baleog::update()
 			}
 		}
 
+
 		//땅 충돌
 
 		if (_status != P_L_ON_LADDER && _status != P_R_ON_LADDER)
@@ -241,7 +243,6 @@ void baleog::update()
 				RGB(255, 0, 0),
 				&_isGround);
 		}
-
 
 		if (_isGround)
 		{
@@ -414,10 +415,6 @@ void baleog::render()
 			_arowImg[0]->render(getMemDC(), _arrowPos.x - _cameraX + WINSIZEX / 2, _arrowPos.y - _cameraY + WINSIZEY / 2);
 		}
 	}
-	//Rectangle(getMemDC(), _arrowRc.left - _cameraX + WINSIZEX / 2,
-	//	_arrowRc.top - _cameraY + WINSIZEY / 2,
-	//	_arrowRc.right - _cameraX + WINSIZEX / 2,
-	//	_arrowRc.bottom - _cameraY + WINSIZEY / 2);
 }
 
 void baleog::move()
@@ -677,7 +674,7 @@ void baleog::arrowMove(bool isArrowDirection)
 		{
 			_arrowPos.x += 10.0f;
 		}
-		_arrowRc = RectMake(_arrowPos.x, _arrowPos.y, 100, 10);
+		_arrowRc = RectMake(_arrowPos.x, _arrowPos.y, _arowImg[0]->GetWidth(), _arowImg[0]->GetHeight());
 		
 		if (getDistanceSqr(_arrowPos.x, _arrowPos.y, _arrowStartPos.x, _arrowStartPos.y) > 1000 * 1000)
 		{

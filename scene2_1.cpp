@@ -372,8 +372,8 @@ void scene2_1::WorkObject1()
 					_pm->getVCharInfo()[i]->setStatus(P_R_WALL_PUSH);
 					_pm->getVCharInfo()[i]->setIsWall(true);
 				}
-				_pm->getVCharInfo()[i]->setPostionX((float)_vObject1[j]._rc.left -64);
-					// 월푸시 변경
+				_pm->getVCharInfo()[i]->setPostionX((float)_vObject1[j]._rc.left - 64);
+				// 월푸시 변경
 			}
 		}
 	}
@@ -482,22 +482,39 @@ void scene2_1::WorkObject3()
 	//오브젝트6
 	vector<tagObjects>				_vObject6 = _objectMgr->getObject6()->getvObjects();
 	vector<tagObjects>::iterator	_viObject6 = _objectMgr->getObject6()->getviObjects();
+	RECT temp;
+	//for (int i = 0; i < _pm->getVCharInfo().size(); ++i)
+	//{
+	//	for (int j = 0; j < _vObject3.size(); ++j)
+	//	{
+	//		if (IntersectRect(&temp, &_vObject3[j]._rc2, &_pm->getVCharInfo()[i]->getPlayerRc()))
+	//		{
+	//			if (_pm->getVCharInfo()[i]->getStatus() != P_R_SKILL_ONE || _pm->getVCharInfo()[i]->getStatus() != P_L_SKILL_ONE)
+	//			{
+	//				_pm->getVCharInfo()[i]->setPostionY(_vObject3[j]._rc2.top - 64);
+	//				_pm->getVCharInfo()[i]->setIsOnBridge(true);
+	//			}
+	//		}
+	//		else
+	//		{
+	//			_pm->getVCharInfo()[i]->setIsOnBridge(false);
+	//		}
+	//	}
+	//}
 
-	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD7))
+	for (_viObject3 = _vObject3.begin(); _viObject3 != _vObject3.end(); _viObject3++)
 	{
-		for (_viObject3 = _vObject3.begin(); _viObject3 != _vObject3.end(); _viObject3++)
+		for (_viObject6 = _vObject6.begin(); _viObject6 != _vObject6.end();)
 		{
-			for (_viObject6 = _vObject6.begin(); _viObject6 != _vObject6.end();)
+			if (IntersectRect(&temp, &_viObject6->_rc, &_pm->getVCharInfo()[P_OLAF]->getArrowRC()))
 			{
-				//만약 1번열쇠면
 				if (_viObject3->_property == 1)
 				{
-					//문의 성질 1가진녀석을
 					if (_viObject6->_property == 1)
 					{
 						//2번문을열고
 						_viObject3->_start = true;
-
+						//_viObject6->_start = true;
 						//5번열쇠를 지운다.
 						_vObject6.erase(_viObject6);
 						//기모찌
@@ -506,26 +523,13 @@ void scene2_1::WorkObject3()
 						break;
 					}
 				}
-				_viObject6++;
-			}
-		}
-	}
-
-	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD8))
-	{
-		for (_viObject3 = _vObject3.begin(); _viObject3 != _vObject3.end(); _viObject3++)
-		{
-			for (_viObject6 = _vObject6.begin(); _viObject6 != _vObject6.end();)
-			{
-				//만약 1번열쇠면
 				if (_viObject3->_property == 2)
 				{
-					//문의 성질 1가진녀석을
 					if (_viObject6->_property == 2)
 					{
 						//2번문을열고
 						_viObject3->_start = true;
-
+						//_viObject6->_start = true;
 						//5번열쇠를 지운다.
 						_vObject6.erase(_viObject6);
 						//기모찌
@@ -534,11 +538,11 @@ void scene2_1::WorkObject3()
 						break;
 					}
 				}
-				_viObject6++;
+
 			}
+			_viObject6++;
 		}
 	}
-
 }
 
 void scene2_1::WorkObject4()

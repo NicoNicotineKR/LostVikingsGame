@@ -23,6 +23,7 @@ protected:
 	bool _isLadderMotion;		// 사다리 모션을 실행하는 불
 	animation* _motion;			// 캐릭터 모션
 	RECT _arrowRc;
+	bool _isGround;
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 오브젝트 충돌하다 추가한것
 	bool _isRushing;			//에릭전용
 	bool _isWall;
@@ -94,7 +95,7 @@ public:
 	void			setLadderStatus(E_PLAYER_STATUS ladderStatus) { _ladderStatus = ladderStatus; }
 
 	void			setPostionX(float posX) { _pos.x = posX; }
-
+	void			setPostionY(float posY) { _pos.y = posY; }
 	void			setIsLadderMotion(bool isLadderMotion) { _isLadderMotion = isLadderMotion; }
 
 	bool			getPlayerIsAlive() { return _isAlive;}
@@ -102,15 +103,17 @@ public:
 	int				getPlayerHp() { return _hp; }
 	void			setPlayerHp(int hp) { _hp = hp; }
 
-
+	void			setIsGround(bool isGround) { _isGround = isGround; }
 
 	//오브젝트 충돌하다 추가한것들
 	bool getIsRushing() { return _isRushing; }
 	void setIsRushing(bool value) { _isRushing = value; }
 
 	virtual void setIsWall(bool value) { _isWall = value; }
+
 	bool getIsWall() { return _isWall; }
 
+	RECT getArrowRC() { return _arrowRc; }
 
 	virtual void ericRightStun();
 	virtual void ericLeftStun();

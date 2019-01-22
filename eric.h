@@ -10,7 +10,6 @@ class eric : public characterInfo
 private:
 	float _accel;
 	bool _isBreath;
-	bool _isGround;
 	bool _isJumping;
 	bool _isMoving;
 //	bool _isWall;
