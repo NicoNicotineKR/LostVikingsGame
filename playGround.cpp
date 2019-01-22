@@ -116,6 +116,7 @@ void playGround::SelectSceneFunc()
 			SCENEMANAGER->addScene("scene2_1", _scene2_1);
 			_scene2_1->SetLinkToCamera(_camera);
 			SCENEMANAGER->changeScene("scene2_1");
+			_scene2_1->setVolume((float)_mainmenu->getCurVol() / 10);
 			//	메인메뉴 릴리즈 해야함
 
 		}

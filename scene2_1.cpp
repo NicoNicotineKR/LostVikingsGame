@@ -13,6 +13,9 @@ scene2_1::~scene2_1()
 
 HRESULT scene2_1::init()
 {
+	SOUNDMANAGER->addSound("브금", "sounds/mapBgm.mp3", false, true);
+
+
 	IMAGEMANAGER->addImage("스테이지", "images/maps/stage1.bmp", 3904, 1456, true, RGB(255, 0, 255));
 	_mapImg = IMAGEMANAGER->findImage("스테이지");
 
@@ -57,6 +60,7 @@ HRESULT scene2_1::init()
 		_invenUI->AddressLinkToObjectMgr(_objectMgr);
 		_invenUI->AddressLinkToPlayerManager(_pm);
 	}
+	
 
 	return S_OK;
 }
@@ -68,6 +72,12 @@ void scene2_1::release()
 
 void scene2_1::update()
 {
+
+	if (!SOUNDMANAGER->isPlaySound("브금"))
+	{
+		SOUNDMANAGER->play("브금", _volume);
+	}
+	
 	// 재만 추가: invenMode on/Off : '~'
 	if (KEYMANAGER->isOnceKeyDown(VK_OEM_3))
 	{
@@ -91,13 +101,34 @@ void scene2_1::update()
 		_pm->getVCharInfo()[playerSelect]->setIsPlaying(false);
 		//와일문 지움
 		playerSelect++;
+		RefreshPlayerIdx();
+		_camera->ChangeCharFunc(true, true, _pm->getVCharInfo()[playerSelect]->getPos().x, _pm->getVCharInfo()[playerSelect]->getPos().y, 100);
+
+		int count = 0;
+		while (1)
+		{			
+			if (!_pm->getVCharInfo()[playerSelect]->getPlayerIsAlive())
+			{
+				count++;
+				playerSelect++;
+				RefreshPlayerIdx();
+			}
+			else if (count >= 3)
+			{
+				//끗남내용 쓰고 
+				break;
+			}
+			else
+			{
+				break;
+			}
+		}
+		
+
 
 		//if(playerSelect == P_BALEOG)
 		//발록 나오고 아래 이프문으로 사용할것
-		if (playerSelect == OUT_OF_RANGE)
-		{
-			playerSelect = P_ERIC;
-		}
+		
 		
 		_pm->getVCharInfo()[playerSelect]->setIsPlaying(true);
 
@@ -108,8 +139,8 @@ void scene2_1::update()
 
 			if (_pm->getVCharInfo()[i]->getPlayerIsAlive())
 			{
-				int num = RND->getInt(2);
-
+				SOUNDMANAGER->stop(_soundName);
+				int num = RND->getInt(3);
 				switch (i)
 				{
 				case P_ERIC:
@@ -117,19 +148,13 @@ void scene2_1::update()
 					switch (num)
 					{
 					case 0:
-						SOUNDMANAGER->play("에릭1", 1.0f);
+						sprintf_s(_soundName, "에릭1");
 						break;
 					case 1:
-						SOUNDMANAGER->play("에릭2", 1.0f);
+						sprintf_s(_soundName, "에릭2");
 						break;
 					case 2:
-						SOUNDMANAGER->play("에릭3", 1.0f);
-						break;
-					case 3:
-						SOUNDMANAGER->play("에릭4", 1.0f);
-						break;
-					case 4:
-						SOUNDMANAGER->play("에릭5", 1.0f);
+						sprintf_s(_soundName, "에릭3");
 						break;
 					}
 				break;
@@ -138,19 +163,13 @@ void scene2_1::update()
 					switch (num)
 					{
 					case 0:
-						SOUNDMANAGER->play("벨로그1", 1.0f);
+						sprintf_s(_soundName, "벨로그1");
 						break;
 					case 1:
-						SOUNDMANAGER->play("벨로그2", 1.0f);
+						sprintf_s(_soundName, "벨로그2");
 						break;
 					case 2:
-						SOUNDMANAGER->play("벨로그3", 1.0f);
-						break;
-					case 3:
-						SOUNDMANAGER->play("벨로그4", 1.0f);
-						break;
-					case 4:
-						SOUNDMANAGER->play("벨로그5", 1.0f);
+						sprintf_s(_soundName, "벨로그3");
 						break;
 					}
 				break;
@@ -159,13 +178,13 @@ void scene2_1::update()
 					switch (num)
 					{
 					case 0:
-						SOUNDMANAGER->play("올라프1", 1.0f);
+						sprintf_s(_soundName, "올라프1");
 						break;
 					case 1:
-						SOUNDMANAGER->play("올라프2", 1.0f);
+						sprintf_s(_soundName, "올라프2");
 						break;
 					case 2:
-						SOUNDMANAGER->play("올라프3", 1.0f);
+						sprintf_s(_soundName, "올라프3");
 						break;
 					case 3:
 						SOUNDMANAGER->play("올라프4", 1.0f);
@@ -176,6 +195,7 @@ void scene2_1::update()
 					}
 				break;
 				}
+				SOUNDMANAGER->play(_soundName, 1.0f);
 			}
 		}
 
@@ -190,9 +210,9 @@ void scene2_1::update()
 ////////////////////////////////////////////////////////////////////////////////////		else if (playerSelect == P_BALEOG)
 ////////////////////////////////////////////////////////////////////////////////////		{
 ////////////////////////////////////////////////////////////////////////////////////			//_camera->ChangeCharFunc(true, true, _baleog->getPos().x, _baleog->getPos().y, 0);
-////////////////////////////////////////////////////////////////////////////////////		}
+////////////////////////////////////////////////////////////////////////////////////		}		
 	}
-	//2019.01.17 오후11시추가 ===================
+	//2019.01.17 오후11시추가 ===================	
 	//_eric->UpdateCameraPos(_camera->Getmapx(), _camera->Getmapy());
 	//2019.01.17 오후11시추가 ===================
 	//_eric->update();
@@ -524,4 +544,12 @@ void scene2_1::WorkObject4()
 //엔딩관련 - 유형우
 void scene2_1::ending()
 {
+}
+
+void scene2_1::RefreshPlayerIdx()
+{
+	if (playerSelect == OUT_OF_RANGE)
+	{
+		playerSelect = P_ERIC;
+	}
 }

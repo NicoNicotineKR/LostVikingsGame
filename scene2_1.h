@@ -37,6 +37,11 @@ private:
 	RECT _endPlayer;
 	image* _endImg;
 
+	//사운드관련 - 김도형
+	char _soundName[128];
+
+	float _volume;
+
 
 public:
 	scene2_1();
@@ -60,5 +65,9 @@ public:
 
 	//5. 상위클래스만들어진 카메라 정보를 받음
 	void SetLinkToCamera(camera* v) { _camera = v; }
+
+	void RefreshPlayerIdx();
+
+	void setVolume(float volume) { _volume = volume; }
 };
 
