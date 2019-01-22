@@ -16,17 +16,19 @@ HRESULT mainmenuUI::init()
 	
 	IMAGEMANAGER->addImage("menuCursor", "images/UI/mainmenuUI/icon_cursor.bmp", 40, 40, false, 0x000000);
 	IMAGEMANAGER->addImage("button_STARTGAME", "images/UI/mainmenuUI/button_STARTGAME.bmp", 364, 40, false, 0x000000);
+	IMAGEMANAGER->addImage("button_OPTIONS", "images/UI/mainmenuUI/button_OPTIONS.bmp", 255, 40, false, 0x000000);
+	IMAGEMANAGER->addImage("button_EXIT", "images/UI/mainmenuUI/button_EXIT.bmp", 255, 40, false, 0x000000);
 
 
 	_vButton.clear();
 	//	버튼 추가 시이자악
 	AddNewButton("STARTGAME", "button_STARTGAME", WINSIZEX / 2, WINSIZEY / 2);			//	첫놈만 중앙에서 시작
 
-	AddNewButton("STARTGAME", "button_STARTGAME", WINSIZEX / 2, 
-		_vButton[0].rc.bottom + BUTTON_GAP_HEIGTH + IMAGEMANAGER->findImage("button_STARTGAME")->getFrameHeight() / 2);
+	AddNewButton("OPTIONS", "button_OPTIONS", WINSIZEX / 2, 
+		_vButton[0].rc.bottom + BUTTON_GAP_HEIGTH + IMAGEMANAGER->findImage("button_OPTIONS")->getFrameHeight() / 2);
 
-	AddNewButton("STARTGAME", "button_STARTGAME", WINSIZEX / 2, 
-		_vButton[1].rc.bottom + BUTTON_GAP_HEIGTH + IMAGEMANAGER->findImage("button_STARTGAME")->getFrameHeight() / 2);
+	AddNewButton("EXIT", "button_EXIT", WINSIZEX / 2, 
+		_vButton[1].rc.bottom + BUTTON_GAP_HEIGTH + IMAGEMANAGER->findImage("button_EXIT")->getFrameHeight() / 2);
 
 
 	//	버튼 추가 끝
