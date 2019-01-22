@@ -2,6 +2,7 @@
 #include "gameNode.h"
 #include "eric.h"
 #include "olaf.h"
+#include "baleog.h"
 
 class playerMgr : public gameNode
 {

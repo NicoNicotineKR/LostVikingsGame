@@ -16,6 +16,9 @@ HRESULT playerMgr::init()
 	characterInfo* _eric = new eric;
 	_vChar.push_back(_eric);
 
+	characterInfo* _baleog = new baleog;
+	_vChar.push_back(_baleog);
+
 	characterInfo * _olaf = new olaf;
 	_vChar.push_back(_olaf);
 

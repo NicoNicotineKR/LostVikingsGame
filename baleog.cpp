@@ -374,7 +374,10 @@ void baleog::render()
 		sprintf_s(str, "%d", _status, strlen(str));
 		TextOut(getMemDC(), 150, 100, str, strlen(str));
 	}
-	Rectangle(getMemDC(), _arrowRc);
+	Rectangle(getMemDC(), _arrowRc.left - _cameraX + WINSIZEX / 2,
+		_arrowRc.top - _cameraY + WINSIZEY / 2,
+		_arrowRc.right - _cameraX + WINSIZEX / 2,
+		_arrowRc.bottom - _cameraY + WINSIZEY / 2);
 }
 
 void baleog::move()
@@ -404,142 +407,141 @@ void baleog::move()
 
 void baleog::olafKeyInput()
 {
-	
-	
-	//방패 업다운.
 	if (_isPlaying && _isAlive)
 	{
-		if (KEYMANAGER->isOnceKeyDown('D'))
+		if (_hp > 0)
 		{
-			_hp--;
-			if (_hp >= 0)
+			if (KEYMANAGER->isOnceKeyDown('D'))
 			{
+				_hp--;
+
 				if (_hp <= 0)
 				{
 					_motion = KEYANIMANAGER->findAnimation("baleogRightHitDead");
 					_motion->start();
 				}
-			}
-		}
-		if (_status != P_R_STUN && _status != P_L_STUN)
-		{
-			if (!_isFlying)
-			{
 
-				if (KEYMANAGER->isOnceKeyDown('X'))
+			}
+			if (_status != P_R_STUN && _status != P_L_STUN)
+			{
+				if (!_isFlying)
 				{
-					if (_status == P_L_IDLE || _status == P_L_MOVE)
-					{
-						_status = P_L_SKILL_ONE;
-						swordAttackMotionStart("left");
-					}
-					else if (_status == P_R_IDLE || _status == P_R_MOVE)
-					{
-					_status = P_R_SKILL_ONE;
-					swordAttackMotionStart("right");
-					}
-				}
-				else if (KEYMANAGER->isOnceKeyDown('Z'))
-				{
-					if (!_isFire)
+
+					if (KEYMANAGER->isOnceKeyDown('X'))
 					{
 						if (_status == P_L_IDLE || _status == P_L_MOVE)
 						{
-							_status = P_L_SKILL_TWO;
-							bowAttackMotionStart("left");
-							//arrowFire();
-							_isArrowDirection = true;
+							_status = P_L_SKILL_ONE;
+							swordAttackMotionStart("left");
 						}
 						else if (_status == P_R_IDLE || _status == P_R_MOVE)
 						{
-							_status = P_R_SKILL_TWO;
-							bowAttackMotionStart("right");
-							//arrowFire();
-							_isArrowDirection = false;
+							_status = P_R_SKILL_ONE;
+							swordAttackMotionStart("right");
 						}
 					}
-				}
-
-				if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
-				{
-					_status = P_R_MOVE;
-					moveMotionStart("right");
-					_isRightMove = true;
-				}
-				if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
-				{
-					_status = P_L_MOVE;
-					moveMotionStart("left");
-					_isLeftMove = true;
-				}
-				if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-				{
-					_motion_Count = 0;
-					if (_status != P_R_STUN || _status != P_R_ON_LADDER)
+					else if (KEYMANAGER->isOnceKeyDown('Z'))
 					{
-						_status = P_R_IDLE;
-						idleMotionStart("right");
-					}
-					_isRightMove = false;
-				}
-				if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
-				{
-					_motion_Count = 0;
-					if (_status != P_L_STUN || _status != P_L_ON_LADDER)
-					{
-						_status = P_L_IDLE;
-						idleMotionStart("left");
-					}
-					_isLeftMove = false;
-				}
-
-
-			}
-			else
-			{
-				if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
-				{
-					if (_status != P_R_STUN) _isRightMove = true;
-
-					if (_status == P_L_FLYING)
-					{
-						_status = P_R_FLYING;
-						fallMotionStart("right");
+						if (!_isFire)
+						{
+							if (_status == P_L_IDLE || _status == P_L_MOVE)
+							{
+								_status = P_L_SKILL_TWO;
+								bowAttackMotionStart("left");
+								//arrowFire();
+								_isArrowDirection = true;
+							}
+							else if (_status == P_R_IDLE || _status == P_R_MOVE)
+							{
+								_status = P_R_SKILL_TWO;
+								bowAttackMotionStart("right");
+								//arrowFire();
+								_isArrowDirection = false;
+							}
+						}
 					}
 
-					if (_status == P_L_FALLING)
+					if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 					{
-						_status = P_R_FALLING;
-						_motion = KEYANIMANAGER->findAnimation("baleogRightFall");
-						_motion->start();
-						_motion->pause();
+						_status = P_R_MOVE;
+						moveMotionStart("right");
+						_isRightMove = true;
 					}
-				}
-				if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
-				{
-					if (_status != P_L_STUN) _isLeftMove = true;
+					if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
+					{
+						_status = P_L_MOVE;
+						moveMotionStart("left");
+						_isLeftMove = true;
+					}
+					if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+					{
+						_motion_Count = 0;
+						if (_status != P_R_STUN || _status != P_R_ON_LADDER)
+						{
+							_status = P_R_IDLE;
+							idleMotionStart("right");
+						}
+						_isRightMove = false;
+					}
+					if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
+					{
+						_motion_Count = 0;
+						if (_status != P_L_STUN || _status != P_L_ON_LADDER)
+						{
+							_status = P_L_IDLE;
+							idleMotionStart("left");
+						}
+						_isLeftMove = false;
+					}
 
-					if (_status == P_R_FLYING)
-					{
-						_status = P_L_FLYING;
-						fallMotionStart("left");
-					}
 
-					if (_status == P_R_FALLING)
+				}
+				else
+				{
+					if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 					{
-						_status = P_L_FALLING;
-						_motion = KEYANIMANAGER->findAnimation("baleogLeftFall");
-						_motion->start();
-						_motion->pause();
+						if (_status != P_R_STUN) _isRightMove = true;
+
+						if (_status == P_L_FLYING)
+						{
+							_status = P_R_FLYING;
+							fallMotionStart("right");
+						}
+
+						if (_status == P_L_FALLING)
+						{
+							_status = P_R_FALLING;
+							_motion = KEYANIMANAGER->findAnimation("baleogRightFall");
+							_motion->start();
+							_motion->pause();
+						}
 					}
-				}
-				if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-				{
-					_isRightMove = false;
-				}
-				if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
-				{
-					_isLeftMove = false;
+					if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
+					{
+						if (_status != P_L_STUN) _isLeftMove = true;
+
+						if (_status == P_R_FLYING)
+						{
+							_status = P_L_FLYING;
+							fallMotionStart("left");
+						}
+
+						if (_status == P_R_FALLING)
+						{
+							_status = P_L_FALLING;
+							_motion = KEYANIMANAGER->findAnimation("baleogLeftFall");
+							_motion->start();
+							_motion->pause();
+						}
+					}
+					if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+					{
+						_isRightMove = false;
+					}
+					if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
+					{
+						_isLeftMove = false;
+					}
 				}
 			}
 		}

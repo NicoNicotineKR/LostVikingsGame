@@ -91,5 +91,9 @@ public:
 	void			setPostionX(float posX) { _pos.x = posX; }
 
 	void			setIsLadderMotion(bool isLadderMotion) { _isLadderMotion = isLadderMotion; }
+
+	bool			getPlayerIsAlive() { return _isAlive;}
+
+	int				getPlayerHp() { return _hp; }
 };
 

@@ -448,6 +448,9 @@ void olaf::update()
 
 		_rc = RectMakeCenter(_pos.x, _pos.y, 128, 128);
 		_shiled = RectMake(_shiledX, _shiledY, _shiledWidth, _shiledHeight);
+
+
+
 	}
 	
 }
@@ -472,7 +475,7 @@ void olaf::render()
 
 void olaf::move()
 {
-	if (!_isDeadAni)
+	if (!_isDeadAni && _hp > 0)
 	{
 		if (_isRightMove)
 		{
@@ -497,144 +500,149 @@ void olaf::move()
 
 void olaf::olafKeyInput()
 {
-	if (KEYMANAGER->isOnceKeyDown('D'))
-	{
-		_hp--;
-		if (_hp <= 0)
-		{
-			_motion = KEYANIMANAGER->findAnimation("olafRightHitDead");
-			_motion->start();
-		}
-	}
+
 	//방패 업다운.
 	if (_isPlaying)
 	{
-		if (_status != P_R_STUN && _status != P_L_STUN)
+		if (_hp > 0)
 		{
-			if (KEYMANAGER->isOnceKeyDown('Z') || KEYMANAGER->isOnceKeyDown('X'))
+			if (KEYMANAGER->isOnceKeyDown('D'))
 			{
-				if (_isShiledUp)
+				_hp--;
+				if (_hp <= 0)
 				{
-					_isShiledUp = false;
+					_motion = KEYANIMANAGER->findAnimation("olafRightHitDead");
+					_motion->start();
+				}
+			}
+
+			if (_status != P_R_STUN && _status != P_L_STUN)
+			{
+				if (KEYMANAGER->isOnceKeyDown('Z') || KEYMANAGER->isOnceKeyDown('X'))
+				{
+					if (_isShiledUp)
+					{
+						_isShiledUp = false;
+					}
+					else
+					{
+						_isShiledUp = true;
+						if (_status == P_L_FALLING)
+						{
+							_status = P_L_FLYING;
+						}
+					}
+					if (_status == P_L_IDLE)
+					{
+						idleMotionStart("left");
+					}
+					else if (_status == P_R_IDLE)
+					{
+						idleMotionStart("right");
+					}
+
+					if (_status == P_L_MOVE)
+					{
+						moveMotionStart("left");
+					}
+					else if (_status == P_R_MOVE)
+					{
+						moveMotionStart("right");
+					}
+
+					if (_status == P_L_FLYING || _status == P_L_FALLING)
+					{
+
+						fallMotionStart("left");
+					}
+					else if (_status == P_R_FLYING || _status == P_R_FALLING)
+					{
+						fallMotionStart("right");
+					}
+				}
+
+
+				if (!_isFlying)
+				{
+					if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
+					{
+						_status = P_R_MOVE;
+						moveMotionStart("right");
+						_isRightMove = true;
+					}
+					if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
+					{
+						_status = P_L_MOVE;
+						moveMotionStart("left");
+						_isLeftMove = true;
+					}
+					if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+					{
+						_motion_Count = 0;
+						if (_status != P_R_STUN || _status != P_R_ON_LADDER)
+						{
+							_status = P_R_IDLE;
+							idleMotionStart("right");
+						}
+						_isRightMove = false;
+					}
+					if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
+					{
+						_motion_Count = 0;
+						if (_status != P_L_STUN || _status != P_L_ON_LADDER)
+						{
+							_status = P_L_IDLE;
+							idleMotionStart("left");
+						}
+						_isLeftMove = false;
+					}
 				}
 				else
 				{
-					_isShiledUp = true;
-					if (_status == P_L_FALLING)
+					if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 					{
-						_status = P_L_FLYING;
+						if (_status != P_R_STUN) _isRightMove = true;
+
+						if (_status == P_L_FLYING)
+						{
+							_status = P_R_FLYING;
+							fallMotionStart("right");
+						}
+
+						if (_status == P_L_FALLING)
+						{
+							_status = P_R_FALLING;
+							_motion = KEYANIMANAGER->findAnimation("olafRightFallDown");
+							_motion->start();
+							_motion->pause();
+						}
 					}
-				}
-				if (_status == P_L_IDLE)
-				{
-					idleMotionStart("left");
-				}
-				else if (_status == P_R_IDLE)
-				{
-					idleMotionStart("right");
-				}
-
-				if (_status == P_L_MOVE)
-				{
-					moveMotionStart("left");
-				}
-				else if (_status == P_R_MOVE)
-				{
-					moveMotionStart("right");
-				}
-
-				if (_status == P_L_FLYING || _status == P_L_FALLING)
-				{
-
-					fallMotionStart("left");
-				}
-				else if (_status == P_R_FLYING || _status == P_R_FALLING)
-				{
-					fallMotionStart("right");
-				}
-			}
-
-
-			if (!_isFlying)
-			{
-				if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
-				{
-					_status = P_R_MOVE;
-					moveMotionStart("right");
-					_isRightMove = true;
-				}
-				if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
-				{
-					_status = P_L_MOVE;
-					moveMotionStart("left");
-					_isLeftMove = true;
-				}
-				if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-				{
-					_motion_Count = 0;
-					if (_status != P_R_STUN || _status != P_R_ON_LADDER)
+					if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
 					{
-						_status = P_R_IDLE;
-						idleMotionStart("right");
-					}
-					_isRightMove = false;
-				}
-				if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
-				{
-					_motion_Count = 0;
-					if (_status != P_L_STUN || _status != P_L_ON_LADDER)
-					{
-						_status = P_L_IDLE;
-						idleMotionStart("left");
-					}
-					_isLeftMove = false;
-				}
-			}
-			else
-			{
-				if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
-				{
-					if (_status != P_R_STUN) _isRightMove = true;
+						if (_status != P_L_STUN) _isLeftMove = true;
 
-					if (_status == P_L_FLYING)
-					{
-						_status = P_R_FLYING;
-						fallMotionStart("right");
-					}
+						if (_status == P_R_FLYING)
+						{
+							_status = P_L_FLYING;
+							fallMotionStart("left");
+						}
 
-					if (_status == P_L_FALLING)
-					{
-						_status = P_R_FALLING;
-						_motion = KEYANIMANAGER->findAnimation("olafRightFallDown");
-						_motion->start();
-						_motion->pause();
+						if (_status == P_R_FALLING)
+						{
+							_status = P_L_FALLING;
+							_motion = KEYANIMANAGER->findAnimation("olafLeftFallDown");
+							_motion->start();
+							_motion->pause();
+						}
 					}
-				}
-				if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
-				{
-					if (_status != P_L_STUN) _isLeftMove = true;
-
-					if (_status == P_R_FLYING)
+					if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
 					{
-						_status = P_L_FLYING;
-						fallMotionStart("left");
+						_isRightMove = false;
 					}
-
-					if (_status == P_R_FALLING)
+					if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
 					{
-						_status = P_L_FALLING;
-						_motion = KEYANIMANAGER->findAnimation("olafLeftFallDown");
-						_motion->start();
-						_motion->pause();
+						_isLeftMove = false;
 					}
-				}
-				if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-				{
-					_isRightMove = false;
-				}
-				if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
-				{
-					_isLeftMove = false;
 				}
 			}
 		}

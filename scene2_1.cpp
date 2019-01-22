@@ -62,30 +62,38 @@ void scene2_1::update()
 		if (_isInvenMode)		_isInvenMode = false;
 		else if (!_isInvenMode)	_isInvenMode = true;
 	}
-
-
+	for (int i = 0; i < _pm->getVCharInfo().size(); ++i)
+	{
+		if (!_pm->getVCharInfo()[i]->getPlayerIsAlive())
+		{
+			_invenUI->MakeDead(i);
+		}
+		_invenUI->setCharHp(i, _pm->getVCharInfo()[i]->getPlayerHp());
+	}
 	if (KEYMANAGER->isOnceKeyDown(VK_TAB))
 	{
 		_pm->getVCharInfo()[playerSelect]->setIsPlaying(false);
 		//와일문 지움
 		playerSelect++;
 
-		if(playerSelect == P_BALEOG)
+		//if(playerSelect == P_BALEOG)
 		//발록 나오고 아래 이프문으로 사용할것
-		//if (playerSelect == OUT_OF_RANGE)
+		if (playerSelect == OUT_OF_RANGE)
 		{
 			playerSelect = P_ERIC;
 		}
 
-		if (playerSelect == P_ERIC)
+		for (int i = 0; i < _pm->getVCharInfo().size();++i)
 		{
-			_camera->ChangeCharFunc(true, true, _pm->getVCharInfo()[P_ERIC]->getPos().x, _pm->getVCharInfo()[P_ERIC]->getPos().y, 0);
+
+			if (!_pm->getVCharInfo()[i]->getIsPlaying() || !_pm->getVCharInfo()[i]->getPlayerIsAlive()) continue;
+
+			if (_pm->getVCharInfo()[i]->getPlayerIsAlive())
+			{
+				_camera->ChangeCharFunc(true, true, _pm->getVCharInfo()[i]->getPos().x, _pm->getVCharInfo()[i]->getPos().y, 0);
+			}
 		}
-		//엘스이프 수정 + 내용추가 181533 김도형
-		else if (playerSelect == P_OLAF)
-		{
-			_camera->ChangeCharFunc(true, true, _pm->getVCharInfo()[P_OLAF]->getPos().x, _pm->getVCharInfo()[P_OLAF]->getPos().y, 0);
-		}
+
 		_pm->getVCharInfo()[playerSelect]->setIsPlaying(true);
 
 		//	재만추가 : inven한테 현재 charIdx알려줌 , 그에 따른 얼굴 출력
@@ -118,6 +126,10 @@ void scene2_1::update()
 			//_camera->update();
 			//2019.01.17 오후11시추가 ===================
 			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_ERIC]->getPos().x, _pm->getVCharInfo()[P_ERIC]->getPos().y, 5, _mapImg);
+		}
+		else if (playerSelect == P_BALEOG)
+		{
+			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_BALEOG]->getPos().x, _pm->getVCharInfo()[P_BALEOG]->getPos().y, 5, _mapImg);
 		}
 		else if (playerSelect == P_OLAF)
 		{
