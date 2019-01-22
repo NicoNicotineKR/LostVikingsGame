@@ -13,11 +13,7 @@ object4::~object4()
 
 HRESULT object4::init()
 {
-	return E_NOTIMPL;
-}
 
-void object4::update()
-{
 	//첫번째사다리
 	tagObjects object1;
 	ZeroMemory(&object1, sizeof(object1));
@@ -36,6 +32,12 @@ void object4::update()
 	object1._y = 440;
 	object1._rc = RectMake(object1._x, object1._y, object1._sizeX, object1._sizeY);
 	_vObjects.push_back(object1);
+
+	return S_OK;
+}
+
+void object4::update()
+{
 }
 
 void object4::release()

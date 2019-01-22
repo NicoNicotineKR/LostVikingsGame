@@ -30,6 +30,8 @@ private:
 	//20190122형우추가
 	objectMgr* _objectMgr;
 
+	//RECT _ladderRc;
+
 
 public:
 	scene2_1();

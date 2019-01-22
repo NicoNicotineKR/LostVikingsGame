@@ -41,7 +41,6 @@ HRESULT scene2_1::init()
 	}
 	
 	//_ladderRc = RectMake(900, 120, 100, 315);
-	//_pm->setLadderRc(_ladderRc);
 
 	//20190122형우추가
 	_objectMgr = new objectMgr;
@@ -374,13 +373,7 @@ void scene2_1::WorkObject4()
 {
 	//오브젝트4
 	vector<tagObjects>				_vObject4 = _objectMgr->getObject4()->getvObjects();
-	vector<tagObjects>::iterator	_viObject4 = _objectMgr->getObject4()->getviObjects();
 
-	//플레이어 와의 조건 넣으셈
-	//for (_viObject4 = _vObject4.begin(); _viObject4 != _vObject4.end(); _viObject4++)
-	//{
-	//
-	//
-	//
-	//}
+	_pm->setLadderRc(_vObject4[0]._rc);
+	_pm->setLadderRc2(_vObject4[1]._rc);
 }

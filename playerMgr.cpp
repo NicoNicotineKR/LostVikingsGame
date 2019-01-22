@@ -115,4 +115,59 @@ void playerMgr::ladderFunc()
 		}
 	}
 
+	for (int i = 0; i < _vChar.size(); i++)
+	{
+		if (!_vChar[i]->getIsPlaying()) continue;
+		RECT temp;
+		if (IntersectRect(&temp, &_vChar[i]->getPlayerRc(), &_ladderRc2))
+		{
+			if (_vChar[i]->getPlayerRc().top <= _ladderRc2.bottom - 5)
+			{
+				if (KEYMANAGER->isOnceKeyDown(VK_UP))
+				{
+					if (_vChar[i]->getStatus() == P_R_MOVE ||
+						_vChar[i]->getStatus() == P_R_IDLE ||
+						_vChar[i]->getStatus() == P_R_FLYING ||
+						_vChar[i]->getStatus() == P_R_FALLING ||
+						_vChar[i]->getStatus() == P_R_SKILL_ONE) _vChar[i]->setStatus(P_R_ON_LADDER);
+					else if (_vChar[i]->getStatus() == P_L_MOVE ||
+						_vChar[i]->getStatus() == P_L_IDLE ||
+						_vChar[i]->getStatus() == P_L_FLYING ||
+						_vChar[i]->getStatus() == P_L_FALLING ||
+						_vChar[i]->getStatus() == P_L_SKILL_ONE) _vChar[i]->setStatus(P_L_ON_LADDER);
+
+					_vChar[i]->setLadderStatus(P_LADDER_UP);
+					_vChar[i]->setPostionX(_ladderRc2.left - ((_ladderRc2.left - _ladderRc2.right) / 2));
+					_vChar[i]->setIsLadderMotion(true);
+
+				}
+				else if (KEYMANAGER->isOnceKeyUp(VK_UP))
+				{
+					_vChar[i]->setLadderStatus(P_LADDER_PAUSE);
+				}
+
+				if (KEYMANAGER->isOnceKeyDown(VK_DOWN))
+				{
+
+					if (_vChar[i]->getStatus() == P_R_MOVE ||
+						_vChar[i]->getStatus() == P_R_IDLE ||
+						_vChar[i]->getStatus() == P_R_FLYING ||
+						_vChar[i]->getStatus() == P_R_FALLING) _vChar[i]->setStatus(P_R_ON_LADDER);
+					else if (_vChar[i]->getStatus() == P_L_MOVE ||
+						_vChar[i]->getStatus() == P_L_IDLE ||
+						_vChar[i]->getStatus() == P_L_FLYING ||
+						_vChar[i]->getStatus() == P_L_FALLING) _vChar[i]->setStatus(P_L_ON_LADDER);
+
+					_vChar[i]->setLadderStatus(P_LADDER_DOWN);
+					_vChar[i]->setPostionX(_ladderRc2.left - ((_ladderRc2.left - _ladderRc2.right) / 2));
+					_vChar[i]->setIsLadderMotion(true);
+				}
+				else if (KEYMANAGER->isOnceKeyUp(VK_DOWN))
+				{
+					_vChar[i]->setLadderStatus(P_LADDER_PAUSE);
+				}
+			}
+		}
+	}
+
 }

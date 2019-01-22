@@ -15,6 +15,7 @@ private:
 	vICharInfo _vIChar;
 
 	RECT _ladderRc;
+	RECT _ladderRc2;
 	int num;
 
 public:
@@ -34,5 +35,6 @@ public:
 
 	//사다리 셋팅
 	void setLadderRc(RECT rc) { _ladderRc = rc; }
+	void setLadderRc2(RECT rc) { _ladderRc2 = rc; }
 };
 
