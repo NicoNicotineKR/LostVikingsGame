@@ -598,6 +598,7 @@ void invenUI::UsingItem(int charIdx)
 		{
 			_charInfo[charIdx].hp += 1;
 			_pm->getVCharInfo()[charIdx]->setPlayerHp(_charInfo[charIdx].hp);
+			_inven[charIdx][_charInfo[charIdx].curInvenY][_charInfo[charIdx].curInvenX].E_ITEM = E_EMPTY;
 		}
 
 
