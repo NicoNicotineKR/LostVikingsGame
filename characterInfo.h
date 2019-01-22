@@ -22,7 +22,7 @@ protected:
 	bool _isFlying;				// 캐릭터 공중에 떠있는지
 	bool _isLadderMotion;		// 사다리 모션을 실행하는 불
 	animation* _motion;			// 캐릭터 모션
-
+	RECT _arrowRc;
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 오브젝트 충돌하다 추가한것
 	bool _isRushing;			//에릭전용
 	bool _isWall;
@@ -100,6 +100,7 @@ public:
 	bool			getPlayerIsAlive() { return _isAlive;}
 
 	int				getPlayerHp() { return _hp; }
+	void			setPlayerHp(int hp) { _hp = hp; }
 
 
 
