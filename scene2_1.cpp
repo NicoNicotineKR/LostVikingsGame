@@ -45,6 +45,13 @@ HRESULT scene2_1::init()
 	//20190122형우추가
 	_objectMgr = new objectMgr;
 	_objectMgr->init();
+
+	//엔딩관련 - 유형우
+	_endrc = RectMake(5, 750, 140, 70);
+	_endPlayer = RectMake(5, 750, 150, 200);
+	_endImg = IMAGEMANAGER->addImage("끝이미지", "images/maps/endimg.bmp", 140, 70, false, RGB(255, 0, 255));
+
+
 	return S_OK;
 }
 
@@ -179,6 +186,9 @@ void scene2_1::update()
 	//사다리
 	WorkObject4();
 
+	//엔딩관련 - 유형우
+	ending();
+
 }
 
 void scene2_1::render()
@@ -199,6 +209,16 @@ void scene2_1::render()
 	_objectMgr->render();
 
 	_invenUI->render();
+
+	//엔딩관련 - 유형우
+	Rectangle(getMemDC(),
+		_endPlayer.left - _camera->Getmapx() + WINSIZEX / 2,
+		_endPlayer.top - _camera->Getmapy() + WINSIZEY / 2,
+		_endPlayer.right - _camera->Getmapx() + WINSIZEX / 2,
+		_endPlayer.bottom - _camera->Getmapy() + WINSIZEY / 2
+	);
+
+	_endImg->render(getMemDC(), _endrc.left - _camera->Getmapx() + WINSIZEX / 2, _endrc.top - _camera->Getmapy() + WINSIZEY / 2);
 	
 }
 
@@ -376,4 +396,10 @@ void scene2_1::WorkObject4()
 
 	_pm->setLadderRc(_vObject4[0]._rc);
 	_pm->setLadderRc2(_vObject4[1]._rc);
+}
+
+//엔딩관련 - 유형우
+void scene2_1::ending()
+{
+
 }

@@ -32,7 +32,10 @@ private:
 
 	//RECT _ladderRc;
 
-
+	//엔딩관련 - 유형우
+	RECT _endrc;
+	RECT _endPlayer;
+	image* _endImg;
 public:
 	scene2_1();
 	~scene2_1();
@@ -47,6 +50,9 @@ public:
 	void WorkObject2();
 	void WorkObject3();
 	void WorkObject4();
+
+	//엔딩관련 - 유형우
+	void ending();
 
 	image* GetImage() { return _mapImg; }
 
