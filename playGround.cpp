@@ -38,6 +38,7 @@ HRESULT playGround::init()
 
 	//========== 플그 고유 변수들 설정 시작 ===============
 	_curSceneIdx = E_TITLE;
+	_isInvenMode = false;
 
 
 
@@ -60,9 +61,19 @@ void playGround::update()
 	SCENEMANAGER->update();
 	//_scene2_1->update();				// 이거 왜있는거야...???????씬매니저가 업데이트 해주고이써 - 재만
 
+	
 
+	if (!_isInvenMode)
+	{
+		KEYANIMANAGER->update();
+	}
 
-	KEYANIMANAGER->update();
+	if (_curSceneIdx == E_SCENE2_1)
+	{
+		_isInvenMode = _scene2_1->getIsInvenMode();
+	}
+	
+	
 
 	SelectSceneFunc();
 

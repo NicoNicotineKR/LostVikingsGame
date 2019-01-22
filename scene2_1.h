@@ -69,5 +69,8 @@ public:
 	void RefreshPlayerIdx();
 
 	void setVolume(float volume) { _volume = volume; }
+
+	bool getIsInvenMode() { return _isInvenMode; }
+
 };
 

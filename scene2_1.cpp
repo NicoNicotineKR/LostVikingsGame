@@ -85,8 +85,16 @@ void scene2_1::update()
 		{
 			_isInvenMode = false;
 			_invenUI->setIsSelectItem(false);
+			_pm->getVCharInfo()[playerSelect]->setIsPlaying(true);
 		}
-		else if (!_isInvenMode)	_isInvenMode = true;
+		else if (!_isInvenMode)
+		{
+			_isInvenMode = true;
+			for (int i = 0; i < 3; i++)
+			{
+				_pm->getVCharInfo()[i]->setIsPlaying(false);
+			}
+		}
 	}
 	for (int i = 0; i < _pm->getVCharInfo().size(); ++i)
 	{
@@ -273,7 +281,12 @@ void scene2_1::update()
 	{
 		_pm->getVCharInfo()[i]->UpdateCameraPos(_camera->Getmapx(), _camera->Getmapy());
 	}
-	_pm->update();
+	
+	if (!_isInvenMode)
+	{
+		_pm->update();
+	}
+	
 
 	//20190122형우추가
 	_objectMgr->update();

@@ -23,7 +23,7 @@ private:
 
 	E_SCENE_INDEX _curSceneIdx;
 
-
+	bool _isInvenMode;
 
 	char str[128];
 
