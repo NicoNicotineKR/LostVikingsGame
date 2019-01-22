@@ -25,14 +25,14 @@ HRESULT mainmenu::init()
 	IMAGEMANAGER->addFrameImage("volumeBarOn", "images/UI/optionUI/volumeBarOn.bmp", 40, 200, 1, 1, false, 0x000000);
 	IMAGEMANAGER->addFrameImage("volumeBarOff", "images/UI/optionUI/volumeBarOff.bmp", 40, 200, 1, 1, false, 0x000000);
 
-
+	_curVol = 3;	//	오프렉트시작idx
 	_optionBG = ImgComboinit("optionBG", WINSIZEX / 2, WINSIZEY / 2);
 	_soundTxt = ImgComboinit("button_soundvol", WINSIZEX / 2, WINSIZEY / 2 - 150);
 	for (int i = 0; i < 10; i++)
 	{
 		_soundBar[0][i] = ImgComboinit("volumeBarOn", WINSIZEX / 2 - 217 + 20 + (i * 43), WINSIZEY / 2 + 48);
 		_soundBar[1][i] = ImgComboinit("volumeBarOff", WINSIZEX / 2 - 217 + 20 + (i * 43), WINSIZEY / 2 + 48);
-		if (i < 5)
+		if (i < _curVol)
 		{
 			_isSoundBarOn[i] = true;
 		}
@@ -42,7 +42,7 @@ HRESULT mainmenu::init()
 		
 	}
 	_isOptionMode = false;
-	_curVol = 5;	//	오프렉트시작idx
+	
 
 
 

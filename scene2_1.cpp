@@ -195,7 +195,15 @@ void scene2_1::update()
 					}
 				break;
 				}
-				SOUNDMANAGER->play(_soundName, 1.0f);
+				if (i == P_OLAF)
+				{
+					SOUNDMANAGER->play(_soundName, 0.3f);
+				}
+				else 
+				{
+					SOUNDMANAGER->play(_soundName, 1.0f);
+				}
+
 			}
 		}
 
