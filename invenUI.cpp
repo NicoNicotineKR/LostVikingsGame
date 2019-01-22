@@ -310,8 +310,19 @@ void invenUI::render()
 
 
 	//	아이템 옮기는중이 아니면,
-	if(!_isSelectItem)
-		_cursor.img->alphaRender(getMemDC(), _cursor.rc.left, _cursor.rc.top, _cursorAlpha);	//	허드 다음에 깔아야함
+	if (!_isSelectItem)
+	{
+		//_cursor.img->alphaRender(getMemDC(), _cursor.rc.left, _cursor.rc.top, _cursorAlpha);	//	허드 다음에 깔아야함
+		for (int i = 0; i < 3; i++)
+		{
+			_cursor.img->render(getMemDC(),
+				_inven[i][_charInfo[i].curInvenY][_charInfo[i].curInvenX].imgInfo.pos.x - _cursor.img->getFrameWidth() / 2,
+				_inven[i][_charInfo[i].curInvenY][_charInfo[i].curInvenX].imgInfo.pos.y - _cursor.img->getFrameHeight() / 2);
+			
+		}
+		
+	}
+		
 
 	//	아이템 옮기는중이면,
 	else if (_isSelectItem)
@@ -480,7 +491,7 @@ bool invenUI::FindEmptyInven()
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			if (_inven[_receiveIdx][i][j].name == "empty")
+			if (_inven[_receiveIdx][i][j].E_ITEM == E_EMPTY)
 			{
 				isFind = true;
 				_receivePos.y = i;

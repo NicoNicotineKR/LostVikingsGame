@@ -65,7 +65,11 @@ void scene2_1::update()
 	// 재만 추가: invenMode on/Off : '~'
 	if (KEYMANAGER->isOnceKeyDown(VK_OEM_3))
 	{
-		if (_isInvenMode)		_isInvenMode = false;
+		if (_isInvenMode)
+		{
+			_isInvenMode = false;
+			_invenUI->setIsSelectItem(false);
+		}
 		else if (!_isInvenMode)	_isInvenMode = true;
 	}
 	for (int i = 0; i < _pm->getVCharInfo().size(); ++i)
