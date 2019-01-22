@@ -12,5 +12,7 @@ public:
 	void release();
 	void update();
 	void render();
+
+	virtual void setStart(bool startValue, int index) override;
 };
 

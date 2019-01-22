@@ -74,6 +74,8 @@ private:
 	const int TRASHCAN_X = 816;
 	const int TRASHCAN_Y = WINSIZEY - 149;
 
+	char str[128];
+
 public:
 	invenUI();
 	~invenUI();

@@ -14,5 +14,8 @@ public:
 	void update();
 	void release();
 	void render();
+
+	//해당 백터_start
+	virtual void setStart(bool startValue, int index) override;
 };
 

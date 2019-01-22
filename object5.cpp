@@ -60,8 +60,16 @@ void object5::render()
 				_viObjects->_rc.bottom - _cameraY + WINSIZEY / 2);
 		}
 
-		_viObjects->_image->render(getMemDC()
-			, _viObjects->_rc.left - _cameraX + WINSIZEX / 2
-			, _viObjects->_rc.top - _cameraY + WINSIZEY / 2);
+		if (_viObjects->_start == false)
+		{
+			_viObjects->_image->render(getMemDC()
+				, _viObjects->_rc.left - _cameraX + WINSIZEX / 2
+				, _viObjects->_rc.top - _cameraY + WINSIZEY / 2);
+		}
 	}
+}
+
+void object5::setStart(bool startValue, int index)
+{
+	_vObjects[index]._start = startValue;
 }

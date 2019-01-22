@@ -53,6 +53,7 @@ public:
 	void setCameraX(float setCameraX) { _cameraX = setCameraX; }
 	void setCameraY(float setCameraY) { _cameraY = setCameraY; }
 
+	virtual void setStart(bool startValue, int index);
 	//==================
 
 	//vector<tagObjects>				getvObjects() { return _vObjects; }

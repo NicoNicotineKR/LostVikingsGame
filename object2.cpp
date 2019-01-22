@@ -102,3 +102,8 @@ void object2::render()
 
 	}
 }
+
+void object2::setStart(bool startValue, int index)
+{
+	_vObjects[index]._start = startValue;
+}

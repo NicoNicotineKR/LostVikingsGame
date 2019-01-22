@@ -394,6 +394,11 @@ void invenUI::render()
 		Rectangle(getMemDC(), _cursor.rc);
 
 	}	//	렉모드 끝
+
+
+
+	sprintf_s(str, "%d", _objMgr->getObject2()->getvObjects()[0]._start);
+	TextOut(getMemDC(), 100, 300, str, strlen(str));
 }
 
 
@@ -607,15 +612,17 @@ bool invenUI::YellowKeyFunc()
 	//	잘 사용하면 true 리턴.
 	RECT tmpRc;
 	RECT TMP_YELLOW_KEYLOCK;
+	TMP_YELLOW_KEYLOCK = _objMgr->getObject5()->getvObjects()[1]._rc;
+
 	if (IntersectRect(&tmpRc, &(_pm->getVCharInfo()[_curCharIdx]->getPlayerRc()), &TMP_YELLOW_KEYLOCK))
 	{
 		//	오브젝트한테 사용했다는 신호주고
+		_objMgr->getObject2()->setStart(true, 1);
+		_objMgr->getObject5()->setStart(true, 1);
 
 		return true;
 		
 	}
-
-
 
 	return false;
 	
@@ -625,11 +632,15 @@ bool invenUI::RedKeyFunc()
 {
 	//	잘 사용하면 true 리턴.
 	RECT tmpRc;
-	RECT TMP_YELLOW_KEYLOCK;
-	if (IntersectRect(&tmpRc, &(_pm->getVCharInfo()[_curCharIdx]->getPlayerRc()), &TMP_YELLOW_KEYLOCK))
+	RECT TMP_RED_KEYLOCK;
+	TMP_RED_KEYLOCK = _objMgr->getObject5()->getvObjects()[0]._rc;
+
+	if (IntersectRect(&tmpRc, &(_pm->getVCharInfo()[_curCharIdx]->getPlayerRc()), &TMP_RED_KEYLOCK))
 	{
 		//	오브젝트한테 사용했다는 신호주고
 
+		_objMgr->getObject2()->setStart(true, 0);
+		_objMgr->getObject5()->setStart(true, 0);
 		return true;
 
 	}

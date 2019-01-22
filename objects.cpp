@@ -27,3 +27,7 @@ void objects::release()
 void objects::render()
 {
 }
+
+void objects::setStart(bool startValue, int index)
+{
+}
