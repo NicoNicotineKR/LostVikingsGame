@@ -53,7 +53,7 @@ public:
 	bool getIsSceneEnd() { return _isSceneEnd; }
 	bool setIsSceneEnd(bool value) { _isSceneEnd = value; }
 
-	int getCurVol() { return _curVol; }	//	0~9;
+	int getCurVol() { return _curVol; }	//	0~10;
 
 
 };

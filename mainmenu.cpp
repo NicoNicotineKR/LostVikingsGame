@@ -155,7 +155,10 @@ void mainmenu::OptionUIUpdate()
 		_curVol--;
 		RefreshVol();
 	}
-	
+	if (KEYMANAGER->isOnceKeyDown(VK_RETURN))
+	{
+		_isOptionMode = false;
+	}
 }
 
 void mainmenu::RefreshVol()
