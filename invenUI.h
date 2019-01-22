@@ -1,5 +1,7 @@
 #pragma once
 #include "gameNode.h"
+#include "playerMgr.h"
+#include "objectMgr.h"
 //#include <map>
 
 class invenUI : public gameNode
@@ -61,7 +63,8 @@ private:
 	int _sendIdx;
 	int _receiveIdx;
 
-	
+	playerMgr* _pm;
+	objectMgr* _objMgr;
 
 
 	const int CURSOR_BLINKSPD = 15;
@@ -98,6 +101,11 @@ public:
 
 	void AddItem(int charIdx, E_ITEMICONS kindof);
 
+	//	usingItem은 씬에서 keymanager->C 버튼으로 쓰인다.
+	//	사용한 아이템에따라효과 적용해줌
+	void UsingItem(int charIdx);
+	bool YellowKeyFunc();
+	bool RedKeyFunc();
 
 
 	int getSelectCharIdx() { return _curCharIdx; }
@@ -112,7 +120,11 @@ public:
 
 	void setIsSelectItem(bool value) { _isSelectItem = value; }
 
+	//	어떤 캐릭의, 현재hp
 	void setCharHp(int charIdx, int curHp) { _charInfo[charIdx].hp = curHp; }
+
+	void AddressLinkToPlayerManager(playerMgr* pm) { _pm = pm; }
+	void AddressLinkToObjectMgr(objectMgr* objMgr) { _objMgr = objMgr; }
 
 };
 

@@ -31,6 +31,7 @@ HRESULT scene2_1::init()
 		_invenUI = new invenUI;
 		_invenUI->init();
 		_isInvenMode = false;	
+		
 
 		_itemMgr = new itemMgr;
 		_itemMgr->init();
@@ -51,6 +52,11 @@ HRESULT scene2_1::init()
 	_endPlayer = RectMake(5, 750, 150, 200);
 	_endImg = IMAGEMANAGER->addImage("끝이미지", "images/maps/endimg.bmp", 140, 70, false, RGB(255, 0, 255));
 
+	//	이하 링크 추가
+	{
+		_invenUI->AddressLinkToObjectMgr(_objectMgr);
+		_invenUI->AddressLinkToPlayerManager(_pm);
+	}
 
 	return S_OK;
 }
@@ -195,7 +201,14 @@ void scene2_1::update()
 	//	재만추가 : 인벤모드가 아니면, 카메라업뎃/ 적용
 	if (!_isInvenMode)
 	{
-		
+		//	재만추가 : c누르면 현재 선택된 캐릭의 커서의 인벤아이템 사용
+		if (KEYMANAGER->isOnceKeyDown('C'))
+		{
+			_invenUI->UsingItem(playerSelect);
+		}
+
+
+
 		_itemMgr->update();			//	아이템매니저 업뎃 추가
 
 		if (playerSelect == P_ERIC)
@@ -279,9 +292,7 @@ void scene2_1::render()
 
 	//20190122형우추가
 	_objectMgr->render();
-
-	_invenUI->render();
-
+	_endImg->render(getMemDC(), _endrc.left - _camera->Getmapx() + WINSIZEX / 2, _endrc.top - _camera->Getmapy() + WINSIZEY / 2);
 	//엔딩관련 - 유형우
 	Rectangle(getMemDC(),
 		_endPlayer.left - _camera->Getmapx() + WINSIZEX / 2,
@@ -290,7 +301,12 @@ void scene2_1::render()
 		_endPlayer.bottom - _camera->Getmapy() + WINSIZEY / 2
 	);
 
-	_endImg->render(getMemDC(), _endrc.left - _camera->Getmapx() + WINSIZEX / 2, _endrc.top - _camera->Getmapy() + WINSIZEY / 2);
+
+	_invenUI->render();
+
+	
+
+	
 	
 }
 

@@ -549,3 +549,90 @@ void invenUI::AddItem(int charIdx, E_ITEMICONS kindof)
 	}
 }
 
+void invenUI::UsingItem(int charIdx)
+{
+	//enum E_ITEMICONS {
+	//	E_EMPTY = 0,
+	//	E_BOMB,
+	//	E_KEY_RED,
+	//	E_KEY_YELLOW,
+	//	E_MEAT,
+	//};
+
+	E_ITEMICONS itemKinds;
+
+	itemKinds = _inven[charIdx][_charInfo[charIdx].curInvenY][_charInfo[charIdx].curInvenX].E_ITEM;
+
+	switch (itemKinds)
+	{
+	case E_EMPTY:
+		//	나띵 해픈드~ 나띵 해픈드~ 댄유
+		break;
+
+	case E_BOMB:
+		//	폭탄 함수 실행
+		//	사용했으니 제거
+		_inven[charIdx][_charInfo[charIdx].curInvenY][_charInfo[charIdx].curInvenX].E_ITEM = E_EMPTY;
+		break;
+
+	case E_KEY_YELLOW:
+		
+		//	잘 사용됐으면
+		if(YellowKeyFunc())
+			_inven[charIdx][_charInfo[charIdx].curInvenY][_charInfo[charIdx].curInvenX].E_ITEM = E_EMPTY;
+		break;
+
+	case E_KEY_RED:
+		//	잘 사용됐으면
+		if (RedKeyFunc())
+			_inven[charIdx][_charInfo[charIdx].curInvenY][_charInfo[charIdx].curInvenX].E_ITEM = E_EMPTY;
+		break;
+
+	case E_MEAT:
+		if (_charInfo[charIdx].hp < 3)
+		{
+			_charInfo[charIdx].hp += 1;
+			_pm->getVCharInfo()[charIdx]->setPlayerHp(_charInfo[charIdx].hp);
+		}
+
+
+		break;
+	}
+	
+
+}
+
+bool invenUI::YellowKeyFunc()
+{
+	//	잘 사용하면 true 리턴.
+	RECT tmpRc;
+	RECT TMP_YELLOW_KEYLOCK;
+	if (IntersectRect(&tmpRc, &(_pm->getVCharInfo()[_curCharIdx]->getPlayerRc()), &TMP_YELLOW_KEYLOCK))
+	{
+		//	오브젝트한테 사용했다는 신호주고
+
+		return true;
+		
+	}
+
+
+
+	return false;
+	
+}
+
+bool invenUI::RedKeyFunc()
+{
+	//	잘 사용하면 true 리턴.
+	RECT tmpRc;
+	RECT TMP_YELLOW_KEYLOCK;
+	if (IntersectRect(&tmpRc, &(_pm->getVCharInfo()[_curCharIdx]->getPlayerRc()), &TMP_YELLOW_KEYLOCK))
+	{
+		//	오브젝트한테 사용했다는 신호주고
+
+		return true;
+
+	}
+	return false;
+}
+
