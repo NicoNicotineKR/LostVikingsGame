@@ -14,6 +14,12 @@ HRESULT eric::init()
 {
 	characterInfo::init();
 
+	SOUNDMANAGER->addSound("에릭1", "sounds/ericPick1.mp3", false, false);
+	SOUNDMANAGER->addSound("에릭2", "sounds/ericPick2.mp3", false, false);
+	SOUNDMANAGER->addSound("에릭3", "sounds/ericPick3.mp3", false, false);
+	SOUNDMANAGER->addSound("에릭4", "sounds/ericPick4.mp3", false, false);
+	SOUNDMANAGER->addSound("에릭5", "sounds/ericPick5.mp3", false, false);
+
 	//키애니메이션 이미지 만들고
 	imageInit();
 	//기본모션은 오른쪽서있는거

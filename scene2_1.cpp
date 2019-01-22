@@ -92,6 +92,8 @@ void scene2_1::update()
 		{
 			playerSelect = P_ERIC;
 		}
+		
+		_pm->getVCharInfo()[playerSelect]->setIsPlaying(true);
 
 		for (int i = 0; i < _pm->getVCharInfo().size();++i)
 		{
@@ -100,11 +102,78 @@ void scene2_1::update()
 
 			if (_pm->getVCharInfo()[i]->getPlayerIsAlive())
 			{
-				_camera->ChangeCharFunc(true, true, _pm->getVCharInfo()[i]->getPos().x, _pm->getVCharInfo()[i]->getPos().y, 0);
+				int num = RND->getInt(2);
+
+				switch (i)
+				{
+				case P_ERIC:
+
+					switch (num)
+					{
+					case 0:
+						SOUNDMANAGER->play("에릭1", 1.0f);
+						break;
+					case 1:
+						SOUNDMANAGER->play("에릭2", 1.0f);
+						break;
+					case 2:
+						SOUNDMANAGER->play("에릭3", 1.0f);
+						break;
+					case 3:
+						SOUNDMANAGER->play("에릭4", 1.0f);
+						break;
+					case 4:
+						SOUNDMANAGER->play("에릭5", 1.0f);
+						break;
+					}
+				break;
+				case P_BALEOG:
+
+					switch (num)
+					{
+					case 0:
+						SOUNDMANAGER->play("벨로그1", 1.0f);
+						break;
+					case 1:
+						SOUNDMANAGER->play("벨로그2", 1.0f);
+						break;
+					case 2:
+						SOUNDMANAGER->play("벨로그3", 1.0f);
+						break;
+					case 3:
+						SOUNDMANAGER->play("벨로그4", 1.0f);
+						break;
+					case 4:
+						SOUNDMANAGER->play("벨로그5", 1.0f);
+						break;
+					}
+				break;
+				case P_OLAF:
+
+					switch (num)
+					{
+					case 0:
+						SOUNDMANAGER->play("올라프1", 1.0f);
+						break;
+					case 1:
+						SOUNDMANAGER->play("올라프2", 1.0f);
+						break;
+					case 2:
+						SOUNDMANAGER->play("올라프3", 1.0f);
+						break;
+					case 3:
+						SOUNDMANAGER->play("올라프4", 1.0f);
+						break;
+					case 4:
+						SOUNDMANAGER->play("올라프5", 1.0f);
+						break;
+					}
+				break;
+				}
 			}
 		}
 
-		_pm->getVCharInfo()[playerSelect]->setIsPlaying(true);
+	
 
 		//	재만추가 : inven한테 현재 charIdx알려줌 , 그에 따른 얼굴 출력
 		_invenUI->setSelectCharIdx(playerSelect);
@@ -135,15 +204,15 @@ void scene2_1::update()
 			//_camera->UpdatePlayerPos(_eric->getPos().x, _eric->getPos().y, 5, _mapImg);
 			//_camera->update();
 			//2019.01.17 오후11시추가 ===================
-			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_ERIC]->getPos().x, _pm->getVCharInfo()[P_ERIC]->getPos().y, 5, _mapImg);
+			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_ERIC]->getPos().x, _pm->getVCharInfo()[P_ERIC]->getPos().y, 20, _mapImg);
 		}
 		else if (playerSelect == P_BALEOG)
 		{
-			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_BALEOG]->getPos().x, _pm->getVCharInfo()[P_BALEOG]->getPos().y, 5, _mapImg);
+			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_BALEOG]->getPos().x, _pm->getVCharInfo()[P_BALEOG]->getPos().y, 20, _mapImg);
 		}
 		else if (playerSelect == P_OLAF)
 		{
-			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_OLAF]->getPos().x, _pm->getVCharInfo()[P_OLAF]->getPos().y, 5, _mapImg);
+			_camera->UpdatePlayerPos(_pm->getVCharInfo()[P_OLAF]->getPos().x, _pm->getVCharInfo()[P_OLAF]->getPos().y, 20, _mapImg);
 		}
 		/////////////////////////////////////////////////////////////////////////////////	else if (playerSelect == P_BALEOG)
 		/////////////////////////////////////////////////////////////////////////////////	{

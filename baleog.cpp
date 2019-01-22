@@ -15,6 +15,13 @@ HRESULT baleog::init()
 {
 	characterInfo::init();
 
+	SOUNDMANAGER->addSound("벨로그1", "sounds/baleogPick1.mp3", false, false);
+	SOUNDMANAGER->addSound("벨로그2", "sounds/baleogPick2.mp3", false, false);
+	SOUNDMANAGER->addSound("벨로그3", "sounds/baleogPick3.mp3", false, false);
+	SOUNDMANAGER->addSound("벨로그4", "sounds/baleogPick4.mp3", false, false);
+	SOUNDMANAGER->addSound("벨로그5", "sounds/baleogPick5.mp3", false, false);
+
+
 	_img = IMAGEMANAGER->addFrameImage("baleog_sprite", "images/character/baleog_sprite.bmp", 0, 0, 1024, 2432, 8, 19, true, RGB(255, 0, 255));			//플레이어 이미지 초기화
 	_arowImg[0] = IMAGEMANAGER->addImage("arowRight", "images/character/arowRight.bmp", 400, 40, true, RGB(255, 0, 255));
 	_arowImg[1] = IMAGEMANAGER->addImage("arowLeft", "images/character/arowLeft.bmp", 400, 40, true, RGB(255, 0, 255));
