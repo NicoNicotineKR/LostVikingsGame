@@ -16,7 +16,8 @@ HRESULT baleog::init()
 	characterInfo::init();
 
 	_img = IMAGEMANAGER->addFrameImage("baleog_sprite", "images/character/baleog_sprite.bmp", 0, 0, 1024, 2432, 8, 19, true, RGB(255, 0, 255));			//플레이어 이미지 초기화
-
+	_arowImg[0] = IMAGEMANAGER->addImage("arowRight", "images/character/arowRight.bmp", 100, 10, true, RGB(255, 0, 255));
+	_arowImg[1] = IMAGEMANAGER->addImage("arowLeft", "images/character/arowLeft.bmp", 100, 10, true, RGB(255, 0, 255));
 	int rightIdleMotion[] = { 0 };
 	KEYANIMANAGER->addArrayFrameAnimation("baleogRightIdle", "baleog_sprite", rightIdleMotion, 1, 10, true);								 //오른쪽 방패내린 idle
 
@@ -374,10 +375,21 @@ void baleog::render()
 		sprintf_s(str, "%d", _status, strlen(str));
 		TextOut(getMemDC(), 150, 100, str, strlen(str));
 	}
-	Rectangle(getMemDC(), _arrowRc.left - _cameraX + WINSIZEX / 2,
-		_arrowRc.top - _cameraY + WINSIZEY / 2,
-		_arrowRc.right - _cameraX + WINSIZEX / 2,
-		_arrowRc.bottom - _cameraY + WINSIZEY / 2);
+	if (_isFire)
+	{
+		if (_isArrowDirection)
+		{
+			_arowImg[1]->render(getMemDC(), _arrowPos.x - _cameraX + WINSIZEX / 2, _arrowPos.y - _cameraY + WINSIZEY / 2);
+		}
+		else
+		{
+			_arowImg[0]->render(getMemDC(), _arrowPos.x - _cameraX + WINSIZEX / 2, _arrowPos.y - _cameraY + WINSIZEY / 2);
+		}
+	}
+	//Rectangle(getMemDC(), _arrowRc.left - _cameraX + WINSIZEX / 2,
+	//	_arrowRc.top - _cameraY + WINSIZEY / 2,
+	//	_arrowRc.right - _cameraX + WINSIZEX / 2,
+	//	_arrowRc.bottom - _cameraY + WINSIZEY / 2);
 }
 
 void baleog::move()
@@ -614,7 +626,7 @@ void baleog::arrowFire()
 {
 	if (!_isFire)
 	{
-		if(_status == P_R_SKILL_TWO)	_arrowPos.x = _rc.right;
+		if(_status == P_R_SKILL_TWO)	_arrowPos.x = _rc.right -_arowImg[0]->GetWidth();
 		else if (_status == P_L_SKILL_TWO)	_arrowPos.x = _rc.left;
 
 		_arrowPos.y = _pos.y;
@@ -641,15 +653,15 @@ void baleog::arrowMove(bool isArrowDirection)
 	{
 		if (_isArrowDirection)
 		{
-			_arrowPos.x -= 5.0f;
+			_arrowPos.x -= 10.0f;
 		}
 		else if (!_isArrowDirection)
 		{
-			_arrowPos.x += 5.0f;
+			_arrowPos.x += 10.0f;
 		}
 		_arrowRc = RectMake(_arrowPos.x, _arrowPos.y, 100, 10);
 		
-		if (getDistanceSqr(_arrowPos.x, _arrowPos.y, _arrowStartPos.x, _arrowStartPos.y) > 300 * 300)
+		if (getDistanceSqr(_arrowPos.x, _arrowPos.y, _arrowStartPos.x, _arrowStartPos.y) > 500 * 500)
 		{
 			_isFire = false;
 			_arrowRc = RectMake(-100, -100, 100, 10);

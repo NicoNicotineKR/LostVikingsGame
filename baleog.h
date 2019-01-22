@@ -21,6 +21,7 @@ private:
 	POINTFLOAT _arrowPos;
 	POINTFLOAT _arrowStartPos;
 	bool _isArrowDirection;
+	image* _arowImg[2];
 public:
 	baleog();
 	~baleog();
