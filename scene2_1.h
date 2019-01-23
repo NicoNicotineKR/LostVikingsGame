@@ -43,9 +43,9 @@ private:
 	float _volume;
 
 	//용암폭포 관련 - 유형우
-	RECT _lavaRc;
-	image* _lavaimg;
-	int _lavaIndex;
+	RECT _lavaRc[5];
+	image* _lavaimg[5];
+	int _lavaIndex[5];
 
 
 public:

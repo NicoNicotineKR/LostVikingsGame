@@ -62,9 +62,26 @@ HRESULT scene2_1::init()
 	}
 
 	//라바 관련
-	_lavaRc = RectMake(2816, 600, 130, 800);
-	_lavaimg = IMAGEMANAGER->addImage("라바", "images/maps/lava.bmp", 130, 1600, false, RGB(255, 0, 255));
-	_lavaIndex = 800;
+	IMAGEMANAGER->addImage("라바", "images/maps/lava.bmp", 130, 1600, false, RGB(255, 0, 255));
+	_lavaRc[0] = RectMake(2816, 600, 130, 800);
+	_lavaimg[0] = IMAGEMANAGER->findImage("라바");
+	_lavaIndex[0] = 800;
+
+	_lavaRc[1] = RectMake(1260, 215, 130, 800);
+	_lavaimg[1] = IMAGEMANAGER->findImage("라바");
+	_lavaIndex[1] = 800;
+
+	_lavaRc[2] = RectMake(2495, 215, 130, 800);
+	_lavaimg[2] = IMAGEMANAGER->findImage("라바");
+	_lavaIndex[2] = 800;
+
+	_lavaRc[3] = RectMake(706, 615, 130, 800);
+	_lavaimg[3] = IMAGEMANAGER->findImage("라바");
+	_lavaIndex[3] = 800;
+
+	_lavaRc[4] = RectMake(322, 415, 130, 800);
+	_lavaimg[4] = IMAGEMANAGER->findImage("라바");
+	_lavaIndex[4] = 800;
 	
 
 	return S_OK;
@@ -352,9 +369,25 @@ void scene2_1::render()
 	);
 
 	//용암폭포 관련 - 유형우
-	_lavaimg->render(getMemDC(),
-		_lavaRc.left - _camera->Getmapx() + WINSIZEX / 2,
-		_lavaRc.top - _camera->Getmapy() + WINSIZEY / 2, 0, _lavaIndex, 130, 800);
+	_lavaimg[0]->render(getMemDC(),
+		_lavaRc[0].left - _camera->Getmapx() + WINSIZEX / 2,
+		_lavaRc[0].top - _camera->Getmapy() + WINSIZEY / 2, 0, _lavaIndex[0], 130, 800);
+
+	_lavaimg[1]->render(getMemDC(),
+		_lavaRc[1].left - _camera->Getmapx() + WINSIZEX / 2,
+		_lavaRc[1].top - _camera->Getmapy() + WINSIZEY / 2, 0, _lavaIndex[1], 85, 508);
+
+	_lavaimg[2]->render(getMemDC(),
+		_lavaRc[2].left - _camera->Getmapx() + WINSIZEX / 2,
+		_lavaRc[2].top - _camera->Getmapy() + WINSIZEY / 2, 0, _lavaIndex[2], 66, 396);
+
+	_lavaimg[3]->render(getMemDC(),
+		_lavaRc[3].left - _camera->Getmapx() + WINSIZEX / 2,
+		_lavaRc[3].top - _camera->Getmapy() + WINSIZEY / 2, 0, _lavaIndex[3], 128, 800);
+
+	_lavaimg[4]->render(getMemDC(),
+		_lavaRc[4].left - _camera->Getmapx() + WINSIZEX / 2,
+		_lavaRc[4].top - _camera->Getmapy() + WINSIZEY / 2, 0, _lavaIndex[4], 128, 800);
 
 	_invenUI->render();
 
@@ -587,13 +620,49 @@ void scene2_1::ending()
 //용암폭포 관련 - 유형우
 void scene2_1::lavafall()
 {
-	if (_lavaIndex > 0)
+	if (_lavaIndex[0] > 0)
 	{
-		_lavaIndex--;
+		_lavaIndex[0]--;
 	}
-	if (_lavaIndex <= 0)
+	if (_lavaIndex[0] <= 0)
 	{
-		_lavaIndex = 800;
+		_lavaIndex[0] = 800;
+	}
+
+	if (_lavaIndex[1] > 0)
+	{
+		_lavaIndex[1]--;
+	}
+	if (_lavaIndex[1] <= 0)
+	{
+		_lavaIndex[1] = 500;
+	}
+
+	if (_lavaIndex[2] > 0)
+	{
+		_lavaIndex[2]--;
+	}
+	if (_lavaIndex[2] <= 0)
+	{
+		_lavaIndex[2] = 400;
+	}
+
+	if (_lavaIndex[3] > 0)
+	{
+		_lavaIndex[3]--;
+	}
+	if (_lavaIndex[3] <= 0)
+	{
+		_lavaIndex[3] = 800;
+	}
+
+	if (_lavaIndex[4] > 0)
+	{
+		_lavaIndex[4]--;
+	}
+	if (_lavaIndex[4] <= 0)
+	{
+		_lavaIndex[4] = 800;
 	}
 }
 
