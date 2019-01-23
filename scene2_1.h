@@ -50,6 +50,8 @@ private:
 	//숨겨진맵 - 유형우
 	image* _mapHide;
 
+	bool _isSceneEnd;
+
 public:
 	scene2_1();
 	~scene2_1();
@@ -58,6 +60,9 @@ public:
 	void release();
 	void update();
 	void render();
+
+	// 전원 사망 체크
+	void SceneEndChk();
 
 	//20190122형우추가
 	void WorkObject1();
@@ -81,6 +86,9 @@ public:
 	void setVolume(float volume) { _volume = volume; }
 
 	bool getIsInvenMode() { return _isInvenMode; }
+
+	//	다음 씬 전환용
+	bool getIsSceneEnd() { return _isSceneEnd; }
 
 };
 

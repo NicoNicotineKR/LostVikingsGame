@@ -219,6 +219,9 @@
     <ClInclude Include="baleog.h">
       <Filter>PlayGround\player</Filter>
     </ClInclude>
+    <ClInclude Include="gameover.h">
+      <Filter>PlayGround\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -358,6 +361,9 @@
     </ClCompile>
     <ClCompile Include="baleog.cpp">
       <Filter>PlayGround\player</Filter>
+    </ClCompile>
+    <ClCompile Include="gameover.cpp">
+      <Filter>PlayGround\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

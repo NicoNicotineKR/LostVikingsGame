@@ -24,7 +24,7 @@ HRESULT playGround::init()
 	_title = new title;
 	SCENEMANAGER->addScene("title", _title);
 	SCENEMANAGER->changeScene("title");			//타이틀 보려면 주석 해제
-
+	
 
 	//_scene2_1 = new scene2_1;					//씬들 이제 플그의 SceneSelectFunc() 에서 new, init, release 진행함 - 재만 (이제 피료업씀)
 
@@ -116,6 +116,8 @@ void playGround::SelectSceneFunc()
 			SCENEMANAGER->addScene("mainmenu", _mainmenu);
 			SCENEMANAGER->changeScene("mainmenu");
 			// 타이틀 씬 릴리즈 해야함 -----> 씬매니저에서 해주고있음
+
+			SCENEMANAGER->deleteScene("title");
 			SAFE_RELEASE(_title);
 			SAFE_DELETE(_title);
 			
@@ -134,9 +136,42 @@ void playGround::SelectSceneFunc()
 			_scene2_1->setVolume((float)_mainmenu->getCurVol() / 50);
 			//	메인메뉴 릴리즈 해야함-----> 씬매니저에서 해주고있음
 
+			SCENEMANAGER->deleteScene("mainmenu");
 			SAFE_RELEASE(_mainmenu);
 			SAFE_DELETE(_mainmenu);
 			
+		}
+		break;
+
+	case E_SCENE2_1:
+		if (_scene2_1->getIsSceneEnd())
+		{
+			_curSceneIdx = E_GAMEOVER;
+			_gameover = new gameover;
+			SCENEMANAGER->addScene("gameover", _gameover);
+			SCENEMANAGER->changeScene("gameover");
+			
+			//	씬 2_1 릴리즈해야함
+			SCENEMANAGER->deleteScene("scene2_1");
+			SAFE_RELEASE(_scene2_1);
+			SAFE_DELETE(_scene2_1);
+
+			
+		}
+		break;
+	case E_GAMEOVER:
+		if (_gameover->getIsRestart())
+		{
+			_curSceneIdx = E_MAINMENU;
+			_mainmenu = new mainmenu;
+			SCENEMANAGER->addScene("mainmenu", _mainmenu);
+			SCENEMANAGER->changeScene("mainmenu");
+			//	게임오버 릴리즈 필요
+			SCENEMANAGER->deleteScene("gameover");
+			SAFE_RELEASE(_gameover);
+			SAFE_DELETE(_gameover);
+
+
 		}
 		break;
 
@@ -145,5 +180,5 @@ void playGround::SelectSceneFunc()
 
 	}
 
-}
+ }
 

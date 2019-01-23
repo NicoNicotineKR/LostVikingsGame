@@ -115,3 +115,22 @@ HRESULT sceneManager::firstScene(string sceneName)
 
 	return E_FAIL;
 }
+
+HRESULT sceneManager::deleteScene(string sceneName)
+{
+	mapSceneIter find = _mSceneList.find(sceneName);
+
+	//변경할 씬을 못찾았다
+	if (find == _mSceneList.end()) return E_FAIL;
+
+	if (find->second == _currentScene) return S_OK;
+
+	//	성공적으로 씬이 변경이되면 삭제
+	//	현재 어떤 씬의 정보가 들어있을수도 있으므로 릴리즈 시켜주고
+	find->second->release();
+	//	삭제
+	_mSceneList.erase(find);
+
+	return S_OK;
+}
+

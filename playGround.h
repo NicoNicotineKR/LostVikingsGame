@@ -3,6 +3,7 @@
 #include "scene2_1.h"
 #include "title.h"
 #include "mainmenu.h"
+#include "gameover.h"
 
 
 //추가
@@ -19,6 +20,7 @@ private:
 	scene2_1* _scene2_1;
 	//추가
 	camera* _camera;
+	gameover* _gameover;
 
 
 	E_SCENE_INDEX _curSceneIdx;

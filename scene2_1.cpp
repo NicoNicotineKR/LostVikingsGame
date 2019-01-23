@@ -46,6 +46,7 @@ HRESULT scene2_1::init()
 		_itemMgr->getAddressLinkToInvenUI(_invenUI);
 		_itemMgr->getAddressLinkToPlayerMgr(_pm);
 
+		_isSceneEnd = false;
 	}
 	
 	//_ladderRc = RectMake(900, 120, 100, 315);
@@ -98,6 +99,7 @@ void scene2_1::release()
 
 void scene2_1::update()
 {
+	SceneEndChk();
 
 	if (!SOUNDMANAGER->isPlaySound("ºê±Ý"))
 	{
@@ -400,6 +402,21 @@ void scene2_1::render()
 	
 	
 	
+	
+}
+
+void scene2_1::SceneEndChk()
+{
+	bool isAllDead = true;
+	for (int i = 0; i < 3; i++)
+	{
+		if (_pm->getVCharInfo()[i]->getPlayerIsAlive())
+		{
+			isAllDead = false;
+		}
+	}
+
+	_isSceneEnd = isAllDead;
 	
 }
 
