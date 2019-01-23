@@ -136,7 +136,7 @@ void scene2_1::update()
 		//와일문 지움
 		playerSelect++;
 		RefreshPlayerIdx();
-		_camera->ChangeCharFunc(true, true, _pm->getVCharInfo()[playerSelect]->getPos().x, _pm->getVCharInfo()[playerSelect]->getPos().y, 100);
+		
 
 		int count = 0;
 		while (1)
@@ -157,7 +157,8 @@ void scene2_1::update()
 				break;
 			}
 		}
-		
+
+		_camera->ChangeCharFunc(true, true, _pm->getVCharInfo()[playerSelect]->getPos().x, _pm->getVCharInfo()[playerSelect]->getPos().y, 100);
 
 
 		//if(playerSelect == P_BALEOG)

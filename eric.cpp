@@ -454,7 +454,7 @@ void eric::update()
 			_pos.y += _vec.y;
 		}
 
-		if (KEYMANAGER->isOnceKeyDown('D'))
+		if (KEYMANAGER->isOnceKeyDown('D') && _isPlaying)
 		{
 			_hp -= 1;
 		}
