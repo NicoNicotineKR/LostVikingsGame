@@ -18,8 +18,6 @@ HRESULT olaf::init()
 	SOUNDMANAGER->addSound("올라프1", "sounds/olafPick1.mp3", false, false);
 	SOUNDMANAGER->addSound("올라프2", "sounds/olafPick2.mp3", false, false);
 	SOUNDMANAGER->addSound("올라프3", "sounds/olafPick3.mp3", false, false);
-	SOUNDMANAGER->addSound("올라프4", "sounds/olafPick4.mp3", false, false);
-	SOUNDMANAGER->addSound("올라프5", "sounds/olafPick5.mp3", false, false);
 
 	_img = IMAGEMANAGER->addFrameImage("olaf_Sprite", "images/character/olaf_Sprite.bmp", 0, 0, 1024, 1920, 8, 15, true, RGB(255, 0, 255));			//플레이어 이미지 초기화
 
@@ -212,6 +210,14 @@ void olaf::update()
 		characterInfo::update();
 		_vec.y = 0;
 		_vec.x = 0;
+
+		if (!_isPlaying)
+		{
+			_isLeftMove = false;
+			_isRightMove = false;
+		}
+
+
 
 		if (!_isWall)
 		{
@@ -480,7 +486,7 @@ void olaf::render()
 
 void olaf::move()
 {
-	if (!_isDeadAni && _hp > 0)
+	if (!_isDeadAni && _hp > 0 && _isPlaying)
 	{
 		if (_isRightMove)
 		{

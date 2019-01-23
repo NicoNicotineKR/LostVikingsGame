@@ -19,8 +19,6 @@ HRESULT baleog::init()
 	SOUNDMANAGER->addSound("벨로그1", "sounds/baleogPick1.mp3", false, false);
 	SOUNDMANAGER->addSound("벨로그2", "sounds/baleogPick2.mp3", false, false);
 	SOUNDMANAGER->addSound("벨로그3", "sounds/baleogPick3.mp3", false, false);
-	SOUNDMANAGER->addSound("벨로그4", "sounds/baleogPick4.mp3", false, false);
-	SOUNDMANAGER->addSound("벨로그5", "sounds/baleogPick5.mp3", false, false);
 
 
 	_img = IMAGEMANAGER->addFrameImage("baleog_sprite", "images/character/baleog_sprite.bmp", 0, 0, 1024, 2432, 8, 19, true, RGB(255, 0, 255));			//플레이어 이미지 초기화
@@ -172,6 +170,12 @@ void baleog::update()
 		olafKeyInput();
 		_vec.y = 0;
 		_vec.x = 0;
+		if (!_isPlaying)
+		{
+			_isLeftMove = false;
+			_isRightMove = false;
+		}
+
 
 		if (!_isWall)
 		{
@@ -419,7 +423,7 @@ void baleog::render()
 
 void baleog::move()
 {
-	if (!_isDeadAni && _isPlaying)
+	if (!_isDeadAni)
 	{
 		if (_isRightMove)
 		{
