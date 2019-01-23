@@ -20,7 +20,7 @@ HRESULT object6::init()
 	ZeroMemory(&object1, sizeof(object1));
 	object1._sizeX = 50;
 	object1._sizeY = 50;
-	object1._x = 700;
+	object1._x = 634;
 	object1._y = 980 - 124;
 	object1._property = 1;
 	object1._image = IMAGEMANAGER->findImage("오브젝트6");
@@ -28,7 +28,7 @@ HRESULT object6::init()
 	_vObjects.push_back(object1);
 
 
-	object1._x = 500;
+	object1._x = 236;
 	object1._y = 980 - 124;
 	object1._property = 2;
 	object1._image = IMAGEMANAGER->findImage("오브젝트6");

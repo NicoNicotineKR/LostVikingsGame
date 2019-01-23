@@ -366,12 +366,12 @@ void scene2_1::render()
 	
 	_endImg->render(getMemDC(), _endrc.left - _camera->Getmapx() + WINSIZEX / 2, _endrc.top - _camera->Getmapy() + WINSIZEY / 2);
 	//엔딩관련 - 유형우
-	Rectangle(getMemDC(),
-		_endPlayer.left - _camera->Getmapx() + WINSIZEX / 2,
-		_endPlayer.top - _camera->Getmapy() + WINSIZEY / 2,
-		_endPlayer.right - _camera->Getmapx() + WINSIZEX / 2,
-		_endPlayer.bottom - _camera->Getmapy() + WINSIZEY / 2
-	);
+	//Rectangle(getMemDC(),
+	//	_endPlayer.left - _camera->Getmapx() + WINSIZEX / 2,
+	//	_endPlayer.top - _camera->Getmapy() + WINSIZEY / 2,
+	//	_endPlayer.right - _camera->Getmapx() + WINSIZEX / 2,
+	//	_endPlayer.bottom - _camera->Getmapy() + WINSIZEY / 2
+	//);
 
 	//용암폭포 관련 - 유형우
 	_lavaimg[0]->render(getMemDC(),
@@ -477,63 +477,26 @@ void scene2_1::WorkObject2()
 	RECT tempPlayer;
 
 	//첫번째문
-	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD4))
+	for (int i = 0; i < _pm->getVCharInfo().size(); i++)
 	{
-		for (_viObject2 = _vObject2.begin(); _viObject2 != _vObject2.end(); _viObject2++)
+		for (int j = 0; j < _vObject2.size(); j++)
 		{
-			for (_viObject5 = _vObject5.begin(); _viObject5 != _vObject5.end();)
+			if (!_vObject2[j]._start)
 			{
-				//만약 1번열쇠면
-				if (_viObject5->_property == 1)
+				if (IntersectRect(&temp, &_pm->getVCharInfo()[i]->getPlayerRc(), &_vObject2[j]._rc2))
 				{
-					//문의 성질 1가진녀석을
-					if (_viObject2->_property == 1)
+					if (_pm->getVCharInfo()[i]->getStatus() == P_R_MOVE || _pm->getVCharInfo()[i]->getStatus() == P_L_MOVE)
 					{
-						//2번문을열고
-						_viObject2->_start = true;
-
-						//5번열쇠를 지운다.
-						_vObject5.erase(_viObject5);
-						//기모찌
-						_objectMgr->getObject2()->setvObject(_vObject2);
-						_objectMgr->getObject5()->setvObject(_vObject5);
-						break;
+						_pm->getVCharInfo()[i]->setStatus(P_L_WALL_PUSH);
+						_pm->getVCharInfo()[i]->setIsWall(true);
 					}
+					_pm->getVCharInfo()[i]->setPostionX((float)_vObject2[j]._rc2.right + 64);
+					// 월푸시 변경
 				}
-				_viObject5++;
 			}
 		}
 	}
 
-	//두번째문
-	if (KEYMANAGER->isOnceKeyDown(VK_NUMPAD5))
-	{
-		for (_viObject2 = _vObject2.begin(); _viObject2 != _vObject2.end(); _viObject2++)
-		{
-			for (_viObject5 = _vObject5.begin(); _viObject5 != _vObject5.end();)
-			{
-				//만약 1번열쇠면
-				if (_viObject2->_property == 2)
-				{
-					//문의 성질 1가진녀석을
-					if (_viObject5->_property == 2)
-					{
-						//2번문을열고
-						_viObject2->_start = true;
-
-						//5번열쇠를 지운다.
-						_vObject5.erase(_viObject5);
-						//기모찌
-						_objectMgr->getObject2()->setvObject(_vObject2);
-						_objectMgr->getObject5()->setvObject(_vObject5);
-						break;
-					}
-				}
-				_viObject5++;
-
-			}
-		}
-	}
 
 }
 
@@ -570,7 +533,7 @@ void scene2_1::WorkObject3()
 	{
 		for (_viObject6 = _vObject6.begin(); _viObject6 != _vObject6.end();)
 		{
-			if (IntersectRect(&temp, &_viObject6->_rc, &_pm->getVCharInfo()[P_OLAF]->getArrowRC()))
+			if (IntersectRect(&temp, &_viObject6->_rc, &_pm->getVCharInfo()[P_BALEOG]->getArrowRC()))
 			{
 				if (_viObject3->_property == 1)
 				{

@@ -21,7 +21,8 @@ HRESULT object2::init()
 	tagObjects object1;
 	ZeroMemory(&object1, sizeof(object1));
 	object1._sizeX = 260;
-	object1._sizeY = 195;
+	object1._sizeY = 195
+		;
 	object1._x = 2945;
 	object1._y = 884-128;
 	object1._imageIndex = 260;
@@ -29,6 +30,8 @@ HRESULT object2::init()
 	object1._image = IMAGEMANAGER->findImage("오브젝트2");
 
 	object1._rc = RectMake(object1._x, object1._y, object1._sizeX, object1._sizeY);
+	//_vObjects.push_back(object1);
+	object1._rc2 = RectMake(object1._x-130, object1._y, object1._sizeX, object1._sizeY);
 	_vObjects.push_back(object1);
 
 	//두번째문
@@ -37,6 +40,8 @@ HRESULT object2::init()
 	object1._property = 2;
 	
 	object1._rc = RectMake(object1._x, object1._y, object1._sizeX, object1._sizeY);
+	//_vObjects.push_back(object1);
+	object1._rc2 = RectMake(object1._x - 130, object1._y, object1._sizeX, object1._sizeY);
 	_vObjects.push_back(object1);
 	
 
@@ -90,10 +95,10 @@ void object2::render()
 		if (KEYMANAGER->isToggleKey(VK_F12))
 		{
 			Rectangle(getMemDC(),
-				_viObjects->_rc.left - _cameraX + WINSIZEX / 2,
-				_viObjects->_rc.top - _cameraY + WINSIZEY / 2,
-				_viObjects->_rc.right - _cameraX + WINSIZEX / 2,
-				_viObjects->_rc.bottom - _cameraY + WINSIZEY / 2);
+				_viObjects->_rc2.left - _cameraX + WINSIZEX / 2,
+				_viObjects->_rc2.top - _cameraY + WINSIZEY / 2,
+				_viObjects->_rc2.right - _cameraX + WINSIZEX / 2,
+				_viObjects->_rc2.bottom - _cameraY + WINSIZEY / 2);
 		}
 
 			_viObjects->_image->render(getMemDC()
