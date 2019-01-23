@@ -59,6 +59,7 @@ HRESULT eric::init()
 	_isLadderMotion = false;
 	_ladderStatus = P_LADDER_NULL;
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	_hp = 3;
 
 
 	_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
@@ -96,11 +97,13 @@ void eric::update()
 			RGB(255, 0, 0),
 			&_isGround);
 	}
+
 	
 
 	//물에 닿았으면
 	if (_isWaterDead)
 	{
+		_hp = 0;
 		_isWaterDead = false;
 		_isDeadAni = true;
 		//오른쪽이면
@@ -132,7 +135,7 @@ void eric::update()
 	
 	}
 	//물에 닿지 않았으면
-	else if (!_isWaterDead && !_isDeadAni)
+	else if (!_isWaterDead && !_isDeadAni && _hp > 0)
 	{
 		// 물과 충돌하고 있는지
 		_pos.y = PixelColFunction(0, _pos.x, _pos.y, 64, 5,
@@ -451,7 +454,18 @@ void eric::update()
 			_pos.y += _vec.y;
 		}
 
+		if (KEYMANAGER->isOnceKeyDown('D'))
+		{
+			_hp -= 1;
+		}
 
+		if (_hp <= 0)
+		{
+			_motion->stop();
+			_motion = KEYANIMANAGER->findAnimation("ericRightHitDead");
+			_motion->start();
+			_isDeadAni = true;
+		}
 
 		_rc = RectMakeCenter(_pos.x, _pos.y, _img->getFrameWidth(), _img->getFrameHeight());
 		//_rc = RectMake(_pos.x - _cameraX + WINSIZEX / 2, _pos.y - _cameraY + WINSIZEY / 2, _img->getFrameWidth(),_img->getFrameHeight());
@@ -460,15 +474,18 @@ void eric::update()
 
 void eric::render()
 {
-//	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
-	_img->aniRender(getMemDC(), _rc.left- _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _motion);
+	if (_isAlive)
+	{
+		//	Rectangle(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _rc.right - _cameraX + WINSIZEX / 2, _rc.bottom - _cameraY + WINSIZEY / 2);
+		_img->aniRender(getMemDC(), _rc.left - _cameraX + WINSIZEX / 2, _rc.top - _cameraY + WINSIZEY / 2, _motion);
 
-//	Rectangle(getMemDC(), _rc);
-//	_img->aniRender(getMemDC(), _rc.left, _rc.top,_motion);
-	
-	char str1[128];
-	sprintf_s(str1, "%d", _status);
-	TextOut(getMemDC(), WINSIZEX - 100, 100, str1, strlen(str1));
+		//	Rectangle(getMemDC(), _rc);
+		//	_img->aniRender(getMemDC(), _rc.left, _rc.top,_motion);
+
+		char str1[128];
+		sprintf_s(str1, "%d", _status);
+		TextOut(getMemDC(), WINSIZEX - 100, 100, str1, strlen(str1));
+	}
 }
 
 void eric::move()
