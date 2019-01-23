@@ -42,6 +42,11 @@ private:
 
 	float _volume;
 
+	//용암폭포 관련 - 유형우
+	RECT _lavaRc;
+	image* _lavaimg;
+	int _lavaIndex;
+
 
 public:
 	scene2_1();
@@ -60,6 +65,9 @@ public:
 
 	//엔딩관련 - 유형우
 	void ending();
+
+	//용암폭포 관련 - 유형우
+	void lavafall();
 
 	image* GetImage() { return _mapImg; }
 

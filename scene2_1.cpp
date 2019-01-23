@@ -60,6 +60,11 @@ HRESULT scene2_1::init()
 		_invenUI->AddressLinkToObjectMgr(_objectMgr);
 		_invenUI->AddressLinkToPlayerManager(_pm);
 	}
+
+	//라바 관련
+	_lavaRc = RectMake(2816, 600, 130, 800);
+	_lavaimg = IMAGEMANAGER->addImage("라바", "images/maps/lava.bmp", 130, 1600, false, RGB(255, 0, 255));
+	_lavaIndex = 800;
 	
 
 	return S_OK;
@@ -315,6 +320,9 @@ void scene2_1::update()
 
 	//엔딩관련 - 유형우
 	ending();
+
+	//용암폭포 관련 - 유형우
+	lavafall();
 }
 
 void scene2_1::render()
@@ -328,11 +336,12 @@ void scene2_1::render()
 	//	, _ladderRc.right - _camera->Getmapx() + WINSIZEX / 2
 	//	, _ladderRc.bottom - _camera->Getmapy() + WINSIZEY / 2);
 
+	_objectMgr->render();
 	_pm->render();
 	_itemMgr->render();
 
 	//20190122형우추가
-	_objectMgr->render();
+	
 	_endImg->render(getMemDC(), _endrc.left - _camera->Getmapx() + WINSIZEX / 2, _endrc.top - _camera->Getmapy() + WINSIZEY / 2);
 	//엔딩관련 - 유형우
 	Rectangle(getMemDC(),
@@ -342,6 +351,10 @@ void scene2_1::render()
 		_endPlayer.bottom - _camera->Getmapy() + WINSIZEY / 2
 	);
 
+	//용암폭포 관련 - 유형우
+	_lavaimg->render(getMemDC(),
+		_lavaRc.left - _camera->Getmapx() + WINSIZEX / 2,
+		_lavaRc.top - _camera->Getmapy() + WINSIZEY / 2, 0, _lavaIndex, 130, 800);
 
 	_invenUI->render();
 
@@ -569,6 +582,19 @@ void scene2_1::WorkObject4()
 //엔딩관련 - 유형우
 void scene2_1::ending()
 {
+}
+
+//용암폭포 관련 - 유형우
+void scene2_1::lavafall()
+{
+	if (_lavaIndex > 0)
+	{
+		_lavaIndex--;
+	}
+	if (_lavaIndex <= 0)
+	{
+		_lavaIndex = 800;
+	}
 }
 
 void scene2_1::RefreshPlayerIdx()
