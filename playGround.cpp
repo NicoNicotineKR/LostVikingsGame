@@ -115,7 +115,10 @@ void playGround::SelectSceneFunc()
 			_mainmenu = new mainmenu;
 			SCENEMANAGER->addScene("mainmenu", _mainmenu);
 			SCENEMANAGER->changeScene("mainmenu");
-			// 타이틀 씬 릴리즈 해야함 -----
+			// 타이틀 씬 릴리즈 해야함 -----> 씬매니저에서 해주고있음
+			SAFE_RELEASE(_title);
+			SAFE_DELETE(_title);
+			
 
 		}
 		break;
@@ -129,8 +132,11 @@ void playGround::SelectSceneFunc()
 			_scene2_1->SetLinkToCamera(_camera);
 			SCENEMANAGER->changeScene("scene2_1");
 			_scene2_1->setVolume((float)_mainmenu->getCurVol() / 50);
-			//	메인메뉴 릴리즈 해야함
+			//	메인메뉴 릴리즈 해야함-----> 씬매니저에서 해주고있음
 
+			SAFE_RELEASE(_mainmenu);
+			SAFE_DELETE(_mainmenu);
+			
 		}
 		break;
 

@@ -13,7 +13,7 @@ mainmenu::~mainmenu()
 
 HRESULT mainmenu::init()
 {
-	//IMAGEMANAGER->addImage("vugKings", "images/UI/mainmenuUI/vugKings.bmp", 1024, 768, false, 0x000000);
+	IMAGEMANAGER->addImage("vugKings", "images/UI/mainmenuUI/vugKings.bmp", 1024, 768, false, 0x000000);
 	_bg = IMAGEMANAGER->findImage("vugKings");
 	_isSceneEnd = false;
 
@@ -53,6 +53,17 @@ HRESULT mainmenu::init()
 
 void mainmenu::release()
 {
+	
+	
+	SAFE_RELEASE(_menuUI);
+	SAFE_DELETE(_menuUI);
+
+	IMAGEMANAGER->deleteImage("vugKings");
+	IMAGEMANAGER->deleteImage("optionBG");
+	IMAGEMANAGER->deleteImage("button_soundvol");
+	IMAGEMANAGER->deleteImage("volumeBarOn");
+	IMAGEMANAGER->deleteImage("volumeBarOff");
+
 }
 
 void mainmenu::update()

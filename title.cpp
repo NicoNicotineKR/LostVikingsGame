@@ -47,6 +47,15 @@ HRESULT title::init()
 
 void title::release()
 {
+	IMAGEMANAGER->deleteImage("mainTitle");
+	IMAGEMANAGER->deleteImage("mainmenu");
+	IMAGEMANAGER->deleteImage("redcross");
+	//IMAGEMANAGER->deleteImage("vugKings");
+	//_titleImg = nullptr;
+	//_mainmenuImg = nullptr;
+	//_redcrossImg = nullptr;
+	//_vugKingImg = nullptr;
+
 }
 
 void title::update()
@@ -88,6 +97,8 @@ void title::update()
 
 void title::render()
 {
+	int tmp;
+	tmp = 0;
 	_titleImg->alphaRender(getMemDC(), 0, 0, _titleAlphaValue);
 	_mainmenuImg->alphaRender(getMemDC(), 0, 0, _mainmenuAlphaValue);
 

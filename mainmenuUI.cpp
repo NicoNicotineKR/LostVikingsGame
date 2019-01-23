@@ -50,6 +50,16 @@ HRESULT mainmenuUI::init()
 
 void mainmenuUI::release()
 {
+	//IMAGEMANAGER->deleteAll();
+	IMAGEMANAGER->deleteImage("menuCursor");
+	IMAGEMANAGER->deleteImage("button_STARTGAME");
+	IMAGEMANAGER->deleteImage("button_OPTIONS");
+	IMAGEMANAGER->deleteImage("button_EXIT");
+	
+
+
+	_vButton.clear();
+
 }
 
 void mainmenuUI::update()
