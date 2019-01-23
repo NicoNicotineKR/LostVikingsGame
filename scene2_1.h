@@ -47,6 +47,8 @@ private:
 	image* _lavaimg[5];
 	int _lavaIndex[5];
 
+	//¼û°ÜÁø¸Ê - À¯Çü¿ì
+	image* _mapHide;
 
 public:
 	scene2_1();

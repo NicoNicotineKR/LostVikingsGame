@@ -24,6 +24,10 @@ HRESULT scene2_1::init()
 	_mapImgPixel = IMAGEMANAGER->findImage("¾À2_1ÇÈ¼¿");
 	//===========ÇÈ¼¿Ãæµ¹½ÇÇè¿ë============
 
+	//¼û°ÜÁø¸Ê - À¯Çü¿ì
+	IMAGEMANAGER->addImage("¼û°ÜÁø¸Ê","images/maps/stage1hide.bmp",3904,1456,true,RGB(255,0,255));
+	_mapHide = IMAGEMANAGER->findImage("¼û°ÜÁø¸Ê");
+
 	_pm = new playerMgr;
 	_pm->init();
 	
@@ -83,7 +87,7 @@ HRESULT scene2_1::init()
 	_lavaimg[4] = IMAGEMANAGER->findImage("¶ó¹Ù");
 	_lavaIndex[4] = 800;
 	
-
+	
 	return S_OK;
 }
 
@@ -355,6 +359,7 @@ void scene2_1::render()
 
 	_objectMgr->render();
 	_pm->render();
+	_mapHide->render(getMemDC(), -_camera->Getmapx() + WINSIZEX / 2, -_camera->Getmapy() + WINSIZEY / 2);
 	_itemMgr->render();
 
 	//20190122Çü¿ìÃß°¡
@@ -392,7 +397,7 @@ void scene2_1::render()
 	_invenUI->render();
 
 	
-
+	
 	
 	
 }
