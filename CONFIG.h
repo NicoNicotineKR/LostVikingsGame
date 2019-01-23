@@ -27,6 +27,7 @@ enum E_SCENE_INDEX {
 	E_SCENE2_1,
 
 
+	E_GAMEOVER,
 
 	E_SCENE_IDX_END,
 
