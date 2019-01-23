@@ -13,7 +13,8 @@ mainmenu::~mainmenu()
 
 HRESULT mainmenu::init()
 {
-	_bg = IMAGEMANAGER->findImage("mainmenu");
+	//IMAGEMANAGER->addImage("vugKings", "images/UI/mainmenuUI/vugKings.bmp", 1024, 768, false, 0x000000);
+	_bg = IMAGEMANAGER->findImage("vugKings");
 	_isSceneEnd = false;
 
 	_menuUI = new mainmenuUI;
